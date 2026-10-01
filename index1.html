@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>2D Cutting Layout - Prototype</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f4f6f8;
+      color: #333;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+    }
+    .panel {
+      background: #fff;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      width: 260px;
+    }
+    .canvas-box {
+      overflow: auto;
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 20px;
+    }
+    button {
+      padding: 8px 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover { background: #0056b3; }
+
+    /* Định dạng SVG */
+    .axis { stroke: #222; stroke-width: 2; }
+    .grid-line { stroke: #ececec; stroke-width: 1; }
+    .tick-text { font-size: 10px; fill: #666; font-family: monospace; }
+    .stock-sheet { fill: #fafafa; stroke: #333; stroke-width: 2; }
+    .part-rect { fill: #90caf9; stroke: #1976d2; stroke-width: 1.5; fill-opacity: 0.75; }
+    .part-rect:hover { fill-opacity: 0.95; cursor: pointer; }
+    .part-label { font-size: 11px; fill: #0d47a1; font-weight: bold; pointer-events: none; }
+  </style>
+</head>
+<body>
+
+  <h2>📐 Mô phỏng sơ đồ cắt tấm (SVG Prototype)</h2>
+
+  <div class="container">
+    <!-- Cột điều khiển -->
+    <div class="panel">
+      <h3>Điều khiển</h3>
+      <p style="font-size: 13px; color: #666;">
+        Nhận mảng chi tiết từ backend ASP.NET để render lên tấm phôi.
+      </p>
+      <button onclick="renderLayout(demoData)">Vẽ mẫu Demo</button>
+      <button onclick="callApiMock()" style="margin-top: 10px; background: #28a745;">Gọi API Backend</button>
+
+      <div style="margin-top: 20px; font-size: 12px; color: #555; line-height: 1.5;">
+        📌 <b>Gốc (0,0):</b> Nằm tại góc trên bên trái tấm phôi.<br>
+        ⚡ <b>Trục X:</b> Trải sang phải.<br>
+        ⚡ <b>Trục Y:</b> Trải xuống dưới.
+      </div>
+    </div>
+
+    <!-- Vùng hiển thị SVG -->
+    <div class="canvas-box">
+      <svg id="cutCanvas" width="900" height="600"></svg>
+    </div>
+  </div>
+
+  <script>
+    // Dữ liệu đúng chuẩn cấu trúc JSON mà backend ASP.NET sẽ trả về
+    const demoData = {
+      "totalSheetsUsed": 1,
+      "usageRate": 85.5,
+      "sheets": [
+        {
+          "sheetId": 1,
+          "width": 1200,
+          "height": 800,
+          "placedParts": [
+            {
+              "id": 101,
+              "name": "Chi tiết A",
+              "x": 0,
+              "y": 0,
+              "width": 300,
+              "height": 200,
+              "isRotated": false
+            },
+            {
+              "id": 102,
+              "name": "Chi tiết B",
+              "x": 305,
+              "y": 0,
+              "width": 150,
+              "height": 400,
+              "isRotated": true
+            }
+          ]
+        }
+      ]
+    };
+
+    function renderLayout(data) {
+      const svg = document.getElementById("cutCanvas");
+      svg.innerHTML = ""; 
+
+      // Lấy tấm đầu tiên trong mảng sheets ra để vẽ trước
+      const currentSheet = data.sheets[0];
+      if (!currentSheet) return;
+
+      const originX = 50;  // Khoảng đệm mép trái cho trục Y
+      const originY = 40;  // Khoảng đệm mép trên cho trục X
+      const step = 100;    // Bước chia tọa độ (100px/mm) cho đỡ dày đặc
+
+      svg.setAttribute("width", currentSheet.width + originX + 50);
+      svg.setAttribute("height", currentSheet.height + originY + 50);
+
+      let content = "";
+
+      // 1. Vạch và số đo trục X (ngang)
+      for (let x = 0; x <= currentSheet.width; x += step) {
+        let posX = originX + x;
+        content += `<line x1="${posX}" y1="${originY - 5}" x2="${posX}" y2="${originY + currentSheet.height}" class="grid-line" />`;
+        content += `<text x="${posX}" y="${originY - 8}" text-anchor="middle" class="tick-text">${x}</text>`;
+      }
+
+      // 2. Vạch và số đo trục Y (dọc)
+      for (let y = 0; y <= currentSheet.height; y += step) {
+        let posY = originY + y;
+        content += `<line x1="${originX - 5}" y1="${posY}" x2="${originX + currentSheet.width}" y2="${posY}" class="grid-line" />`;
+        content += `<text x="${originX - 8}" y="${posY + 4}" text-anchor="end" class="tick-text">${y}</text>`;
+      }
+
+      // 3. Hai đường trục chính
+      content += `<line x1="${originX}" y1="${originY}" x2="${originX + currentSheet.width}" y2="${originY}" class="axis" />`;
+      content += `<line x1="${originX}" y1="${originY}" x2="${originX}" y2="${originY + currentSheet.height}" class="axis" />`;
+
+      // 4. Tấm phôi nguyên (Stock Sheet)
+      content += `<rect x="${originX}" y="${originY}" width="${currentSheet.width}" height="${currentSheet.height}" class="stock-sheet" />`;
+
+      // 5. Các chi tiết hình chữ nhật đã bố trí (placedParts)
+      currentSheet.placedParts.forEach(part => {
+        let rx = originX + part.x;
+        let ry = originY + part.y;
+        content += `
+          <g>
+            <rect x="${rx}" y="${ry}" width="${part.width}" height="${part.height}" class="part-rect">
+              <title>${part.name}: [${part.width} x ${part.height}] tại (${part.x}, ${part.y}) ${part.isRotated ? '- Xoay 90°' : ''}</title>
+            </rect>
+            <text x="${rx + part.width / 2}" y="${ry + part.height / 2}" 
+                  text-anchor="middle" dominant-baseline="middle" 
+                  class="part-label">
+              ${part.name}
+            </text>
+          </g>
+        `;
+      });
+
+      svg.innerHTML = content;
+    }
+
+    async function callApiMock() {
+            try {
+                // Đổi đúng port của bạn (ví dụ https://localhost:7123)
+                const res = await fetch("https://localhost:7187/CalculateLayout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    stockSheets: [{ id: 1, width: 1200, height: 800 }],
+                    cuttingPack: ["Part1", "Part2"]
+                })
+                });
+
+                const data = await res.json();
+                renderLayout(data); // Nhận JSON từ controller và vẽ luôn
+            } catch (err) {
+                console.error(err);
+                alert("Lỗi gọi API: Hãy kiểm tra port hoặc bật CORS trong Program.cs!");
+            }
+    }
+
+    // Tự động vẽ với dữ liệu giả lập ngay khi tải trang
+    renderLayout(demoData);
+  </script>
+</body>
+</html>
