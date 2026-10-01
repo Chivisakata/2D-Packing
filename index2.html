@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>2D Cutting Layout - Prototype</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f4f6f8;
+      color: #333;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .panel {
+      background: #fff;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      width: 360px;
+      flex-shrink: 0;
+    }
+    .canvas-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .sheet-card {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: bold;
+      margin: 14px 0 8px 0;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 4px;
+      color: #1976d2;
+    }
+    .item-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+      align-items: center;
+      width: 100%;
+    }
+    .item-row input {
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .input-name { width: 55px; flex-shrink: 0; }
+    .input-w    { flex: 1; min-width: 0; }
+    .input-h    { flex: 1; min-width: 0; }
+    .input-qty  { width: 45px; flex-shrink: 0; }
+
+    .btn-del {
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .btn-del:hover { background: #bd2130; }
+
+    .btn-add {
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      width: 100%;
+      margin-top: 4px;
+      font-weight: bold;
+    }
+    .btn-add:hover { background: #5a6268; }
+
+    .btn-main {
+      padding: 10px 16px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+    .btn-main:hover { background: #218838; }
+
+    /* Định dạng SVG */
+    .axis { stroke: #222; stroke-width: 2; }
+    .grid-line { stroke: #ececec; stroke-width: 1; }
+    .tick-text { font-size: 10px; fill: #666; font-family: monospace; }
+    .stock-sheet { fill: #fafafa; stroke: #333; stroke-width: 2; }
+    .part-rect { fill: #90caf9; stroke: #1976d2; stroke-width: 1.5; fill-opacity: 0.75; }
+    .part-rect:hover { fill-opacity: 0.95; cursor: pointer; }
+    .part-label { font-size: 11px; fill: #0d47a1; font-weight: bold; pointer-events: none; }
+  </style>
+</head>
+<body>
+
+  <h2>📐 Mô phỏng sơ đồ cắt tấm (SVG Prototype)</h2>
+
+  <div class="container">
+    <!-- CỘT NHẬP LIỆU -->
+    <div class="panel">
+      <h3 style="margin: 0 0 10px 0;">Thông số bài toán</h3>
+
+      <!-- 1. Danh sách phôi nguyên (Stock Sheets) -->
+      <div class="section-title">1. Danh sách tấm phôi (Rộng | Cao | SL)</div>
+      <div id="sheetsList">
+        <div class="item-row sheet-input-item">
+          <input type="number" class="input-w sheet-w" placeholder="Rộng" value="1200">
+          <input type="number" class="input-h sheet-h" placeholder="Cao" value="800">
+          <input type="number" class="input-qty sheet-qty" placeholder="SL" value="1" title="Số lượng phôi">
+          <button class="btn-del" onclick="removeItemRow(this, 'sheetsList')">×</button>
+        </div>
+      </div>
+      <button class="btn-add" onclick="addSheetRow()">+ Thêm tấm phôi</button>
+
+      <!-- 2. Danh sách chi tiết cắt (Cutting Parts) -->
+      <div class="section-title">2. Danh sách chi tiết (Tên | Rộng | Cao | SL)</div>
+      <div id="partsList">
+        <div class="item-row part-input-item">
+          <input type="text" class="input-name part-name" placeholder="Tên" value="P1">
+          <input type="number" class="input-w part-w" placeholder="Rộng" value="300">
+          <input type="number" class="input-h part-h" placeholder="Cao" value="200">
+          <input type="number" class="input-qty part-qty" placeholder="SL" value="1" title="Số lượng">
+          <button class="btn-del" onclick="removeItemRow(this, 'partsList')">×</button>
+        </div>
+        <div class="item-row part-input-item">
+          <input type="text" class="input-name part-name" placeholder="Tên" value="P2">
+          <input type="number" class="input-w part-w" placeholder="Rộng" value="150">
+          <input type="number" class="input-h part-h" placeholder="Cao" value="400">
+          <input type="number" class="input-qty part-qty" placeholder="SL" value="1" title="Số lượng">
+          <button class="btn-del" onclick="removeItemRow(this, 'partsList')">×</button>
+        </div>
+      </div>
+      <button class="btn-add" onclick="addPartRow()">+ Thêm chi tiết</button>
+
+      <!-- Nút gửi API -->
+      <button class="btn-main" onclick="callApi()">⚡ Gửi tính toán (API)</button>
+
+      <div style="margin-top: 15px; font-size: 11px; color: #666; line-height: 1.4;">
+        📌 <b>Endpoint:</b> <code>https://localhost:7187/CalculateLayout</code><br>
+        ⚡ Tự động đóng gói nhiều tấm phôi và chi tiết gửi về BE.
+      </div>
+    </div>
+
+    <!-- VÙNG HIỂN THỊ CÁC TẤM SVG -->
+    <div class="canvas-container" id="sheetsContainer"></div>
+  </div>
+
+  <script>
+    // 1. Thêm tấm phôi mới
+    function addSheetRow() {
+      const container = document.getElementById("sheetsList");
+      const row = document.createElement("div");
+      row.className = "item-row sheet-input-item";
+      row.innerHTML = `
+        <input type="number" class="input-w sheet-w" placeholder="Rộng" value="1000">
+        <input type="number" class="input-h sheet-h" placeholder="Cao" value="600">
+        <input type="number" class="input-qty sheet-qty" placeholder="SL" value="1" title="Số lượng phôi">
+        <button class="btn-del" onclick="removeItemRow(this, 'sheetsList')">×</button>
+      `;
+      container.appendChild(row);
+    }
+
+    // 2. Thêm chi tiết mới
+    function addPartRow() {
+      const container = document.getElementById("partsList");
+      const row = document.createElement("div");
+      row.className = "item-row part-input-item";
+      row.innerHTML = `
+        <input type="text" class="input-name part-name" placeholder="Tên" value="P">
+        <input type="number" class="input-w part-w" placeholder="Rộng" value="100">
+        <input type="number" class="input-h part-h" placeholder="Cao" value="100">
+        <input type="number" class="input-qty part-qty" placeholder="SL" value="1" title="Số lượng">
+        <button class="btn-del" onclick="removeItemRow(this, 'partsList')">×</button>
+      `;
+      container.appendChild(row);
+    }
+
+    // 3. Xóa dòng (dùng chung cho cả phôi và chi tiết)
+    function removeItemRow(btn, containerId) {
+      const rows = document.getElementById(containerId).children;
+      if (rows.length > 1) {
+        btn.parentElement.remove();
+      } else {
+        alert("Cần giữ lại ít nhất 1 dòng!");
+      }
+    }
+
+    // 4. Gom dữ liệu form và gửi lên ASP.NET
+    async function callApi() {
+      // A. Gom danh sách tấm phôi nguyên
+      const sheetRows = document.querySelectorAll(".sheet-input-item");
+      const stockSheets = [];
+      let sheetIdCounter = 1;
+
+      sheetRows.forEach(row => {
+        const w = parseFloat(row.querySelector(".sheet-w").value) || 0;
+        const h = parseFloat(row.querySelector(".sheet-h").value) || 0;
+        const qty = parseInt(row.querySelector(".sheet-qty").value) || 1;
+
+        for (let i = 0; i < qty; i++) {
+          stockSheets.push({
+            id: sheetIdCounter++,
+            width: w,
+            height: h
+          });
+        }
+      });
+
+      // B. Gom danh sách chi tiết cắt
+      const partRows = document.querySelectorAll(".part-input-item");
+      const cuttingPackList = [];
+
+      partRows.forEach(row => {
+        const name = row.querySelector(".part-name").value.trim() || "P";
+        const w = parseFloat(row.querySelector(".part-w").value) || 0;
+        const h = parseFloat(row.querySelector(".part-h").value) || 0;
+        const qty = parseInt(row.querySelector(".part-qty").value) || 1;
+
+        for (let i = 0; i < qty; i++) {
+          cuttingPackList.push(`Rec:${name}:${w}x${h}`);
+        }
+      });
+
+      // C. Đóng gói đúng model CalculateLayoutInput của C#
+      const payload = {
+        stockSheets: stockSheets,
+        cuttingPack: cuttingPackList
+      };
+
+      console.log("Payload gửi đi:", payload);
+
+      try {
+        const res = await fetch("https://localhost:7187/CalculateLayout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error(`Lỗi server: ${res.status}`);
+
+        const data = await res.json();
+        renderLayout(data);
+      } catch (err) {
+        console.error(err);
+        alert("Lỗi gọi API: Hãy kiểm tra backend đang bật tại cổng 7187 hoặc kiểm tra CORS trong Program.cs!");
+      }
+    }
+
+    // 5. Hàm vẽ danh sách các tấm kết quả lên SVG
+    function renderLayout(data) {
+      const container = document.getElementById("sheetsContainer");
+      container.innerHTML = ""; 
+
+      if (!data.sheets || data.sheets.length === 0) return;
+
+      const originX = 50;  
+      const originY = 40;  
+      const step = 100;    
+
+      // Duyệt qua từng tấm phôi để vẽ
+      data.sheets.forEach(sheet => {
+        const card = document.createElement("div");
+        card.className = "sheet-card";
+
+        const title = document.createElement("div");
+        title.style.cssText = "font-weight: bold; margin-bottom: 10px; color: #1976d2;";
+        title.innerText = `Tấm #${sheet.sheetId} (${sheet.width} × ${sheet.height})`;
+        card.appendChild(title);
+
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("width", sheet.width + originX + 50);
+        svg.setAttribute("height", sheet.height + originY + 50);
+
+        let content = "";
+
+        // Trục X & Vạch chia
+        for (let x = 0; x <= sheet.width; x += step) {
+          let posX = originX + x;
+          content += `<line x1="${posX}" y1="${originY - 5}" x2="${posX}" y2="${originY + sheet.height}" class="grid-line" />`;
+          content += `<text x="${posX}" y="${originY - 8}" text-anchor="middle" class="tick-text">${x}</text>`;
+        }
+
+        // Trục Y & Vạch chia
+        for (let y = 0; y <= sheet.height; y += step) {
+          let posY = originY + y;
+          content += `<line x1="${originX - 5}" y1="${posY}" x2="${originX + sheet.width}" y2="${posY}" class="grid-line" />`;
+          content += `<text x="${originX - 8}" y="${posY + 4}" text-anchor="end" class="tick-text">${y}</text>`;
+        }
+
+        // Trục chính
+        content += `<line x1="${originX}" y1="${originY}" x2="${originX + sheet.width}" y2="${originY}" class="axis" />`;
+        content += `<line x1="${originX}" y1="${originY}" x2="${originX}" y2="${originY + sheet.height}" class="axis" />`;
+
+        // Phôi nguyên
+        content += `<rect x="${originX}" y="${originY}" width="${sheet.width}" height="${sheet.height}" class="stock-sheet" />`;
+
+        // Các chi tiết đã xếp
+        if (sheet.placedParts) {
+          sheet.placedParts.forEach(part => {
+            let rx = originX + part.x;
+            let ry = originY + part.y;
+            content += `
+              <g>
+                <rect x="${rx}" y="${ry}" width="${part.width}" height="${part.height}" class="part-rect">
+                  <title>${part.name}: [${part.width} x ${part.height}] tại (${part.x}, ${part.y}) ${part.isRotated ? '- Xoay 90°' : ''}</title>
+                </rect>
+                <text x="${rx + part.width / 2}" y="${ry + part.height / 2}" 
+                      text-anchor="middle" dominant-baseline="middle" 
+                      class="part-label">
+                  ${part.name}
+                </text>
+              </g>
+            `;
+          });
+        }
+
+        svg.innerHTML = content;
+        card.appendChild(svg);
+        container.appendChild(card);
+      });
+    }
+
+    // Vẽ mẫu khởi tạo
+    renderLayout({
+      sheets: [{
+        sheetId: 1,
+        width: 1200,
+        height: 800,
+        placedParts: [
+          { id: 101, name: "P1", x: 0, y: 0, width: 300, height: 200, isRotated: false },
+          { id: 102, name: "P2", x: 305, y: 0, width: 150, height: 400, isRotated: true }
+        ]
+      }]
+    });
+  </script>
+</body>
+</html>
