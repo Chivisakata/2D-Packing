@@ -23,7 +23,7 @@
       padding: 16px;
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      width: 360px;
+      width: 420px;
       flex-shrink: 0;
     }
     .canvas-container {
@@ -53,20 +53,30 @@
     .item-row {
       display: flex;
       gap: 6px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       align-items: center;
       width: 100%;
+      flex-wrap: wrap;
+      background: #fafafa;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px dashed #ddd;
     }
-    .item-row input {
+    .item-row input, .item-row select {
       padding: 6px;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 12px;
     }
-    .input-name { width: 55px; flex-shrink: 0; }
-    .input-w    { flex: 1; min-width: 0; }
-    .input-h    { flex: 1; min-width: 0; }
-    .input-qty  { width: 45px; flex-shrink: 0; }
+    .input-shape { width: 130px; }
+    .input-w    { width: 70px; }
+    .input-h    { width: 70px; }
+    .input-qty  { width: 50px; }
+    .param-fields {
+      display: flex;
+      gap: 4px;
+      flex: 1;
+    }
 
     .btn-del {
       background: #dc3545;
@@ -76,7 +86,7 @@
       padding: 6px 10px;
       cursor: pointer;
       font-weight: bold;
-      flex-shrink: 0;
+      margin-left: auto;
     }
     .btn-del:hover { background: #bd2130; }
 
@@ -108,7 +118,7 @@
     }
     .btn-main:hover { background: #218838; }
 
-    /* Định dạng SVG */
+    /* SVG Styling */
     .axis { stroke: #222; stroke-width: 2; }
     .grid-line { stroke: #ececec; stroke-width: 1; }
     .tick-text { font-size: 10px; fill: #666; font-family: monospace; }
@@ -120,7 +130,7 @@
 </head>
 <body>
 
-  <h2>📐 Mô phỏng sơ đồ cắt tấm (SVG Prototype)</h2>
+  <h2>📐 Mô phỏng sơ đồ cắt tấm (2D Packing Layout)</h2>
 
   <div class="container">
     <!-- CỘT NHẬP LIỆU -->
@@ -128,31 +138,51 @@
       <h3 style="margin: 0 0 10px 0;">Thông số bài toán</h3>
 
       <!-- 1. Danh sách phôi nguyên (Stock Sheets) -->
-      <div class="section-title">1. Danh sách tấm phôi (Rộng | Cao | SL)</div>
+      <div class="section-title">1. Danh sách phôi (Rộng × Cao | SL)</div>
       <div id="sheetsList">
         <div class="item-row sheet-input-item">
-          <input type="number" class="input-w sheet-w" placeholder="Rộng" value="1200">
-          <input type="number" class="input-h sheet-h" placeholder="Cao" value="800">
-          <input type="number" class="input-qty sheet-qty" placeholder="SL" value="1" title="Số lượng phôi">
+          <input type="number" class="input-w sheet-w" placeholder="Rộng" value="1000">
+          <input type="number" class="input-h sheet-h" placeholder="Cao" value="2000">
+          <input type="number" class="input-qty sheet-qty" placeholder="SL" value="1" title="Số lượng tấm">
           <button class="btn-del" onclick="removeItemRow(this, 'sheetsList')">×</button>
         </div>
       </div>
       <button class="btn-add" onclick="addSheetRow()">+ Thêm tấm phôi</button>
 
-      <!-- 2. Danh sách chi tiết cắt (Cutting Parts) -->
-      <div class="section-title">2. Danh sách chi tiết (Tên | Rộng | Cao | SL)</div>
+      <!-- 2. Danh sách gói chi tiết cắt (Cutting Packs) -->
+      <div class="section-title">2. Chi tiết cần cắt (Hỗ trợ đa dạng hình khối)</div>
       <div id="partsList">
+        <!-- Hàng 1: Rectangle -->
         <div class="item-row part-input-item">
-          <input type="text" class="input-name part-name" placeholder="Tên" value="P1">
-          <input type="number" class="input-w part-w" placeholder="Rộng" value="300">
-          <input type="number" class="input-h part-h" placeholder="Cao" value="200">
+          <select class="input-shape" onchange="changeShapeInputs(this)">
+            <option value="Rectangle" selected>Rectangle</option>
+            <option value="Circle">Circle</option>
+            <option value="RightAngledTriangle">RightAngledTriangle</option>
+            <option value="IsoscelesTriangle">IsoscelesTriangle</option>
+            <option value="RegularHexagon">RegularHexagon</option>
+            <option value="Ellipse">Ellipse</option>
+          </select>
+          <div class="param-fields">
+            <input type="number" class="param-1" placeholder="Width" value="100.5" style="width: 70px;">
+            <input type="number" class="param-2" placeholder="Height" value="50.0" style="width: 70px;">
+          </div>
           <input type="number" class="input-qty part-qty" placeholder="SL" value="1" title="Số lượng">
           <button class="btn-del" onclick="removeItemRow(this, 'partsList')">×</button>
         </div>
+
+        <!-- Hàng 2: Circle -->
         <div class="item-row part-input-item">
-          <input type="text" class="input-name part-name" placeholder="Tên" value="P2">
-          <input type="number" class="input-w part-w" placeholder="Rộng" value="150">
-          <input type="number" class="input-h part-h" placeholder="Cao" value="400">
+          <select class="input-shape" onchange="changeShapeInputs(this)">
+            <option value="Rectangle">Rectangle</option>
+            <option value="Circle" selected>Circle</option>
+            <option value="RightAngledTriangle">RightAngledTriangle</option>
+            <option value="IsoscelesTriangle">IsoscelesTriangle</option>
+            <option value="RegularHexagon">RegularHexagon</option>
+            <option value="Ellipse">Ellipse</option>
+          </select>
+          <div class="param-fields">
+            <input type="number" class="param-1" placeholder="Radius" value="25.0" style="width: 80px;">
+          </div>
           <input type="number" class="input-qty part-qty" placeholder="SL" value="1" title="Số lượng">
           <button class="btn-del" onclick="removeItemRow(this, 'partsList')">×</button>
         </div>
@@ -164,7 +194,7 @@
 
       <div style="margin-top: 15px; font-size: 11px; color: #666; line-height: 1.4;">
         📌 <b>Endpoint:</b> <code>https://localhost:7187/CalculateLayout</code><br>
-        ⚡ Tự động đóng gói nhiều tấm phôi và chi tiết gửi về BE.
+        ⚡ Dữ liệu <code>cuttingPack</code> được đóng gói thành chuỗi JSON string chuẩn theo <code>CuttingPackParser</code>.
       </div>
     </div>
 
@@ -173,36 +203,82 @@
   </div>
 
   <script>
-    // 1. Thêm tấm phôi mới
+    // 1. Thêm tấm phôi
     function addSheetRow() {
       const container = document.getElementById("sheetsList");
       const row = document.createElement("div");
       row.className = "item-row sheet-input-item";
       row.innerHTML = `
         <input type="number" class="input-w sheet-w" placeholder="Rộng" value="1000">
-        <input type="number" class="input-h sheet-h" placeholder="Cao" value="600">
-        <input type="number" class="input-qty sheet-qty" placeholder="SL" value="1" title="Số lượng phôi">
+        <input type="number" class="input-h sheet-h" placeholder="Cao" value="2000">
+        <input type="number" class="input-qty sheet-qty" placeholder="SL" value="1" title="Số lượng tấm">
         <button class="btn-del" onclick="removeItemRow(this, 'sheetsList')">×</button>
       `;
       container.appendChild(row);
     }
 
-    // 2. Thêm chi tiết mới
+    // 2. Tự động đổi ô nhập liệu dựa trên hình khối
+    function changeShapeInputs(selectElem) {
+      const row = selectElem.closest(".part-input-item");
+      const container = row.querySelector(".param-fields");
+      const shape = selectElem.value;
+
+      let html = "";
+      switch (shape) {
+        case "Rectangle":
+          html = `
+            <input type="number" class="param-1" placeholder="Width" value="100" style="width: 70px;">
+            <input type="number" class="param-2" placeholder="Height" value="50" style="width: 70px;">
+          `;
+          break;
+        case "Circle":
+          html = `<input type="number" class="param-1" placeholder="Radius" value="25" style="width: 80px;">`;
+          break;
+        case "RightAngledTriangle":
+        case "IsoscelesTriangle":
+          html = `
+            <input type="number" class="param-1" placeholder="Base" value="30" style="width: 70px;">
+            <input type="number" class="param-2" placeholder="Height" value="40" style="width: 70px;">
+          `;
+          break;
+        case "RegularHexagon":
+          html = `<input type="number" class="param-1" placeholder="SideLength" value="30" style="width: 90px;">`;
+          break;
+        case "Ellipse":
+          html = `
+            <input type="number" class="param-1" placeholder="MajorAxis" value="50" style="width: 80px;">
+            <input type="number" class="param-2" placeholder="MinorAxis" value="30" style="width: 80px;">
+          `;
+          break;
+      }
+      container.innerHTML = html;
+    }
+
+    // 3. Thêm chi tiết mới
     function addPartRow() {
       const container = document.getElementById("partsList");
       const row = document.createElement("div");
       row.className = "item-row part-input-item";
       row.innerHTML = `
-        <input type="text" class="input-name part-name" placeholder="Tên" value="P">
-        <input type="number" class="input-w part-w" placeholder="Rộng" value="100">
-        <input type="number" class="input-h part-h" placeholder="Cao" value="100">
+        <select class="input-shape" onchange="changeShapeInputs(this)">
+          <option value="Rectangle" selected>Rectangle</option>
+          <option value="Circle">Circle</option>
+          <option value="RightAngledTriangle">RightAngledTriangle</option>
+          <option value="IsoscelesTriangle">IsoscelesTriangle</option>
+          <option value="RegularHexagon">RegularHexagon</option>
+          <option value="Ellipse">Ellipse</option>
+        </select>
+        <div class="param-fields">
+          <input type="number" class="param-1" placeholder="Width" value="100" style="width: 70px;">
+          <input type="number" class="param-2" placeholder="Height" value="50" style="width: 70px;">
+        </div>
         <input type="number" class="input-qty part-qty" placeholder="SL" value="1" title="Số lượng">
         <button class="btn-del" onclick="removeItemRow(this, 'partsList')">×</button>
       `;
       container.appendChild(row);
     }
 
-    // 3. Xóa dòng (dùng chung cho cả phôi và chi tiết)
+    // 4. Xóa dòng
     function removeItemRow(btn, containerId) {
       const rows = document.getElementById(containerId).children;
       if (rows.length > 1) {
@@ -212,68 +288,94 @@
       }
     }
 
-    // 4. Gom dữ liệu form và gửi lên ASP.NET
-    async function callApi() {
-      // A. Gom danh sách tấm phôi nguyên
-      const sheetRows = document.querySelectorAll(".sheet-input-item");
-      const stockSheets = [];
-      let sheetIdCounter = 1;
+    // 5. Chuẩn bị Payload, in JSON ra kiểm tra và gửi API
+async function callApi() {
+  // A. Gom danh sách tấm phôi
+  const sheetRows = document.querySelectorAll(".sheet-input-item");
+  const stockSheets = [];
 
-      sheetRows.forEach(row => {
-        const w = parseFloat(row.querySelector(".sheet-w").value) || 0;
-        const h = parseFloat(row.querySelector(".sheet-h").value) || 0;
-        const qty = parseInt(row.querySelector(".sheet-qty").value) || 1;
+  sheetRows.forEach(row => {
+    const w = parseFloat(row.querySelector(".sheet-w").value) || 0;
+    const h = parseFloat(row.querySelector(".sheet-h").value) || 0;
+    const qty = parseInt(row.querySelector(".sheet-qty").value) || 1;
 
-        for (let i = 0; i < qty; i++) {
-          stockSheets.push({
-            id: sheetIdCounter++,
-            width: w,
-            height: h
-          });
-        }
+    for (let i = 0; i < qty; i++) {
+      stockSheets.push({
+        width: w,
+        height: h
       });
-
-      // B. Gom danh sách chi tiết cắt
-      const partRows = document.querySelectorAll(".part-input-item");
-      const cuttingPackList = [];
-
-      partRows.forEach(row => {
-        const name = row.querySelector(".part-name").value.trim() || "P";
-        const w = parseFloat(row.querySelector(".part-w").value) || 0;
-        const h = parseFloat(row.querySelector(".part-h").value) || 0;
-        const qty = parseInt(row.querySelector(".part-qty").value) || 1;
-
-        for (let i = 0; i < qty; i++) {
-          cuttingPackList.push(`Rec:${name}:${w}x${h}`);
-        }
-      });
-
-      // C. Đóng gói đúng model CalculateLayoutInput của C#
-      const payload = {
-        stockSheets: stockSheets,
-        cuttingPack: cuttingPackList
-      };
-
-      console.log("Payload gửi đi:", payload);
-
-      try {
-        const res = await fetch("https://localhost:7187/CalculateLayout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) throw new Error(`Lỗi server: ${res.status}`);
-
-        const data = await res.json();
-        renderLayout(data);
-      } catch (err) {
-        console.error(err);
-        alert("Lỗi gọi API: Hãy kiểm tra backend đang bật tại cổng 7187 hoặc kiểm tra CORS trong Program.cs!");
-      }
     }
+  });
 
-    // 5. Hàm vẽ danh sách các tấm kết quả lên SVG
+  // B. Gom danh sách chi tiết cắt theo đúng cấu trúc của CuttingPackParser
+  const partRows = document.querySelectorAll(".part-input-item");
+  const partsGroup = [];
+
+  partRows.forEach(row => {
+    const shape = row.querySelector(".input-shape").value;
+    const p1 = parseFloat(row.querySelector(".param-1")?.value) || 0;
+    const p2 = parseFloat(row.querySelector(".param-2")?.value) || 0;
+    const qty = parseInt(row.querySelector(".part-qty").value) || 1;
+
+    for (let i = 0; i < qty; i++) {
+      let itemObj = { ShapeName: shape };
+      switch (shape) {
+        case "Rectangle":
+          itemObj.Width = p1;
+          itemObj.Height = p2;
+          break;
+        case "Circle":
+          itemObj.Radius = p1;
+          break;
+        case "RightAngledTriangle":
+        case "IsoscelesTriangle":
+          itemObj.Base = p1;
+          itemObj.Height = p2;
+          break;
+        case "RegularHexagon":
+          itemObj.SideLength = p1;
+          break;
+        case "Ellipse":
+          itemObj.MajorAxis = p1;
+          itemObj.MinorAxis = p2;
+          break;
+      }
+      partsGroup.push(itemObj);
+    }
+  });
+
+  // C. Đóng gói JSON payload
+  const payload = {
+    stockSheets: stockSheets,
+    cuttingPack: [
+      JSON.stringify(partsGroup) // Đúng chuỗi JSON lồng theo format yêu cầu
+    ]
+  };
+
+  const jsonString = JSON.stringify(payload, null, 2);
+
+  // ⚡ IN JSON RA CONSOLE NGAY KHI BẤM NÚT
+  console.log("==================== [PAYLOAD GỬI LÊN BE] ====================");
+  console.log(jsonString);
+  console.log("=============================================================");
+
+  try {
+    const res = await fetch("https://localhost:7187/CalculateLayout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error(`Lỗi server: ${res.status}`);
+
+    const data = await res.json();
+    console.log("Response từ BE:", data);
+    renderLayout(data);
+  } catch (err) {
+    console.error("Lỗi gọi API:", err);
+  }
+}
+    // 6. Vẽ danh sách kết quả lên SVG
     function renderLayout(data) {
       const container = document.getElementById("sheetsContainer");
       container.innerHTML = ""; 
@@ -282,9 +384,8 @@
 
       const originX = 50;  
       const originY = 40;  
-      const step = 100;    
+      const step = 200; // bước chia to hơn một chút cho đỡ rối mắt   
 
-      // Duyệt qua từng tấm phôi để vẽ
       data.sheets.forEach(sheet => {
         const card = document.createElement("div");
         card.className = "sheet-card";
@@ -316,9 +417,9 @@
 
         // Trục chính
         content += `<line x1="${originX}" y1="${originY}" x2="${originX + sheet.width}" y2="${originY}" class="axis" />`;
-        content += `<line x1="${originX}" y1="${originY}" x2="${originX}" y2="${originY + sheet.height}" class="axis" />`;
+        content += `<line x1="${originX}" y1="${originY}" x2="${originX + sheet.height}" y2="${originY}" class="axis" />`;
 
-        // Phôi nguyên
+        // Tấm phôi nguyên
         content += `<rect x="${originX}" y="${originY}" width="${sheet.width}" height="${sheet.height}" class="stock-sheet" />`;
 
         // Các chi tiết đã xếp
@@ -347,15 +448,15 @@
       });
     }
 
-    // Vẽ mẫu khởi tạo
+    // Mẫu ban đầu hiển thị thử nghiệm
     renderLayout({
       sheets: [{
         sheetId: 1,
-        width: 1200,
-        height: 800,
+        width: 1000,
+        height: 2000,
         placedParts: [
-          { id: 101, name: "P1", x: 0, y: 0, width: 300, height: 200, isRotated: false },
-          { id: 102, name: "P2", x: 305, y: 0, width: 150, height: 400, isRotated: true }
+          { id: 1, name: "P1", x: 10, y: 10, width: 200, height: 100, isRotated: false },
+          { id: 2, name: "P2", x: 220, y: 10, width: 150, height: 300, isRotated: true }
         ]
       }]
     });
