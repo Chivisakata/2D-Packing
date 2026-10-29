@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Cụ Tính Toán Tối Ưu Bố Trí Cắt 2D - 2D-Packing.net</title>
+
+    <!-- Google Fonts: Inter & Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        roboto: ['Roboto', 'sans-serif'],
+                    },
+                    maxWidth: {
+                        'screen-2k': '2250px',
+                    },
+                    colors: {
+                        brand: {
+                            bg: '#f8fafc',
+                            card: '#ffffff',
+                            navy: '#0f172a',
+                            navyHover: '#1e293b',
+                            blue: '#3b82f6',
+                            border: '#e2e8f0',
+                            text: '#334155',
+                            heading: '#0f172a',
+                            inputBg: '#f8fafc'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-white border-b border-slate-200 py-7.5 px-12 md:px-24 sticky top-0 z-40 shadow-xs">
+        <div class="max-w-screen-2k mx-auto flex items-center justify-between">
+            <a href="#" class="flex items-baseline group select-none">
+                <span class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">2D-Packing</span>
+                <span class="text-xl md:text-2xl font-bold text-blue-600 ml-0.5">.net</span>
+            </a>
+
+            <div class="flex items-center gap-14">
+                <nav class="hidden md:flex items-center gap-14 text-2xl font-semibold text-slate-600">
+                    <a href="#features" class="hover:text-slate-900 transition-colors">Tính năng</a>
+                    <a href="#contact" class="hover:text-slate-900 transition-colors">Liên hệ</a>
+                    <a href="#login" class="hover:text-slate-900 transition-colors">Đăng nhập</a>
+                </nav>
+
+                <div class="flex items-center gap-7">
+                    <button class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xl tracking-wider px-10 py-4.5 rounded-xl uppercase transition-all shadow-md active:scale-95">
+                        BẮT ĐẦU NGAY
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="max-w-screen-2k mx-auto w-full px-6 sm:px-10 md:px-16 py-10 flex-grow">
+
+        <div class="text-center space-y-3 mb-12">
+            <h1 class="text-4xl md:text-6xl font-black text-slate-900 tracking-tight">
+                2D Packing & Cutting Calculator
+            </h1>
+            <p class="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+                Công Cụ Ước Tính & Tối Ưu Bố Trí Cắt Chi Tiết Đa Dạng Hình Dạng
+            </p>
+        </div>
+
+        <!-- Main 2-Column Calculator App -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch mb-16">
+
+            <!-- LEFT PANEL: Items & Containers & Options -->
+            <div class="lg:col-span-5 xl:col-span-4 flex flex-col space-y-5 justify-between">
+                
+                <div class="space-y-5 flex flex-col items-center">
+                    <!-- BOX 1: Items Table Panel (550x430) -->
+                    <div class="w-[550px] h-[430px] bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+                        <div class="space-y-3 overflow-hidden">
+                            <h2 class="text-xl font-extrabold text-slate-900 text-center tracking-tight">
+                                Chi tiết cần cắt
+                            </h2>
+                            
+                            <div class="overflow-x-auto max-h-[310px]">2
+                                <table class="w-full text-center border-collapse">
+                                    <thead>
+                                        <tr class="text-xs font-bold text-slate-600 border-b border-slate-200 pb-2">
+                                            <th class="py-2 px-2 w-36 text-left">Hình dạng</th>
+                                            <th class="py-2 px-2">Thông số (mm)</th>
+                                            <th class="py-2 px-2 w-16">Số lượng</th>
+                                            <th class="py-2 px-1 w-8"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemsTableBody" class="text-xs font-semibold divide-y divide-slate-100">
+                                        <!-- Javascript sẽ tự động load các item tại đây -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Add Item Button -->
+                        <div class="flex justify-center pt-2">
+                            <button id="btnAddItem" class="bg-slate-900 hover:bg-slate-800 text-white rounded-md px-6 py-2 text-base font-bold transition-all shadow-xs active:scale-95">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- BOX 2: Containers Table Panel (550x330) -->
+                    <div class="w-[550px] h-[330px] bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+                        <div class="space-y-3 overflow-hidden">
+                            <h2 class="text-lg font-extrabold text-slate-900 text-center tracking-tight">
+                                Tấm vật liệu
+                            </h2>
+                            
+                            <div class="overflow-x-auto max-h-[200px]">
+                                <table class="w-full text-center border-collapse">
+                                    <thead>
+                                        <tr class="text-xs font-bold text-slate-600 border-b border-slate-100 pb-2">
+                                            <th class="py-2 px-1 text-left w-28">Tên tấm</th>
+                                            <th class="py-2 px-1">Dài</th>
+                                            <th class="py-2 px-1">Rộng</th>
+                                            <th class="py-2 px-1">Số lượng</th>
+                                            <th class="py-2 px-1"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="containersTableBody" class="text-sm font-semibold divide-y divide-slate-100">
+                                        <!-- Javascript sẽ tự động load các tấm vật liệu tại đây -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Add Container Button -->
+                        <div class="flex justify-center pt-1">
+                            <button id="btnAddContainer" class="bg-slate-900 hover:bg-slate-800 text-white rounded-md px-6 py-1.5 text-sm font-bold transition-all shadow-xs active:scale-95">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- BOX 3: Optimization Options -->
+                    <div class="w-[550px] bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
+                        <h2 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-blue-600"></i> Phương án tối ưu cắt
+                        </h2>
+
+                        <div class="space-y-2 text-xs font-semibold text-slate-700">
+                            <label class="flex items-start gap-2.5 p-2.5 rounded-xl border border-blue-200 bg-blue-50/40 hover:bg-blue-50 cursor-pointer transition-colors">
+                                <input type="radio" name="optStrategy" value="REMAINDER_OPTIMAL" checked class="mt-0.5 accent-blue-600 w-4 h-4 cursor-pointer">
+                                <div>
+                                    <span class="font-bold text-slate-900 block text-sm">Tối ưu diện tích phần dư</span>
+                                    <span class="text-slate-500 font-normal">Gom cụm phần dư gọn gàng để có thể tái sử dụng cho lần sau.</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-2.5 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors">
+                                <input type="radio" name="optStrategy" value="BALANCED_DISTRIBUTION" class="mt-0.5 accent-blue-600 w-4 h-4 cursor-pointer">
+                                <div>
+                                    <span class="font-bold text-slate-900 block text-sm">Phân bố đều các chi tiết</span>
+                                    <span class="text-slate-500 font-normal">Phân bố khoảng cách đều đặn giữa các chi tiết trên tấm.</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-2.5 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors">
+                                <input type="radio" name="optStrategy" value="MINIMIZE_CONTAINERS" class="mt-0.5 accent-blue-600 w-4 h-4 cursor-pointer">
+                                <div>
+                                    <span class="font-bold text-slate-900 block text-sm">Tối ưu số lượng tấm sử dụng</span>
+                                    <span class="text-slate-500 font-normal">Sử dụng ít tấm vật liệu nhất có thể để cắt hết chi tiết.</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="pt-1 space-y-3 w-[550px] mx-auto">
+                    <button id="btnReset" 
+                            class="w-full bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold text-base py-3 px-5 rounded-xl transition-all shadow-sm active:scale-98">
+                        Đặt lại cài đặt (Reset)
+                    </button>
+                    <button id="btnOptimize" 
+                            class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-lg py-4 px-6 rounded-xl uppercase tracking-wider transition-all shadow-md active:scale-98">
+                        BẮT ĐẦU TỐI ƯU
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- RIGHT PANEL: Layout Preview & Canvas -->
+            <div class="lg:col-span-7 xl:col-span-8 bg-white rounded-2xl border border-slate-200 p-8 shadow-sm flex flex-col justify-between space-y-6 min-h-[720px]">
+                
+                <div class="flex-grow flex flex-col">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-base font-extrabold text-slate-900 uppercase tracking-wider">
+                            Xem Trước Sơ Đồ Bố Trí (Layout Preview)
+                        </h2>
+                    </div>
+
+                    <div id="previewContainer" class="w-full flex-grow border border-slate-200 rounded-xl p-8 bg-slate-50/60 flex items-center justify-center min-h-[550px] overflow-auto shadow-inner">
+                        <div id="canvasSheet" class="relative bg-white border border-slate-300 shadow-md transition-all flex flex-wrap content-start overflow-hidden rounded-sm">
+                            <!-- Items render tại đây -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW Live Calculated Statistics Footer (Đã thay đổi theo yêu cầu) -->
+                <div class="border-t border-slate-200 pt-6 grid grid-cols-1 md:grid-cols-3 gap-6 items-center bg-slate-50/50 p-4 rounded-xl border border-slate-100 relative">
+                    
+                    <!-- 1. Chọn tấm hiển thị (Kiểu Tab / Select: Tấm A, Tấm B, Tấm C...) -->
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">Hiển thị tấm kết quả:</label>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group text-blue-600 text-lg"></i>
+                            <select id="sheetSelector" class="w-full bg-white border border-slate-300 font-bold text-slate-800 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-xs">
+                                <option value="0">Tấm A (1200x800)</option>
+                                <option value="1">Tấm B (1000x800)</option>
+                                <option value="2">Tấm C (1200x1000)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 2. Nút bấm xem danh sách chi tiết CHƯA ĐƯỢC SẮP XẾP -->
+                    <div class="flex flex-col gap-1.5 relative">
+                        <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">Chi tiết chưa sắp xếp:</label>
+                        <button id="btnUnpackedToggle" class="w-full bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold text-sm rounded-lg px-3 py-2 flex items-center justify-between transition-colors shadow-xs">
+                            <span class="flex items-center gap-2 text-amber-600">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span id="unpackedCountText">2 chi tiết chưa xếp</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+                        </button>
+
+                        <!-- Popover/Dropdown Danh sách các chi tiết chưa được sắp xếp -->
+                        <div id="unpackedDropdown" class="hidden absolute bottom-full mb-2 left-0 w-full bg-white border border-slate-200 rounded-xl shadow-xl p-3 z-30 max-h-48 overflow-y-auto space-y-1.5 text-xs">
+                            <div class="font-bold text-slate-800 border-b pb-1.5 mb-1.5 text-center">Danh sách chưa vừa tấm:</div>
+                            <div class="flex items-center justify-between p-1.5 bg-amber-50 rounded border border-amber-100 text-amber-800">
+                                <span>• Hình chữ nhật (300x400)</span>
+                                <span class="font-bold">x1</span>
+                            </div>
+                            <div class="flex items-center justify-between p-1.5 bg-amber-50 rounded border border-amber-100 text-amber-800">
+                                <span>• Hình tròn (Ø 200)</span>
+                                <span class="font-bold">x1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Diện tích sử dụng trên tấm đang được chọn -->
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">Diện tích dùng trên tấm chọn:</label>
+                        <div class="flex items-baseline gap-2">
+                            <span id="sheetUsedArea" class="text-blue-600 font-black text-xl">571,750 mm²</span>
+                            <span id="sheetEfficiency" class="text-emerald-600 font-extrabold text-xs bg-emerald-100 px-2 py-0.5 rounded-full">(59.56%)</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- SEO Article & Explanatory Content Section -->
+        <section class="w-full space-y-8 text-slate-700 text-lg md:text-xl leading-relaxed mb-16 bg-white p-10 md:p-16 rounded-2xl border border-slate-200 shadow-sm">
+            <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight border-b border-slate-100 pb-4">
+                Dễ Dàng Trực Quan Hóa Và Tối Ưu Bố Trí Cắt Của Bạn
+            </h2>
+
+            <p class="leading-loose">
+                Sử dụng công cụ tính toán xếp hình 2D miễn phí này để có cái nhìn trực quan về cách bạn có thể kết hợp các hình dạng kích thước khác nhau trên cùng một trang.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-white border-t border-slate-200 text-slate-600 text-lg md:text-xl py-14 px-8 md:px-16 font-roboto">
+        <div class="max-w-screen-2k mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div class="space-y-4">
+                <h3 class="font-extrabold text-slate-900 text-xl md:text-2xl">Hỗ Trợ & Hướng Dẫn</h3>
+                <ul class="space-y-3">
+                    <li><a href="#" class="hover:text-slate-900 transition-colors">Hướng dẫn / FAQs</a></li>
+                    <li><a href="#" class="hover:text-slate-900 transition-colors">Liên hệ chúng tôi</a></li>
+                </ul>
+            </div>
+            <div class="space-y-4">
+                <h3 class="font-extrabold text-slate-900 text-xl md:text-2xl">Liên Kết Nhanh</h3>
+                <ul class="space-y-3">
+                    <li><a href="#" class="hover:text-slate-900 transition-colors">Bảng Giá</a></li>
+                </ul>
+            </div>
+            <div class="space-y-4">
+                <h3 class="font-extrabold text-slate-900 text-xl md:text-2xl">File Splice</h3>
+                <p class="text-slate-400 pt-2 font-medium text-base md:text-lg">© 2026 File Splice. Bảo lưu mọi quyền.</p>
+            </div>
+            <div class="space-y-8">
+                <div class="space-y-2">
+                    <h3 class="font-extrabold text-slate-900 text-xl md:text-2xl">Thanh Toán An Toàn</h3>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Packing JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const itemsTableBody = document.getElementById('itemsTableBody');
+            const containersTableBody = document.getElementById('containersTableBody');
+            const btnAddItem = document.getElementById('btnAddItem');
+            const btnAddContainer = document.getElementById('btnAddContainer');
+            const previewContainer = document.getElementById('previewContainer');
+            const canvasSheet = document.getElementById('canvasSheet');
+
+            const btnOptimize = document.getElementById('btnOptimize');
+            const btnReset = document.getElementById('btnReset');
+
+            // Elements mới cho Khung Thống kê cập nhật
+            const sheetSelector = document.getElementById('sheetSelector');
+            const btnUnpackedToggle = document.getElementById('btnUnpackedToggle');
+            const unpackedDropdown = document.getElementById('unpackedDropdown');
+            const unpackedCountText = document.getElementById('unpackedCountText');
+            const sheetUsedArea = document.getElementById('sheetUsedArea');
+            const sheetEfficiency = document.getElementById('sheetEfficiency');
+
+            let containerCounter = 1;
+
+            const autoColors = [
+                '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
+                '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'
+            ];
+
+            const shapeTypes = {
+                RECTANGLE: { id: 'RECTANGLE', name: 'Hình chữ nhật' },
+                CIRCLE: { id: 'CIRCLE', name: 'Hình tròn' },
+                RIGHT_TRIANGLE: { id: 'RIGHT_TRIANGLE', name: 'Tam giác vuông' },
+                ISOSCELES_TRIANGLE: { id: 'ISOSCELES_TRIANGLE', name: 'Tam giác cân' },
+                HEXAGON: { id: 'HEXAGON', name: 'Lục giác đều' },
+                ELLIPSE: { id: 'ELLIPSE', name: 'Ellipse' }
+            };
+
+            // Toggle Popover xem chi tiết chưa sắp xếp
+            btnUnpackedToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                unpackedDropdown.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', function() {
+                unpackedDropdown.classList.add('hidden');
+            });
+
+            function getInputsByShape(shape, data = {}) {
+                switch (shape) {
+                    case shapeTypes.CIRCLE.id:
+                        return `
+                            <div class="flex items-center justify-center gap-1">
+                                <span class="text-[10px] text-slate-400 font-semibold">Ø:</span>
+                                <input type="number" value="${data.d || 300}" class="w-16 text-center bg-white border border-slate-200 rounded py-1 text-xs" title="Đường kính">
+                            </div>`;
+                    case shapeTypes.RIGHT_TRIANGLE.id:
+                    case shapeTypes.ISOSCELES_TRIANGLE.id:
+                        return `
+                            <div class="flex items-center justify-center gap-1">
+                                <input type="number" value="${data.b || 300}" class="w-12 text-center bg-white border border-slate-200 rounded py-1 text-xs" title="Cạnh đáy">
+                                <span class="text-slate-400">x</span>
+                                <input type="number" value="${data.h || 400}" class="w-12 text-center bg-white border border-slate-200 rounded py-1 text-xs" title="Đường cao">
+                            </div>`;
+                    case shapeTypes.HEXAGON.id:
+                        return `
+                            <div class="flex items-center justify-center gap-1">
+                                <span class="text-[10px] text-slate-400 font-semibold">Cạnh:</span>
+                                <input type="number" value="${data.a || 200}" class="w-16 text-center bg-white border border-slate-200 rounded py-1 text-xs" title="Độ dài cạnh">
+                            </div>`;
+                    case shapeTypes.ELLIPSE.id:
+                        return `
+                            <div class="flex items-center justify-center gap-1">
+                                <input type="number" value="${data.rx || 200}" class="w-12 text-center bg-white border border-slate-200 rounded py-1 text-xs" title="Bán trục A (rx)">
+                                <span class="text-slate-400">x</span>
+                                <input type="number" value="${data.ry || 150}" class="w-12 text-center bg-white border border-slate-200 rounded py-1 text-xs" title="Bán trục B (ry)">
+                            </div>`;
+                    case shapeTypes.RECTANGLE.id:
+                    default:
+                        return `
+                            <div class="flex items-center justify-center gap-1">
+                                <input type="number" value="${data.w || 240}" class="w-12 text-center bg-white border border-slate-200 rounded py-1 text-xs" title="Chiều dài">
+                                <span class="text-slate-400">x</span>
+                                <input type="number" value="${data.h || 170}" class="w-12 text-center bg-white border border-slate-200 rounded py-1 text-xs" title="Chiều rộng">
+                            </div>`;
+                }
+            }
+
+            function createItemRow(shape = shapeTypes.RECTANGLE.id, qty = 10, customData = {}) {
+                const tr = document.createElement('tr');
+                tr.className = 'bg-slate-50/60 hover:bg-slate-100/50 transition-colors';
+
+                tr.innerHTML = `
+                    <td class="py-2 px-2 text-left">
+                        <select class="shape-select w-full text-center bg-white border border-slate-200 rounded py-1 text-xs font-semibold text-slate-700 cursor-pointer">
+                            <option value="${shapeTypes.RECTANGLE.id}" ${shape === shapeTypes.RECTANGLE.id ? 'selected' : ''}>Hình chữ nhật</option>
+                            <option value="${shapeTypes.CIRCLE.id}" ${shape === shapeTypes.CIRCLE.id ? 'selected' : ''}>Hình tròn</option>
+                            <option value="${shapeTypes.RIGHT_TRIANGLE.id}" ${shape === shapeTypes.RIGHT_TRIANGLE.id ? 'selected' : ''}>Tam giác vuông</option>
+                            <option value="${shapeTypes.ISOSCELES_TRIANGLE.id}" ${shape === shapeTypes.ISOSCELES_TRIANGLE.id ? 'selected' : ''}>Tam giác cân</option>
+                            <option value="${shapeTypes.HEXAGON.id}" ${shape === shapeTypes.HEXAGON.id ? 'selected' : ''}>Lục giác đều</option>
+                            <option value="${shapeTypes.ELLIPSE.id}" ${shape === shapeTypes.ELLIPSE.id ? 'selected' : ''}>Ellipse</option>
+                        </select>
+                    </td>
+                    <td class="py-2 px-2 params-cell">
+                        ${getInputsByShape(shape, customData)}
+                    </td>
+                    <td class="py-2 px-2">
+                        <input type="number" value="${qty}" class="w-12 text-center bg-white border border-slate-200 rounded py-1 text-xs font-bold">
+                    </td>
+                    <td class="py-2 px-1 text-red-500 hover:text-red-700 cursor-pointer text-center btn-delete-row">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </td>
+                `;
+
+                const selectShape = tr.querySelector('.shape-select');
+                const paramsCell = tr.querySelector('.params-cell');
+                selectShape.addEventListener('change', function() {
+                    paramsCell.innerHTML = getInputsByShape(this.value);
+                });
+
+                tr.querySelector('.btn-delete-row').addEventListener('click', function() {
+                    tr.remove();
+                });
+
+                return tr;
+            }
+
+            function createContainerRow(name = '', w = 1200, h = 800, qty = 1) {
+                const tr = document.createElement('tr');
+                tr.className = 'bg-slate-50/60 hover:bg-slate-100/50 transition-colors';
+
+                const defaultName = name || `Tấm Vật Liệu ${containerCounter++}`;
+
+                tr.innerHTML = `
+                    <td class="py-2 px-1 text-left">
+                        <input type="text" value="${defaultName}" maxlength="50" placeholder="Nhập tên tấm..." class="w-full bg-transparent font-medium text-slate-800 border-b border-transparent focus:border-slate-300 focus:bg-white focus:outline-none text-xs py-0.5 px-1 rounded transition-all">
+                    </td>
+                    <td class="py-2 px-1"><input type="number" value="${w}" class="w-16 text-center bg-white border border-slate-200 rounded py-1 text-xs"></td>
+                    <td class="py-2 px-1"><input type="number" value="${h}" class="w-16 text-center bg-white border border-slate-200 rounded py-1 text-xs"></td>
+                    <td class="py-2 px-1"><input type="number" value="${qty}" class="w-12 text-center bg-white border border-slate-200 rounded py-1 text-xs"></td>
+                    <td class="py-2 px-1 text-red-500 hover:text-red-700 cursor-pointer text-center btn-delete-row"><i class="fa-solid fa-trash-can"></i></td>
+                `;
+
+                tr.querySelector('.btn-delete-row').addEventListener('click', function() {
+                    tr.remove();
+                });
+
+                return tr;
+            }
+
+            btnAddItem.addEventListener('click', function() {
+                const newRow = createItemRow(shapeTypes.RECTANGLE.id, 5);
+                itemsTableBody.appendChild(newRow);
+            });
+
+            btnAddContainer.addEventListener('click', function() {
+                const newRow = createContainerRow('', 1000, 800, 1);
+                containersTableBody.appendChild(newRow);
+            });
+
+            function initDefaultItems() {
+                itemsTableBody.innerHTML = '';
+                itemsTableBody.appendChild(createItemRow(shapeTypes.RECTANGLE.id, 15, { w: 240, h: 170 }));
+                itemsTableBody.appendChild(createItemRow(shapeTypes.RECTANGLE.id, 10, { w: 125, h: 125 }));
+                itemsTableBody.appendChild(createItemRow(shapeTypes.CIRCLE.id, 5, { d: 150 }));
+            }
+
+            function initDefaultContainers() {
+                containersTableBody.innerHTML = '';
+                containerCounter = 1;
+                containersTableBody.appendChild(createContainerRow('Tấm A', 1200, 800, 1));
+            }
+
+            function calculateLayout() {
+                const sheetW = 1200;
+                const sheetH = 800;
+
+                const containerWidth = Math.min(previewContainer.clientWidth - 64, 1200);
+                const containerHeight = Math.min(previewContainer.clientHeight - 64, 750);
+
+                const scaleW = containerWidth / sheetW;
+                const scaleH = containerHeight / sheetH;
+                const scale = Math.min(scaleW, scaleH);
+
+                canvasSheet.style.width = `${sheetW * scale}px`;
+                canvasSheet.style.height = `${sheetH * scale}px`;
+                canvasSheet.style.padding = `${10 * scale}px`;
+                canvasSheet.style.gap = `${10 * scale}px`;
+                canvasSheet.innerHTML = '';
+
+                let usedArea = 0;
+
+                const rows = itemsTableBody.querySelectorAll('tr');
+                rows.forEach((row, index) => {
+                    const inputs = row.querySelectorAll('input[type="number"]');
+                    const color = autoColors[index % autoColors.length];
+
+                    if (inputs.length >= 2) {
+                        const w = parseFloat(inputs[0].value) || 100;
+                        const h = parseFloat(inputs[1].value) || 100;
+
+                        const rectElem = document.createElement('div');
+                        rectElem.className = 'text-white font-bold flex items-center justify-center text-xs border border-slate-900/10 rounded-md transition-all hover:brightness-110 shadow-xs select-none';
+                        rectElem.style.backgroundColor = color;
+                        rectElem.style.width = `${w * scale}px`;
+                        rectElem.style.height = `${h * scale}px`;
+                        rectElem.innerText = `${w}x${h}`;
+
+                        canvasSheet.appendChild(rectElem);
+
+                        usedArea += (w * h);
+                    }
+                });
+
+                const totalSheetArea = sheetW * sheetH;
+                const efficiency = totalSheetArea > 0 ? ((usedArea / totalSheetArea) * 100).toFixed(2) : '0.00';
+
+                // Cập nhật giao diện thanh chỉ số mới
+                sheetUsedArea.innerText = `${usedArea.toLocaleString()} mm²`;
+                sheetEfficiency.innerText = `(${efficiency}%)`;
+            }
+
+            window.addEventListener('resize', calculateLayout);
+            btnOptimize.addEventListener('click', calculateLayout);
+            btnReset.addEventListener('click', function() {
+                initDefaultItems();
+                initDefaultContainers();
+                document.querySelector('input[name="optStrategy"][value="REMAINDER_OPTIMAL"]').checked = true;
+                calculateLayout();
+            });
+
+            // Khởi chạy ban đầu
+            initDefaultItems();
+            initDefaultContainers();
+            calculateLayout();
+        });
+    </script>
+</body>
+</html>
