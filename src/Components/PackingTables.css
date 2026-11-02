@@ -1,0 +1,164 @@
+/* ==========================================
+   STYLE CHO CẢ 2 KHUNG (CONTAINER CHUNG)
+   ========================================== */
+.packing-card {
+  width: 450px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+/* Kích thước riêng từng khung */
+.packing-card.items-card {
+  height: 430px;
+}
+
+.packing-card.containers-card {
+  height: 330px;
+}
+
+/* Tiêu đề khung */
+.card-title {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+/* ==========================================
+   STYLE CHO BẢNG DỮ LIỆU (TABLE)
+   ========================================== */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.items-card .table-wrapper {
+  max-height: 310px;
+}
+
+.containers-card .table-wrapper {
+  max-height: 200px;
+}
+
+.custom-table {
+  width: 100%;
+  text-align: center;
+  border-collapse: collapse;
+}
+
+.custom-table th {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
+}
+
+.custom-table td {
+  padding: 8px 4px;
+}
+
+.custom-table tbody tr {
+  background-color: rgba(248, 250, 252, 0.6);
+  transition: background-color 0.2s;
+}
+
+.custom-table tbody tr:hover {
+  background-color: rgba(241, 245, 249, 0.8);
+}
+
+/* ==========================================
+   STYLE INPUT & SELECT
+   ========================================== */
+.input-style, .select-style {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #334155;
+  outline: none;
+  text-align: center;
+}
+
+.input-style:focus, .select-style:focus {
+  border-color: #3b82f6;
+}
+
+.input-name {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #1e293b;
+  outline: none;
+  padding: 2px 4px;
+}
+
+.input-name:focus {
+  border-bottom-color: #cbd5e1;
+  background-color: #ffffff;
+}
+
+/* ==========================================
+   STYLE NÚT BẤM (BUTTONS)
+   ========================================== */
+.btn-add {
+  background-color: #0f172a;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 24px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add:hover {
+  background-color: #1e293b;
+}
+
+.btn-add:active {
+  transform: scale(0.95);
+}
+
+/* Nút xóa mặc định bị ẩn đi (hoặc mờ đi) */
+.btn-delete {
+  background: none;
+  border: none;
+  color: #ef4444; /* Màu đỏ */
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: bold;
+  opacity: 0;                   /* ⚡ Mặc định ẩn hẳn nút xóa */
+  transition: opacity 0.2s ease, color 0.2s ease;
+  padding: 2px 6px;
+}
+
+/* Khi di chuột (hover) vào tr (dòng của bảng) -> Nút xóa hiện ra */
+.custom-table tbody tr:hover .btn-delete {
+  opacity: 1;                   /* ⚡ Hiện ra rõ nét */
+}
+
+/* Hiệu ứng khi rê trực tiếp vào nút X */
+.btn-delete:hover {
+  color: #dc2626;               /* Màu đỏ đậm hơn */
+  transform: scale(1.15);       /* Phóng to nhẹ */
+}
+/* Căn chỉnh thông số input */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}

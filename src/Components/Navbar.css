@@ -1,0 +1,46 @@
+/* 📌 ĐIỂM MẤU CHỐT Ở ĐÂY */
+.navbar {
+  position: sticky;     /* Dính lại khi cuộn màn hình */
+  top: 0;               /* Dính sát mép trên cùng */
+  left: 0;
+  width: 100%;
+  z-index: 1000;        /* Đảm bảo Navbar luôn đè lên các nội dung khác */
+
+  /* Trang trí giao diện */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: rgba(255, 255, 255, 1); /* Màu tối + hơi trong suốt */
+  backdrop-filter: blur(8px);                 /* Hiệu ứng kính mờ (Glassmorphism) */
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Đường viền dưới mờ */
+}
+
+/* Style cho Logo */
+.navbar-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #005eff; /* Màu xanh React */
+}
+
+/* Style cho Menu Links */
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links a {
+  color: #454242;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+  color: #63bdea;
+}
