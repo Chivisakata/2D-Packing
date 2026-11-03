@@ -162,3 +162,134 @@
   justify-content: center;
   gap: 4px;
 }
+
+/* ==========================================
+   KHUNG PHƯƠNG ÁN TỐI ƯU CẮT (BOX 3)
+   ========================================== */
+.options-card {
+  width: 450px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.options-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.options-title i {
+  color: #3b82f6;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.option-item:hover {
+  background-color: #f8fafc;
+}
+
+.option-item.active {
+  border-color: #bfdbfe;
+  background-color: rgba(239, 246, 255, 0.5);
+}
+
+.option-item input[type="radio"] {
+  margin-top: 2px;
+  accent-color: #3b82f6;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.option-label-title {
+  font-weight: 700;
+  color: #0f172a;
+  display: block;
+  font-size: 0.875rem;
+}
+
+.option-label-desc {
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+/* ==========================================
+   BỘ NÚT HÀNH ĐỘNG (ACTION BUTTONS)
+   ========================================== */
+.action-buttons-group {
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.btn-action-reset {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 12px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-action-reset:hover {
+  background-color: #f1f5f9;
+}
+
+.btn-action-reset:active {
+  transform: scale(0.98);
+}
+
+.btn-action-optimize {
+  width: 100%;
+  background-color: #0f172a;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.125rem;
+  padding: 16px 24px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-action-optimize:hover {
+  background-color: #1e293b;
+}
+
+.btn-action-optimize:active {
+  transform: scale(0.98);
+}

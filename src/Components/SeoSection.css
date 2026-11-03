@@ -1,0 +1,29 @@
+/* ==========================================
+   BÀI VIẾT SEO / HƯỚNG DẪN (SEO SECTION)
+   ========================================== */
+.seo-section {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 2.5rem 3rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.seo-title {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.seo-content {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #334155;
+}
