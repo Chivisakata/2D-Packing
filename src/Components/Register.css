@@ -1,0 +1,155 @@
+/* ==========================================
+   GIAO DIỆN ĐĂNG KÝ (REGISTER PAGE)
+   ========================================== */
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  padding: 2rem 1rem;
+  background-color: transparent;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 480px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+}
+
+.register-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: center;
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Hàng chia đôi ô First Name & Last Name */
+.input-row {
+  display: flex;
+  gap: 0.875rem;
+}
+
+.input-row .input-group {
+  flex: 1;
+}
+
+.input-group {
+  position: relative;
+  width: 100%;
+}
+
+.register-input {
+  width: 100%;
+  height: 52px;
+  padding: 16px 14px 4px 14px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #0f172a;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.register-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Hiệu ứng Floating Label */
+.register-label {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.875rem;
+  color: #64748b;
+  pointer-events: none;
+  transition: all 0.15s ease-out;
+}
+
+.register-input:focus ~ .register-label,
+.register-input:not(:placeholder-shown) ~ .register-label {
+  top: 10px;
+  transform: translateY(0);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+/* Khung Checkbox điều khoản */
+.terms-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  margin-top: 0.25rem;
+}
+
+.terms-checkbox {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: #3b82f6;
+  cursor: pointer;
+}
+
+.terms-label {
+  font-size: 0.8rem;
+  color: #475569;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.terms-link {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.terms-link:hover {
+  text-decoration: underline;
+}
+
+/* Nút Submit chính */
+.btn-register-submit {
+  width: 100%;
+  height: 48px;
+  background-color: #3b82f6;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-register-submit:hover {
+  background-color: #2563eb;
+}
+
+.btn-register-submit:active {
+  transform: scale(0.98);
+}
+
+/* Link dưới cùng */
+.register-links {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
