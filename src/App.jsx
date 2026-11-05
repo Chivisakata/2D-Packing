@@ -6,22 +6,24 @@ import OptimizationOptions from './Components/OptimizationOptions';
 import PreviewPanel from './Components/PreviewPanel';
 import SeoSection from './Components/SeoSection';
 import Footer from './Components/Footer';
+import { calculateLayoutApi } from './services/apiService';
 
 export default function App() {
   const [items, setItems] = useState([
-    { id: 1, shape: 'RECTANGLE', dimensions: { w: 350, h: 200 }, quantity: 4 },
-    { id: 2, shape: 'RECTANGLE', dimensions: { w: 200, h: 150 }, quantity: 6 },
-    { id: 3, shape: 'RECTANGLE', dimensions: { w: 120, h: 120 }, quantity: 8 },
-    { id: 4, shape: 'CIRCLE',    dimensions: { d: 180 },        quantity: 3 },
-    { id: 5, shape: 'RECTANGLE', dimensions: { w: 500, h: 100 }, quantity: 2 },
+    { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
+    { id: 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 125, h: 125 }, quantity: 10 },
+    { id: 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 150 }, quantity: 5 },
   ]);
 
- const [containers, setContainers] = useState([
-    { id: 1, name: 'Tấm A (Chuẩn)', width: 1200, height: 800, quantity: 1 },
-    { id: 2, name: 'Tấm B (Nhỏ)',   width: 800,  height: 600, quantity: 1 }
+  const [containers, setContainers] = useState([
+    { id: 1, name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
   ]);
 
   const [strategy, setStrategy] = useState('REMAINDER_OPTIMAL');
+  
+  // ⚡ State lưu kết quả tọa độ BoundBox[] nhận từ API C#
+  const [placedBoxes, setPlacedBoxes] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleReset = () => {
     setItems([
@@ -33,28 +35,33 @@ export default function App() {
       { id: Date.now(), name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
     ]);
     setStrategy('REMAINDER_OPTIMAL');
+    setPlacedBoxes([]); // Reset sơ đồ vẽ
   };
 
-  const handleOptimize = () => {
-    console.log("Bắt đầu tối ưu:", { items, containers, strategy });
-  };
-
+  // ⚡ Gọi API khi bấm "BẮT ĐẦU TỐI ƯU"
+ const handleOptimize = async () => {
+  setLoading(true);
+  try {
+    const boxes = await calculateLayoutApi(items, containers, strategy);
+    console.log("🔥 [App.jsx] Đã set placedBoxes:", boxes);
+    setPlacedBoxes(boxes); // Gán mảng đã chuẩn hóa vào State
+  } catch (err) {
+    alert(`Không thể tính toán tối ưu: ${err.message}`);
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
       <Navbar />
 
       <main className="main-container">
-        
-        {/* Tiêu đề */}
         <div className="header-title">
           <h1>2D Packing & Cutting Calculator</h1>
           <p>Công Cụ Ước Tính & Tối Ưu Bố Trí Cắt Chi Tiết Đa Dạng Hình Dạng</p>
         </div>
 
-        {/* Bố cục 2 cột chính */}
         <div className="layout-grid">
-          
-          {/* Cột trái: 3 Khung + Nút thao tác */}
           <div className="left-column">
             <ItemsTable items={items} setItems={setItems} />
             <ContainersTable containers={containers} setContainers={setContainers} />
@@ -66,17 +73,18 @@ export default function App() {
             />
           </div>
 
-          {/* Cột phải: Khung Preview SVG */}
-          <PreviewPanel items={items} containers={containers} />
-
+          {/* Truyền cả items, containers và kết quả placedBoxes từ API vào PreviewPanel */}
+          <PreviewPanel 
+            items={items} 
+            containers={containers} 
+            placedBoxes={placedBoxes}
+            loading={loading}
+          />
         </div>
 
-        {/* Khung bài viết hướng dẫn / SEO */}
         <SeoSection />
-
       </main>
 
-      {/* Footer chân trang */}
       <Footer />
     </div>
   );
