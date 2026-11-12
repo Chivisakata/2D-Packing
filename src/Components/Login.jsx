@@ -14,7 +14,7 @@ export default function Login() {
   return (
     <div className="login-wrapper">
       <div className="login-card">
-        <h1 className="login-title">File Splice Login</h1>
+        <h1 className="login-title">Đăng nhập</h1>
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="input-group">
@@ -27,7 +27,7 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <label htmlFor="email" className="login-label">Email Address</label>
+            <label htmlFor="email" className="login-label">Email</label>
           </div>
 
           <div className="input-group">
@@ -40,33 +40,22 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <label htmlFor="password" className="login-label">Password</label>
+            <label htmlFor="password" className="login-label">Mật khẩu</label>
           </div>
 
           <button type="submit" className="btn-login-submit">
-            Sign me in
+            Đăng nhập
           </button>
         </form>
 
-        <div className="oauth-group">
-          <button type="button" className="btn-oauth">
-            <span className="oauth-icon">G</span> Google
-          </button>
-          <button type="button" className="btn-oauth">
-            <span className="oauth-icon">❖</span> Dropbox
-          </button>
-          <button type="button" className="btn-oauth">
-            <span className="oauth-icon">⊞</span> Microsoft
-          </button>
-        </div>
 
         {/* 📌 VỊ TRÍ VIẾT DÒNG LINK ĐÂY NHA HẠO */}
         <div className="login-links">
-          <a href="#forgot-password" className="link-item">Forgot Password</a>
+          <a href="#forgot-password" className="link-item">Quên mật khẩu?</a>
           
           {/* Đổi thẻ <a> thành thẻ <Link> để chuyển sang trang Register không reload */}
           <Link to="/register" className="link-item">
-            Don't have an account? Sign up!
+            Bạn chưa có tài khoản? Đăng ký!
           </Link>
         </div>
 

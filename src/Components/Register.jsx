@@ -32,7 +32,7 @@ export default function Register() {
   return (
     <div className="register-wrapper">
       <div className="register-card">
-        <h1 className="register-title">File Splice Registration</h1>
+        <h1 className="register-title">Đăng ký tài khoản</h1>
 
         <form onSubmit={handleSubmit} className="register-form">
           {/* Email Address */}
@@ -61,7 +61,7 @@ export default function Register() {
                 onChange={handleChange}
                 required
               />
-              <label htmlFor="firstName" className="register-label">First name</label>
+              <label htmlFor="firstName" className="register-label">Tên</label>
             </div>
 
             <div className="input-group">
@@ -74,7 +74,7 @@ export default function Register() {
                 onChange={handleChange}
                 required
               />
-              <label htmlFor="lastName" className="register-label">Last name</label>
+              <label htmlFor="lastName" className="register-label">Họ</label>
             </div>
           </div>
 
@@ -89,33 +89,19 @@ export default function Register() {
               onChange={handleChange}
               required
             />
-            <label htmlFor="password" className="register-label">Password</label>
-          </div>
-
-          {/* Terms Checkbox */}
-          <div className="terms-group">
-            <input
-              type="checkbox"
-              id="agreeTerms"
-              className="terms-checkbox"
-              checked={formData.agreeTerms}
-              onChange={handleChange}
-            />
-            <label htmlFor="agreeTerms" className="terms-label">
-              By clicking Sign Up, you <a href="#terms" className="terms-link">agree to our Terms</a> and that you have read our Data Policy, including our Cookie Use.
-            </label>
+            <label htmlFor="password" className="register-label">Mật khẩu</label>
           </div>
 
           {/* Submit Button */}
           <button type="submit" className="btn-register-submit">
-            Register
+            Đăng ký
           </button>
         </form>
 
         {/* Link chuyển sang trang Đăng nhập */}
         <div className="register-links">
           <Link to="/login" className="link-item">
-            Already Have An Account? Log in
+            Bạn đã có tài khoản? Đăng nhập!
           </Link>
         </div>
       </div>
