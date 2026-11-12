@@ -6,34 +6,43 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="footer-container">
         
-        {/* Cột 1: Hỗ Trợ & Hướng Dẫn */}
+        {/* Cột 1: Support / Hỗ Trợ */}
         <div className="footer-col">
-          <h3>Hỗ Trợ & Hướng Dẫn</h3>
+          <h3>Support</h3>
           <ul>
-            <li><a href="#faqs">Hướng dẫn / FAQs</a></li>
-            <li><a href="#contact">Liên hệ chúng tôi</a></li>
+            <li><a href="#faqs">Instructions/FAQs</a></li>
+            <li><a href="#merge-instructions">Merge (Imposition) Instructions</a></li>
+            <li><a href="#mail-merge">Mail Merge Instructions</a></li>
+            <li><a href="#contact">Contact Us</a></li>
+            <li><a href="#videos">Instructional Videos</a></li>
+            <li><a href="#blog">Blog</a></li>
           </ul>
         </div>
 
-        {/* Cột 2: Liên Kết Nhanh */}
+        {/* Cột 2: Quick Links / Liên Kết Nhanh */}
         <div className="footer-col">
-          <h3>Liên Kết Nhanh</h3>
+          <h3>Quick Links</h3>
           <ul>
-            <li><a href="#pricing">Bảng Giá</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#calculators">Free Calculators & Tools</a></li>
+            <li><a href="#demo">Demo Pages</a></li>
+            <li><a href="#templates">System Templates</a></li>
+            <li><a href="#security">Security & Privacy</a></li>
           </ul>
         </div>
 
-        {/* Cột 3: File Splice & Bản quyền */}
-        <div className="footer-col">
-          <h3>File Splice</h3>
-          <p className="footer-copyright">
-            © 2026 File Splice. Bảo lưu mọi quyền.
+        {/* Cột 3: Thương hiệu 2D-Packing.net */}
+        <div className="footer-col brand-col">
+          <h3>
+            <span style={{ color: '#0f172a' }}>2D-Packing</span>
+            <span style={{ color: '#3b82f6' }}>.net</span>
+          </h3>
+          <p className="footer-desc">
+            Phần mềm trực tuyến tối ưu bố trí cắt 2D, xếp hình tự động, giảm hao hụt vật liệu và ước tính chi phí gia công nhanh chóng trên mọi thiết bị.
           </p>
-        </div>
-
-        {/* Cột 4: Thanh Toán An Toàn */}
-        <div className="footer-col">
-          <h3>Thanh Toán An Toàn</h3>
+          <p className="footer-copyright">
+            © 2026 2D-Packing.net. All rights reserved.
+          </p>
         </div>
 
       </div>

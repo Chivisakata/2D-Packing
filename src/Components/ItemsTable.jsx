@@ -1,5 +1,5 @@
 import React from 'react';
-import './PackingTables.css'; // Import CSS thuần
+import './PackingTables.css';
 
 export const SHAPE_TYPES = {
   RECTANGLE: { id: 'RECTANGLE', name: 'Hình chữ nhật' },
@@ -37,18 +37,29 @@ export default function ItemsTable({ items, setItems }) {
     ));
   };
 
+  // ⚡ Tự động nắn giá trị < 1 về 1 (giữ '' nếu xóa hết)
   const handleDimensionChange = (id, key, value) => {
-    setItems(items.map(item => 
-      item.id === id 
-        ? { ...item, dimensions: { ...item.dimensions, [key]: Number(value) || 0 } } 
-        : item
-    ));
+    setItems(items.map(item => {
+      if (item.id !== id) return item;
+      if (value === '') return { ...item, dimensions: { ...item.dimensions, [key]: '' } };
+      const val = Number(value);
+      return { 
+        ...item, 
+        dimensions: { 
+          ...item.dimensions, 
+          [key]: val < 1 ? 1 : val 
+        } 
+      };
+    }));
   };
 
   const handleQuantityChange = (id, qty) => {
-    setItems(items.map(item => 
-      item.id === id ? { ...item, quantity: Number(qty) || 1 } : item
-    ));
+    setItems(items.map(item => {
+      if (item.id !== id) return item;
+      if (qty === '') return { ...item, quantity: '' };
+      const val = Number(qty);
+      return { ...item, quantity: val < 1 ? 1 : val };
+    }));
   };
 
   const renderDimensionInputs = (item) => {
@@ -61,9 +72,47 @@ export default function ItemsTable({ items, setItems }) {
             <span style={{ fontSize: '10px', color: '#94a3b8' }}>Ø:</span>
             <input 
               type="number" 
-              value={dimensions.d || 150} 
+              min="1"
+              value={dimensions.d ?? ''} 
               onChange={(e) => handleDimensionChange(item.id, 'd', e.target.value)}
+              onFocus={(e) => e.target.select()}
               className="input-style" style={{ width: '64px' }}
+            />
+          </div>
+        );
+      case SHAPE_TYPES.HEXAGON.id:
+        return (
+          <div className="flex-center">
+            <span style={{ fontSize: '10px', color: '#94a3b8' }}>Cạnh:</span>
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.a ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'a', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '64px' }}
+            />
+          </div>
+        );
+      case SHAPE_TYPES.ELLIPSE.id:
+        return (
+          <div className="flex-center">
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.rx ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'rx', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '48px' }}
+            />
+            <span style={{ color: '#94a3b8' }}>x</span>
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.ry ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'ry', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '48px' }}
             />
           </div>
         );
@@ -73,15 +122,19 @@ export default function ItemsTable({ items, setItems }) {
           <div className="flex-center">
             <input 
               type="number" 
-              value={dimensions.b || 300} 
+              min="1"
+              value={dimensions.b ?? ''} 
               onChange={(e) => handleDimensionChange(item.id, 'b', e.target.value)}
+              onFocus={(e) => e.target.select()}
               className="input-style" style={{ width: '48px' }}
             />
             <span style={{ color: '#94a3b8' }}>x</span>
             <input 
               type="number" 
-              value={dimensions.h || 400} 
+              min="1"
+              value={dimensions.h ?? ''} 
               onChange={(e) => handleDimensionChange(item.id, 'h', e.target.value)}
+              onFocus={(e) => e.target.select()}
               className="input-style" style={{ width: '48px' }}
             />
           </div>
@@ -92,15 +145,19 @@ export default function ItemsTable({ items, setItems }) {
           <div className="flex-center">
             <input 
               type="number" 
-              value={dimensions.w || 240} 
+              min="1"
+              value={dimensions.w ?? ''} 
               onChange={(e) => handleDimensionChange(item.id, 'w', e.target.value)}
+              onFocus={(e) => e.target.select()}
               className="input-style" style={{ width: '48px' }}
             />
             <span style={{ color: '#94a3b8' }}>x</span>
             <input 
               type="number" 
-              value={dimensions.h || 170} 
+              min="1"
+              value={dimensions.h ?? ''} 
               onChange={(e) => handleDimensionChange(item.id, 'h', e.target.value)}
+              onFocus={(e) => e.target.select()}
               className="input-style" style={{ width: '48px' }}
             />
           </div>
@@ -141,8 +198,10 @@ export default function ItemsTable({ items, setItems }) {
                   <td>
                     <input 
                       type="number" 
-                      value={item.quantity} 
+                      min="1"
+                      value={item.quantity ?? ''} 
                       onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                      onFocus={(e) => e.target.select()}
                       className="input-style" style={{ width: '48px', fontWeight: 'bold' }}
                     />
                   </td>

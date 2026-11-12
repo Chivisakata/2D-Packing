@@ -53,11 +53,15 @@ src/
     Footer.css
     Footer.jsx
     ItemsTable.jsx
+    Login.css
+    Login.jsx
     Navbar.css
     Navbar.jsx
     OptimizationOptions.jsx
     PackingTables.css
     PreviewPanel.jsx
+    Register.css
+    Register.jsx
     SeoSection.css
     SeoSection.jsx
   services/
@@ -515,6 +519,250 @@ export default function ItemsTable({ items, setItems }) {
 }
 </file>
 
+<file path="src/Components/Login.css">
+/* ==========================================
+   GIAO DIỆN ĐĂNG NHẬP (LOGIN PAGE)
+   ========================================== */
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  padding: 2rem 1rem;
+  background-color: transparent; /* Loại bỏ nền ảnh, giữ theo background chung #f8fafc */
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+}
+
+.login-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: center;
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
+}
+
+/* Form & Input floating style */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.input-group {
+  position: relative;
+  width: 100%;
+}
+
+.login-input {
+  width: 100%;
+  height: 52px;
+  padding: 16px 14px 4px 14px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #0f172a;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Hiệu ứng Floating Label (Nhãn bay lên khi gõ) */
+.login-label {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.875rem;
+  color: #64748b;
+  pointer-events: none;
+  transition: all 0.15s ease-out;
+}
+
+.login-input:focus ~ .login-label,
+.login-input:not(:placeholder-shown) ~ .login-label {
+  top: 10px;
+  transform: translateY(0);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+/* Nút Submit chính */
+.btn-login-submit {
+  width: 100%;
+  height: 48px;
+  background-color: #3b82f6;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-login-submit:hover {
+  background-color: #2563eb;
+}
+
+.btn-login-submit:active {
+  transform: scale(0.98);
+}
+
+/* Nhóm nút OAuth */
+.oauth-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.btn-oauth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 40px;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-oauth:hover {
+  background-color: #e2e8f0;
+}
+
+.oauth-icon {
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+/* Links đính kèm bên dưới */
+.login-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.75rem;
+}
+
+.link-item {
+  color: #3b82f6;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.link-item:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+</file>
+
+<file path="src/Components/Login.jsx">
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // 1. Import Link từ react-router-dom
+import './Login.css';
+
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Login credentials:', { email, password });
+  };
+
+  return (
+    <div className="login-wrapper">
+      <div className="login-card">
+        <h1 className="login-title">File Splice Login</h1>
+
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="input-group">
+            <input
+              type="email"
+              id="email"
+              className="login-input"
+              placeholder=" "
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <label htmlFor="email" className="login-label">Email Address</label>
+          </div>
+
+          <div className="input-group">
+            <input
+              type="password"
+              id="password"
+              className="login-input"
+              placeholder=" "
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <label htmlFor="password" className="login-label">Password</label>
+          </div>
+
+          <button type="submit" className="btn-login-submit">
+            Sign me in
+          </button>
+        </form>
+
+        <div className="oauth-group">
+          <button type="button" className="btn-oauth">
+            <span className="oauth-icon">G</span> Google
+          </button>
+          <button type="button" className="btn-oauth">
+            <span className="oauth-icon">❖</span> Dropbox
+          </button>
+          <button type="button" className="btn-oauth">
+            <span className="oauth-icon">⊞</span> Microsoft
+          </button>
+        </div>
+
+        {/* 📌 VỊ TRÍ VIẾT DÒNG LINK ĐÂY NHA HẠO */}
+        <div className="login-links">
+          <a href="#forgot-password" className="link-item">Forgot Password</a>
+          
+          {/* Đổi thẻ <a> thành thẻ <Link> để chuyển sang trang Register không reload */}
+          <Link to="/register" className="link-item">
+            Don't have an account? Sign up!
+          </Link>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+</file>
+
 <file path="src/Components/Navbar.css">
 /* 📌 ĐIỂM MẤU CHỐT Ở ĐÂY */
 .navbar {
@@ -564,27 +812,6 @@ export default function ItemsTable({ items, setItems }) {
 }
 </file>
 
-<file path="src/Components/Navbar.jsx">
-import React from 'react';
-import './Navbar.css';
-
-export default function Navbar() {
-  return (
-    <nav className="navbar">
-      <div className="navbar-logo">
-      <span style={{ color: '#000000', fontSize: '30px' , fontWeight: 600 }}>2D-Packing</span><span style={{fontSize: '20px', fontWeight: 600 }}>.net</span>
-      </div>
-      <ul className="navbar-links">
-        <li><a href="#home">Tính Năng</a></li>
-        <li><a href="#about">Liên Hệ</a></li>
-        <li><a href="#services">Đăng Nhập</a></li>
-      </ul>
-    </nav>
-    
-  );
-}
-</file>
-
 <file path="src/Components/OptimizationOptions.jsx">
 import React from 'react';
 import './PackingTables.css';
@@ -613,7 +840,7 @@ export default function OptimizationOptions({ strategy, setStrategy, onReset, on
       {/* KHUNG PHƯƠNG ÁN TỐI ƯU CẮT */}
       <div className="options-card">
         <h2 className="options-title">
-          <i className="fa-solid fa-sliders"></i> Phương án tối ưu cắt
+          <i className="fa-solid fa-sliders"></i> Phương án tối ưu
         </h2>
 
         <div className="options-list">
@@ -644,13 +871,298 @@ export default function OptimizationOptions({ strategy, setStrategy, onReset, on
       {/* BỘ NÚT HÀNH ĐỘNG: RESET & BẮT ĐẦU TỐI ƯU */}
       <div className="action-buttons-group">
         <button className="btn-action-reset" onClick={onReset}>
-          Đặt lại cài đặt (Reset)
+          Đặt lại cài đặt
         </button>
         <button className="btn-action-optimize" onClick={onOptimize}>
           BẮT ĐẦU TỐI ƯU
         </button>
       </div>
     </>
+  );
+}
+</file>
+
+<file path="src/Components/Register.css">
+/* ==========================================
+   GIAO DIỆN ĐĂNG KÝ (REGISTER PAGE)
+   ========================================== */
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  padding: 2rem 1rem;
+  background-color: transparent;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 480px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+}
+
+.register-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: center;
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Hàng chia đôi ô First Name & Last Name */
+.input-row {
+  display: flex;
+  gap: 0.875rem;
+}
+
+.input-row .input-group {
+  flex: 1;
+}
+
+.input-group {
+  position: relative;
+  width: 100%;
+}
+
+.register-input {
+  width: 100%;
+  height: 52px;
+  padding: 16px 14px 4px 14px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #0f172a;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.register-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Hiệu ứng Floating Label */
+.register-label {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.875rem;
+  color: #64748b;
+  pointer-events: none;
+  transition: all 0.15s ease-out;
+}
+
+.register-input:focus ~ .register-label,
+.register-input:not(:placeholder-shown) ~ .register-label {
+  top: 10px;
+  transform: translateY(0);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+/* Khung Checkbox điều khoản */
+.terms-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  margin-top: 0.25rem;
+}
+
+.terms-checkbox {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: #3b82f6;
+  cursor: pointer;
+}
+
+.terms-label {
+  font-size: 0.8rem;
+  color: #475569;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.terms-link {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.terms-link:hover {
+  text-decoration: underline;
+}
+
+/* Nút Submit chính */
+.btn-register-submit {
+  width: 100%;
+  height: 48px;
+  background-color: #3b82f6;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-register-submit:hover {
+  background-color: #2563eb;
+}
+
+.btn-register-submit:active {
+  transform: scale(0.98);
+}
+
+/* Link dưới cùng */
+.register-links {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+</file>
+
+<file path="src/Components/Register.jsx">
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './Register.css';
+
+export default function Register() {
+  const [formData, setFormData] = useState({
+    email: '',
+    firstName: '',
+    lastName: '',
+    password: '',
+    agreeTerms: false
+  });
+
+  const handleChange = (e) => {
+    const { id, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [id]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.agreeTerms) {
+      alert('Vui lòng đồng ý với Điều khoản dịch vụ để tiếp tục!');
+      return;
+    }
+    console.log('Register data:', formData);
+    // TODO: Tích hợp gọi API đăng ký của Hạo tại đây
+  };
+
+  return (
+    <div className="register-wrapper">
+      <div className="register-card">
+        <h1 className="register-title">File Splice Registration</h1>
+
+        <form onSubmit={handleSubmit} className="register-form">
+          {/* Email Address */}
+          <div className="input-group">
+            <input
+              type="email"
+              id="email"
+              className="register-input"
+              placeholder=" "
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+            <label htmlFor="email" className="register-label">Email</label>
+          </div>
+
+          {/* First Name & Last Name (Cùng 1 hàng) */}
+          <div className="input-row">
+            <div className="input-group">
+              <input
+                type="text"
+                id="firstName"
+                className="register-input"
+                placeholder=" "
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+              />
+              <label htmlFor="firstName" className="register-label">First name</label>
+            </div>
+
+            <div className="input-group">
+              <input
+                type="text"
+                id="lastName"
+                className="register-input"
+                placeholder=" "
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+              />
+              <label htmlFor="lastName" className="register-label">Last name</label>
+            </div>
+          </div>
+
+          {/* Password */}
+          <div className="input-group">
+            <input
+              type="password"
+              id="password"
+              className="register-input"
+              placeholder=" "
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <label htmlFor="password" className="register-label">Password</label>
+          </div>
+
+          {/* Terms Checkbox */}
+          <div className="terms-group">
+            <input
+              type="checkbox"
+              id="agreeTerms"
+              className="terms-checkbox"
+              checked={formData.agreeTerms}
+              onChange={handleChange}
+            />
+            <label htmlFor="agreeTerms" className="terms-label">
+              By clicking Sign Up, you <a href="#terms" className="terms-link">agree to our Terms</a> and that you have read our Data Policy, including our Cookie Use.
+            </label>
+          </div>
+
+          {/* Submit Button */}
+          <button type="submit" className="btn-register-submit">
+            Register
+          </button>
+        </form>
+
+        {/* Link chuyển sang trang Đăng nhập */}
+        <div className="register-links">
+          <Link to="/login" className="link-item">
+            Already Have An Account? Log in
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }
 </file>
@@ -832,19 +1344,6 @@ export async function calculateLayoutApi(items, containers, strategy) {
     throw error;
   }
 }
-</file>
-
-<file path="src/main.jsx">
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
 </file>
 
 <file path="templateindex/finaltemplate.html">
@@ -2304,36 +2803,6 @@ export default defineConfig([
 ])
 </file>
 
-<file path="package.json">
-{
-  "name": "2d-packing",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.2",
-    "eslint": "^10.13.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.7",
-    "globals": "^17.13.0",
-    "vite": "^8.3.5"
-  }
-}
-</file>
-
 <file path="README.md">
 # React + Vite
 
@@ -2361,6 +2830,30 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react()],
 })
+</file>
+
+<file path="src/Components/Navbar.jsx">
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './Navbar.css';
+
+export default function Navbar() {
+  return (
+    <nav className="navbar">
+      <div className="navbar-logo">
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <span style={{ color: '#000000', fontSize: '30px', fontWeight: 600 }}>2D-Packing</span>
+          <span style={{ fontSize: '20px', fontWeight: 600, color: '#3b82f6' }}>.net</span>
+        </Link>
+      </div>
+      <ul className="navbar-links">
+        <li><Link to="/">Tính Năng</Link></li>
+        <li><a href="#about">Liên Hệ</a></li>
+        <li><Link to="/login">Đăng Nhập</Link></li>
+      </ul>
+    </nav>
+  );
+}
 </file>
 
 <file path="src/Components/PackingTables.css">
@@ -2665,6 +3158,53 @@ export default defineConfig({
 
 </file>
 
+<file path="src/main.jsx">
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>,
+)
+</file>
+
+<file path="package.json">
+{
+  "name": "2d-packing",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
+    "vite": "^8.3.5"
+  }
+}
+</file>
+
 <file path="src/Components/PreviewPanel.jsx">
 import React, { useState } from 'react';
 
@@ -2678,21 +3218,27 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
   const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
   const [showUnpackedDropdown, setShowUnpackedDropdown] = useState(false);
 
-  const currentSheet = containers[selectedSheetIndex] || containers[0] || { width: 1200, height: 800, name: 'Tấm A' };
-  const sheetW = Number(currentSheet.width) || 1200;
-  const sheetH = Number(currentSheet.height) || 800;
+  // ⚡ Kiểm tra đã có kết quả tối ưu hợp lệ được chốt chưa
+  const hasResults = Array.isArray(placedBoxes) && placedBoxes.length > 0 && containers.length > 0;
 
-  // ⚡ ID của tấm phôi hiện tại đang chọn (khớp với ID = index + 1 gửi sang C#)
+  // ⚡ Chưa bấm tính toán (hoặc containers chốt chưa có) -> Giữ nguyên 1000 x 1000 mặc định
+  // ⚡ Đã bấm tối ưu -> Lấy kích thước phôi từ containers đã chốt
+  const currentSheet = hasResults ? (containers[selectedSheetIndex] || containers[0]) : null;
+  const sheetW = currentSheet ? (Number(currentSheet.width) || 1000) : 1000;
+  const sheetH = currentSheet ? (Number(currentSheet.height) || 1000) : 1000;
+
+  // ID của tấm phôi hiện tại đang chọn (khớp với ID = index + 1 gửi sang C#)
   const currentSheetId = selectedSheetIndex + 1;
 
-  // ⚡ CỐT LÕI: LỌC CHỈ LẤY CÁC HỘP THUỘC VỀ TẤM PHÔI ĐANG CHỌN
-  const currentSheetBoxes = Array.isArray(placedBoxes)
+  // Lọc các hộp thuộc về tấm phôi đang chọn
+  const currentSheetBoxes = hasResults
     ? placedBoxes.filter(box => {
         const boxSheetId = Number(box.stockSheetId ?? box.sTockSheetID ?? box.STockSheetID ?? 1);
         return boxSheetId === currentSheetId;
       })
     : [];
-  // 1. Tính tổng diện tích đã xếp DÀNH RIÊNG CHO TẤM NÀY
+
+  // Tính diện tích đã xếp trên tấm này
   let usedArea = 0;
   currentSheetBoxes.forEach(box => {
     const w = Number(box.Width ?? box.width ?? 0);
@@ -2701,13 +3247,13 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
   });
 
   const totalSheetArea = sheetW * sheetH;
-  const efficiency = totalSheetArea > 0 ? ((usedArea / totalSheetArea) * 100).toFixed(2) : '0.00';
+  const efficiency = (hasResults && totalSheetArea > 0) ? ((usedArea / totalSheetArea) * 100).toFixed(2) : '0.00';
 
-  // 2. Tạo bảng ánh xạ màu dựa trên kích thước chi tiết
+  // Tạo bảng ánh xạ màu dựa trên kích thước chi tiết
   const sizeColorMap = new Map();
   let colorCounter = 0;
 
-  if (Array.isArray(placedBoxes)) {
+  if (hasResults) {
     placedBoxes.forEach(box => {
       const w = Number(box.Width ?? box.width ?? 0);
       const h = Number(box.Height ?? box.height ?? 0);
@@ -2726,7 +3272,7 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
     <div className="right-column">
       <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         <h2 className="preview-title">
-          Xem Trước Sơ Đồ Bố Trí (Layout Preview) {loading && <span style={{ color: '#3b82f6', fontSize: '1rem' }}>(Đang tính toán...)</span>}
+          Kết Quả Tối Ưu {loading && <span style={{ color: '#3b82f6', fontSize: '1rem' }}>(Đang tính toán...)</span>}
         </h2>
 
         <div id="previewContainer" className="preview-box">
@@ -2764,7 +3310,7 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
               strokeWidth="4"
             />
 
-            {/* ⚡ VẼ CÁC CÁC CHI TIẾT ĐÃ ĐƯỢC LỌC DÀNH RIÊNG CHO TẤM PHÔI NÀY */}
+            {/* Vẽ các chi tiết cắt */}
             {currentSheetBoxes.length > 0 ? (
               currentSheetBoxes.map((box, index) => {
                 const x = Number(box.X ?? box.x ?? 0);
@@ -2795,11 +3341,10 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
                 );
               })
             ) : (
-              /* THÔNG BÁO KHI TẤM PHÔI CHỌN CHƯA CÓ HOẶC KHÔNG DÙNG ĐẾN CHI TIẾT NÀO */
               <text x={sheetW / 2} y={sheetH / 2} textAnchor="middle" fill="#94a3b8" fontSize="22" fontWeight="600">
                 {loading 
                   ? "Đang xử lý thuật toán..." 
-                  : placedBoxes.length > 0 
+                  : hasResults 
                     ? "Tấm phôi này chưa được sử dụng (Trống)" 
                     : "Nhấn \"BẮT ĐẦU TỐI ƯU\" để hiển thị sơ đồ cắt"}
               </text>
@@ -2814,8 +3359,12 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
           <label className="stats-label">Hiển thị tấm kết quả:</label>
           <div className="stats-select-wrapper">
             <i className="fa-solid fa-layer-group stats-select-icon"></i>
-            <select className="stats-select" value={selectedSheetIndex} onChange={(e) => setSelectedSheetIndex(Number(e.target.value))}>
-              {containers.map((c, idx) => (
+            <select 
+              className="stats-select" 
+              value={selectedSheetIndex} 
+              onChange={(e) => setSelectedSheetIndex(Number(e.target.value))}
+            >
+              {(hasResults ? containers : []).map((c, idx) => (
                 <option key={c.id || idx} value={idx}>
                   {c.name || `Tấm ${idx + 1}`} ({c.width}x{c.height})
                 </option>
@@ -3103,100 +3652,6 @@ input, select, button, textarea {
 }
 </file>
 
-<file path="src/App.jsx">
-import React, { useState } from 'react';
-import Navbar from './Components/Navbar';
-import ItemsTable, { SHAPE_TYPES } from './Components/ItemsTable';
-import ContainersTable from './Components/ContainersTable';
-import OptimizationOptions from './Components/OptimizationOptions';
-import PreviewPanel from './Components/PreviewPanel';
-import SeoSection from './Components/SeoSection';
-import Footer from './Components/Footer';
-import { calculateLayoutApi } from './services/apiService';
-
-export default function App() {
-  const [items, setItems] = useState([
-    { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
-    { id: 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 125, h: 125 }, quantity: 10 },
-    { id: 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 150 }, quantity: 5 },
-  ]);
-
-  const [containers, setContainers] = useState([
-    { id: 1, name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
-  ]);
-
-  const [strategy, setStrategy] = useState('REMAINDER_OPTIMAL');
-  
-  // ⚡ State lưu kết quả tọa độ BoundBox[] nhận từ API C#
-  const [placedBoxes, setPlacedBoxes] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const handleReset = () => {
-    setItems([
-      { id: Date.now() + 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
-      { id: Date.now() + 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 125, h: 125 }, quantity: 10 },
-      { id: Date.now() + 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 150 }, quantity: 5 },
-    ]);
-    setContainers([
-      { id: Date.now(), name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
-    ]);
-    setStrategy('REMAINDER_OPTIMAL');
-    setPlacedBoxes([]); // Reset sơ đồ vẽ
-  };
-
-  // ⚡ Gọi API khi bấm "BẮT ĐẦU TỐI ƯU"
- const handleOptimize = async () => {
-  setLoading(true);
-  try {
-    const boxes = await calculateLayoutApi(items, containers, strategy);
-    console.log("🔥 [App.jsx] Đã set placedBoxes:", boxes);
-    setPlacedBoxes(boxes); // Gán mảng đã chuẩn hóa vào State
-  } catch (err) {
-    alert(`Không thể tính toán tối ưu: ${err.message}`);
-  } finally {
-    setLoading(false);
-  }
-};
-  return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <Navbar />
-
-      <main className="main-container">
-        <div className="header-title">
-          <h1>2D Packing & Cutting Calculator</h1>
-          <p>Công Cụ Ước Tính & Tối Ưu Bố Trí Cắt Chi Tiết Đa Dạng Hình Dạng</p>
-        </div>
-
-        <div className="layout-grid">
-          <div className="left-column">
-            <ItemsTable items={items} setItems={setItems} />
-            <ContainersTable containers={containers} setContainers={setContainers} />
-            <OptimizationOptions 
-              strategy={strategy} 
-              setStrategy={setStrategy} 
-              onReset={handleReset}
-              onOptimize={handleOptimize}
-            />
-          </div>
-
-          {/* Truyền cả items, containers và kết quả placedBoxes từ API vào PreviewPanel */}
-          <PreviewPanel 
-            items={items} 
-            containers={containers} 
-            placedBoxes={placedBoxes}
-            loading={loading}
-          />
-        </div>
-
-        <SeoSection />
-      </main>
-
-      <Footer />
-    </div>
-  );
-}
-</file>
-
 <file path="index.html">
 <!doctype html>
 <html lang="en">
@@ -3215,6 +3670,117 @@ export default function App() {
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
+</file>
+
+<file path="src/App.jsx">
+import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Navbar from './Components/Navbar';
+import ItemsTable, { SHAPE_TYPES } from './Components/ItemsTable';
+import ContainersTable from './Components/ContainersTable';
+import OptimizationOptions from './Components/OptimizationOptions';
+import PreviewPanel from './Components/PreviewPanel';
+import SeoSection from './Components/SeoSection';
+import Footer from './Components/Footer';
+import Login from './Components/Login';
+import Register from './Components/Register';
+import { calculateLayoutApi } from './services/apiService';
+
+// Component chứa toàn bộ giao diện Trang chủ cắt 2D
+function HomePage() {
+  const [items, setItems] = useState([
+    { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
+    { id: 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 125, h: 125 }, quantity: 10 },
+    { id: 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 150 }, quantity: 5 },
+  ]);
+
+  const [containers, setContainers] = useState([
+    { id: 1, name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
+  ]);
+
+  // ⚡ State chốt snapshot phôi đã bấm tính toán (Ban đầu là rỗng)
+  const [activeContainers, setActiveContainers] = useState([]);
+
+  const [strategy, setStrategy] = useState('REMAINDER_OPTIMAL');
+  const [placedBoxes, setPlacedBoxes] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleReset = () => {
+    setItems([
+      { id: Date.now() + 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
+      { id: Date.now() + 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 125, h: 125 }, quantity: 10 },
+      { id: Date.now() + 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 150 }, quantity: 5 },
+    ]);
+    setContainers([
+      { id: Date.now(), name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
+    ]);
+    setActiveContainers([]); // ⚡ Reset danh sách phôi đã chốt
+    setStrategy('REMAINDER_OPTIMAL');
+    setPlacedBoxes([]);
+  };
+
+  const handleOptimize = async () => {
+    setLoading(true);
+    try {
+      const boxes = await calculateLayoutApi(items, containers, strategy);
+      // ⚡ CHỈ KHI BẤM NÚT BẮT ĐẦU TỐI ƯU: Mới chốt snapshot phôi mới nhất sang cho PreviewPanel
+      setActiveContainers(containers);
+      setPlacedBoxes(boxes);
+    } catch (err) {
+      alert(`Không thể tính toán tối ưu: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <main className="main-container">
+      <div className="header-title">
+        <h1>2D Packing & Cutting Calculator</h1>
+        <p>Công Cụ Ước Tính & Tối Ưu Bố Trí Cắt Chi Tiết Đa Dạng Hình Dạng</p>
+      </div>
+
+      <div className="layout-grid">
+        <div className="left-column">
+          <ItemsTable items={items} setItems={setItems} />
+          <ContainersTable containers={containers} setContainers={setContainers} />
+          <OptimizationOptions 
+            strategy={strategy} 
+            setStrategy={setStrategy} 
+            onReset={handleReset}
+            onOptimize={handleOptimize}
+          />
+        </div>
+
+        {/* ⚡ Truyền activeContainers vào prop containers để PreviewPanel nhận phôi đã chốt */}
+        <PreviewPanel 
+          items={items} 
+          containers={activeContainers} 
+          placedBoxes={placedBoxes}
+          loading={loading}
+        />
+      </div>
+
+      <SeoSection />
+    </main>
+  );
+}
+
+export default function App() {
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <Navbar />
+
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+
+      <Footer />
+    </div>
+  );
+}
 </file>
 
 </files>

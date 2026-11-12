@@ -1,5 +1,5 @@
 import React from 'react';
-import './PackingTables.css'; // Import CSS thuần
+import './PackingTables.css';
 
 export default function ContainersTable({ containers, setContainers }) {
 
@@ -18,10 +18,19 @@ export default function ContainersTable({ containers, setContainers }) {
     setContainers(containers.filter(c => c.id !== id));
   };
 
+  // ⚡ Tự động nắn kích thước & số lượng tấm phôi < 1 về 1
   const handleUpdateContainer = (id, field, value) => {
-    setContainers(containers.map(c => 
-      c.id === id ? { ...c, [field]: field === 'name' ? value : Number(value) || 0 } : c
-    ));
+    setContainers(containers.map(c => {
+      if (c.id !== id) return c;
+      if (field === 'name') return { ...c, name: value };
+      if (value === '') return { ...c, [field]: '' };
+      
+      const val = Number(value);
+      return { 
+        ...c, 
+        [field]: val < 1 ? 1 : val 
+      };
+    }));
   };
 
   return (
@@ -48,6 +57,7 @@ export default function ContainersTable({ containers, setContainers }) {
                       type="text" 
                       value={container.name} 
                       onChange={(e) => handleUpdateContainer(container.id, 'name', e.target.value)}
+                      onFocus={(e) => e.target.select()}
                       maxLength={50} 
                       className="input-name"
                     />
@@ -55,24 +65,30 @@ export default function ContainersTable({ containers, setContainers }) {
                   <td>
                     <input 
                       type="number" 
-                      value={container.width} 
+                      min="1"
+                      value={container.width ?? ''} 
                       onChange={(e) => handleUpdateContainer(container.id, 'width', e.target.value)}
+                      onFocus={(e) => e.target.select()}
                       className="input-style" style={{ width: '64px' }}
                     />
                   </td>
                   <td>
                     <input 
                       type="number" 
-                      value={container.height} 
+                      min="1"
+                      value={container.height ?? ''} 
                       onChange={(e) => handleUpdateContainer(container.id, 'height', e.target.value)}
+                      onFocus={(e) => e.target.select()}
                       className="input-style" style={{ width: '64px' }}
                     />
                   </td>
                   <td>
                     <input 
                       type="number" 
-                      value={container.quantity} 
+                      min="1"
+                      value={container.quantity ?? ''} 
                       onChange={(e) => handleUpdateContainer(container.id, 'quantity', e.target.value)}
+                      onFocus={(e) => e.target.select()}
                       className="input-style" style={{ width: '48px' }}
                     />
                   </td>

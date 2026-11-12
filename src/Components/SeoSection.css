@@ -1,29 +1,36 @@
 /* ==========================================
-   BÀI VIẾT SEO / HƯỚNG DẪN (SEO SECTION)
+   BÀI VIẾT SEO TỐI GIẢN (SEO SECTION)
    ========================================== */
 .seo-section {
   width: 100%;
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 1rem;
-  padding: 2.5rem 3rem;
-  margin-top: 3rem;
-  margin-bottom: 3rem;
+  padding: 2rem 2.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .seo-title {
-  font-size: 2.25rem;
-  font-weight: 900;
+  font-size: 1.5rem;
+  font-weight: 800;
   color: #0f172a;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
   border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 1rem;
-  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
 }
 
 .seo-content {
-  font-size: 1.125rem;
-  line-height: 1.8;
+  font-size: 0.975rem;
+  line-height: 1.7;
   color: #334155;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.seo-content p {
+  margin: 0;
 }

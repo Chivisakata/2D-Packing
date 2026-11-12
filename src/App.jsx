@@ -23,6 +23,9 @@ function HomePage() {
     { id: 1, name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
   ]);
 
+  // ⚡ State chốt snapshot phôi đã bấm tính toán (Ban đầu là rỗng)
+  const [activeContainers, setActiveContainers] = useState([]);
+
   const [strategy, setStrategy] = useState('REMAINDER_OPTIMAL');
   const [placedBoxes, setPlacedBoxes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -36,6 +39,7 @@ function HomePage() {
     setContainers([
       { id: Date.now(), name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
     ]);
+    setActiveContainers([]); // ⚡ Reset danh sách phôi đã chốt
     setStrategy('REMAINDER_OPTIMAL');
     setPlacedBoxes([]);
   };
@@ -44,6 +48,8 @@ function HomePage() {
     setLoading(true);
     try {
       const boxes = await calculateLayoutApi(items, containers, strategy);
+      // ⚡ CHỈ KHI BẤM NÚT BẮT ĐẦU TỐI ƯU: Mới chốt snapshot phôi mới nhất sang cho PreviewPanel
+      setActiveContainers(containers);
       setPlacedBoxes(boxes);
     } catch (err) {
       alert(`Không thể tính toán tối ưu: ${err.message}`);
@@ -71,9 +77,10 @@ function HomePage() {
           />
         </div>
 
+        {/* ⚡ Truyền activeContainers vào prop containers để PreviewPanel nhận phôi đã chốt */}
         <PreviewPanel 
           items={items} 
-          containers={containers} 
+          containers={activeContainers} 
           placedBoxes={placedBoxes}
           loading={loading}
         />

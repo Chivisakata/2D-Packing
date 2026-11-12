@@ -25,7 +25,7 @@ export default function OptimizationOptions({ strategy, setStrategy, onReset, on
       {/* KHUNG PHƯƠNG ÁN TỐI ƯU CẮT */}
       <div className="options-card">
         <h2 className="options-title">
-          <i className="fa-solid fa-sliders"></i> Phương án tối ưu cắt
+          <i className="fa-solid fa-sliders"></i> Phương án tối ưu
         </h2>
 
         <div className="options-list">
@@ -56,7 +56,7 @@ export default function OptimizationOptions({ strategy, setStrategy, onReset, on
       {/* BỘ NÚT HÀNH ĐỘNG: RESET & BẮT ĐẦU TỐI ƯU */}
       <div className="action-buttons-group">
         <button className="btn-action-reset" onClick={onReset}>
-          Đặt lại cài đặt (Reset)
+          Đặt lại cài đặt
         </button>
         <button className="btn-action-optimize" onClick={onOptimize}>
           BẮT ĐẦU TỐI ƯU

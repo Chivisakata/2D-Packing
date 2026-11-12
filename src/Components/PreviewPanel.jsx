@@ -10,21 +10,27 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
   const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
   const [showUnpackedDropdown, setShowUnpackedDropdown] = useState(false);
 
-  const currentSheet = containers[selectedSheetIndex] || containers[0] || { width: 1200, height: 800, name: 'Tấm A' };
-  const sheetW = Number(currentSheet.width) || 1200;
-  const sheetH = Number(currentSheet.height) || 800;
+  // ⚡ Kiểm tra đã có kết quả tối ưu hợp lệ được chốt chưa
+  const hasResults = Array.isArray(placedBoxes) && placedBoxes.length > 0 && containers.length > 0;
 
-  // ⚡ ID của tấm phôi hiện tại đang chọn (khớp với ID = index + 1 gửi sang C#)
+  // ⚡ Chưa bấm tính toán (hoặc containers chốt chưa có) -> Giữ nguyên 1000 x 1000 mặc định
+  // ⚡ Đã bấm tối ưu -> Lấy kích thước phôi từ containers đã chốt
+  const currentSheet = hasResults ? (containers[selectedSheetIndex] || containers[0]) : null;
+  const sheetW = currentSheet ? (Number(currentSheet.width) || 1000) : 1000;
+  const sheetH = currentSheet ? (Number(currentSheet.height) || 1000) : 1000;
+
+  // ID của tấm phôi hiện tại đang chọn (khớp với ID = index + 1 gửi sang C#)
   const currentSheetId = selectedSheetIndex + 1;
 
-  // ⚡ CỐT LÕI: LỌC CHỈ LẤY CÁC HỘP THUỘC VỀ TẤM PHÔI ĐANG CHỌN
-  const currentSheetBoxes = Array.isArray(placedBoxes)
+  // Lọc các hộp thuộc về tấm phôi đang chọn
+  const currentSheetBoxes = hasResults
     ? placedBoxes.filter(box => {
         const boxSheetId = Number(box.stockSheetId ?? box.sTockSheetID ?? box.STockSheetID ?? 1);
         return boxSheetId === currentSheetId;
       })
     : [];
-  // 1. Tính tổng diện tích đã xếp DÀNH RIÊNG CHO TẤM NÀY
+
+  // Tính diện tích đã xếp trên tấm này
   let usedArea = 0;
   currentSheetBoxes.forEach(box => {
     const w = Number(box.Width ?? box.width ?? 0);
@@ -33,13 +39,13 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
   });
 
   const totalSheetArea = sheetW * sheetH;
-  const efficiency = totalSheetArea > 0 ? ((usedArea / totalSheetArea) * 100).toFixed(2) : '0.00';
+  const efficiency = (hasResults && totalSheetArea > 0) ? ((usedArea / totalSheetArea) * 100).toFixed(2) : '0.00';
 
-  // 2. Tạo bảng ánh xạ màu dựa trên kích thước chi tiết
+  // Tạo bảng ánh xạ màu dựa trên kích thước chi tiết
   const sizeColorMap = new Map();
   let colorCounter = 0;
 
-  if (Array.isArray(placedBoxes)) {
+  if (hasResults) {
     placedBoxes.forEach(box => {
       const w = Number(box.Width ?? box.width ?? 0);
       const h = Number(box.Height ?? box.height ?? 0);
@@ -58,7 +64,7 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
     <div className="right-column">
       <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         <h2 className="preview-title">
-          Xem Trước Sơ Đồ Bố Trí (Layout Preview) {loading && <span style={{ color: '#3b82f6', fontSize: '1rem' }}>(Đang tính toán...)</span>}
+          Kết Quả Tối Ưu {loading && <span style={{ color: '#3b82f6', fontSize: '1rem' }}>(Đang tính toán...)</span>}
         </h2>
 
         <div id="previewContainer" className="preview-box">
@@ -96,7 +102,7 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
               strokeWidth="4"
             />
 
-            {/* ⚡ VẼ CÁC CÁC CHI TIẾT ĐÃ ĐƯỢC LỌC DÀNH RIÊNG CHO TẤM PHÔI NÀY */}
+            {/* Vẽ các chi tiết cắt */}
             {currentSheetBoxes.length > 0 ? (
               currentSheetBoxes.map((box, index) => {
                 const x = Number(box.X ?? box.x ?? 0);
@@ -127,11 +133,10 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
                 );
               })
             ) : (
-              /* THÔNG BÁO KHI TẤM PHÔI CHỌN CHƯA CÓ HOẶC KHÔNG DÙNG ĐẾN CHI TIẾT NÀO */
               <text x={sheetW / 2} y={sheetH / 2} textAnchor="middle" fill="#94a3b8" fontSize="22" fontWeight="600">
                 {loading 
                   ? "Đang xử lý thuật toán..." 
-                  : placedBoxes.length > 0 
+                  : hasResults 
                     ? "Tấm phôi này chưa được sử dụng (Trống)" 
                     : "Nhấn \"BẮT ĐẦU TỐI ƯU\" để hiển thị sơ đồ cắt"}
               </text>
@@ -146,8 +151,12 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
           <label className="stats-label">Hiển thị tấm kết quả:</label>
           <div className="stats-select-wrapper">
             <i className="fa-solid fa-layer-group stats-select-icon"></i>
-            <select className="stats-select" value={selectedSheetIndex} onChange={(e) => setSelectedSheetIndex(Number(e.target.value))}>
-              {containers.map((c, idx) => (
+            <select 
+              className="stats-select" 
+              value={selectedSheetIndex} 
+              onChange={(e) => setSelectedSheetIndex(Number(e.target.value))}
+            >
+              {(hasResults ? containers : []).map((c, idx) => (
                 <option key={c.id || idx} value={idx}>
                   {c.name || `Tấm ${idx + 1}`} ({c.width}x{c.height})
                 </option>

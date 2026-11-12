@@ -293,3 +293,18 @@
 .btn-action-optimize:active {
   transform: scale(0.98);
 }
+
+/* ==========================================
+   ẨN MŨI TÊN TĂNG GIẢM (SPINNER) TRÊN INPUT NUMBER
+   ========================================== */
+/* Chrome, Safari, Edge, Opera */
+.input-style::-webkit-outer-spin-button,
+.input-style::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.input-style[type="number"] {
+  -moz-appearance: textfield;
+}
