@@ -12,11 +12,6 @@ export default function OptimizationOptions({ strategy, setStrategy, onReset, on
       id: 'BALANCED_DISTRIBUTION',
       title: 'Phân bố đều các chi tiết',
       desc: 'Phân bố khoảng cách đều đặn giữa các chi tiết trên tấm.'
-    },
-    {
-      id: 'MINIMIZE_CONTAINERS',
-      title: 'Tối ưu số lượng tấm sử dụng',
-      desc: 'Sử dụng ít tấm vật liệu nhất có thể để cắt hết chi tiết.'
     }
   ];
 

@@ -131,3 +131,47 @@ if (strategy === 'BALANCED_DISTRIBUTION') {
     throw error;
   }
 }
+
+// API Đăng ký tinh gọn (chỉ Email & Password)
+export async function registerApi(email, password) {
+  const response = await fetch(`${API_BASE_URL}/Auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Đăng ký thất bại!');
+  return data;
+}
+
+// ⚡ Bổ sung API Đăng nhập
+export async function loginApi(email, password) {
+  const response = await fetch(`${API_BASE_URL}/Auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Đăng nhập thất bại!');
+  return data;
+}
+
+// API Lưu Lịch Sử Cắt
+export async function saveHistoryApi(userId, title, inputData, resultData) {
+  const response = await fetch(`${API_BASE_URL}/History/save`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, title, inputData, resultData })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Lưu lịch sử thất bại!');
+  return data;
+}
+
+// API Lấy Danh Sách Lịch Sử
+export async function getUserHistoriesApi(userId) {
+  const response = await fetch(`${API_BASE_URL}/History/user/${userId}`);
+  const data = await response.json();
+  if (!response.ok) throw new Error('Không thể tải lịch sử!');
+  return data;
+}

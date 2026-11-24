@@ -1,20 +1,57 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // 1. Import Link từ react-router-dom
+import { Link, useNavigate } from 'react-router-dom';
+import { loginApi } from '../services/apiService';
 import './Login.css';
 
-export default function Login() {
+export default function Login({ onLoginSuccess }) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login credentials:', { email, password });
+    setErrorMessage('');
+    setLoading(true);
+
+    try {
+      const res = await loginApi(email, password);
+      
+      // ⚡ Lưu Session User vào localStorage
+      localStorage.setItem('userSession', JSON.stringify(res.user));
+
+      if (onLoginSuccess) {
+        onLoginSuccess(res.user);
+      }
+
+      // Chuyển hướng về trang chủ
+      navigate('/');
+    } catch (err) {
+      setErrorMessage(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="login-wrapper">
       <div className="login-card">
         <h1 className="login-title">Đăng nhập</h1>
+
+        {errorMessage && (
+          <div style={{
+            color: '#ef4444',
+            backgroundColor: '#fef2f2',
+            padding: '10px',
+            borderRadius: '8px',
+            fontSize: '0.85rem',
+            marginBottom: '1rem',
+            textAlign: 'center'
+          }}>
+            {errorMessage}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="input-group">
@@ -43,22 +80,16 @@ export default function Login() {
             <label htmlFor="password" className="login-label">Mật khẩu</label>
           </div>
 
-          <button type="submit" className="btn-login-submit">
-            Đăng nhập
+          <button type="submit" className="btn-login-submit" disabled={loading}>
+            {loading ? 'Đang xử lý...' : 'Đăng nhập'}
           </button>
         </form>
 
-
-        {/* 📌 VỊ TRÍ VIẾT DÒNG LINK ĐÂY NHA HẠO */}
         <div className="login-links">
-          <a href="#forgot-password" className="link-item">Quên mật khẩu?</a>
-          
-          {/* Đổi thẻ <a> thành thẻ <Link> để chuyển sang trang Register không reload */}
           <Link to="/register" className="link-item">
             Bạn chưa có tài khoản? Đăng ký!
           </Link>
         </div>
-
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './Components/Navbar';
 import ItemsTable, { SHAPE_TYPES } from './Components/ItemsTable';
@@ -12,7 +12,6 @@ import Register from './Components/Register';
 import Contact from './Components/Contact'; 
 import { calculateLayoutApi } from './services/apiService';
 
-// Component chứa toàn bộ giao diện Trang chủ cắt 2D
 function HomePage() {
   const [items, setItems] = useState([
     { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
@@ -24,9 +23,7 @@ function HomePage() {
     { id: 1, name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
   ]);
 
-  // ⚡ State chốt snapshot phôi đã bấm tính toán (Ban đầu là rỗng)
   const [activeContainers, setActiveContainers] = useState([]);
-
   const [strategy, setStrategy] = useState('REMAINDER_OPTIMAL');
   const [placedBoxes, setPlacedBoxes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,7 +37,7 @@ function HomePage() {
     setContainers([
       { id: Date.now(), name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
     ]);
-    setActiveContainers([]); // ⚡ Reset danh sách phôi đã chốt
+    setActiveContainers([]);
     setStrategy('REMAINDER_OPTIMAL');
     setPlacedBoxes([]);
   };
@@ -49,7 +46,6 @@ function HomePage() {
     setLoading(true);
     try {
       const boxes = await calculateLayoutApi(items, containers, strategy);
-      // ⚡ CHỈ KHI BẤM NÚT BẮT ĐẦU TỐI ƯU: Mới chốt snapshot phôi mới nhất sang cho PreviewPanel
       setActiveContainers(containers);
       setPlacedBoxes(boxes);
     } catch (err) {
@@ -78,7 +74,6 @@ function HomePage() {
           />
         </div>
 
-        {/* ⚡ Truyền activeContainers vào prop containers để PreviewPanel nhận phôi đã chốt */}
         <PreviewPanel 
           items={items} 
           containers={activeContainers} 
@@ -93,14 +88,31 @@ function HomePage() {
 }
 
 export default function App() {
+  const [userSession, setUserSession] = useState(null);
+
+  // ⚡ Load session người dùng từ localStorage khi tải ứng dụng
+  useEffect(() => {
+    const savedSession = localStorage.getItem('userSession');
+    if (savedSession) {
+      try {
+        setUserSession(JSON.parse(savedSession));
+      } catch (e) {
+        localStorage.removeItem('userSession');
+      }
+    }
+  }, []);
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <Navbar />
+      <Navbar userSession={userSession} onLogout={() => setUserSession(null)} />
 
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<Login />} />
+        <Route 
+          path="/login" 
+          element={<Login onLoginSuccess={(user) => setUserSession(user)} />} 
+        />
         <Route path="/register" element={<Register />} />
       </Routes>
 
