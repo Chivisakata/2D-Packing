@@ -49,6 +49,8 @@ src/
     react.svg
     vite.svg
   Components/
+    Contact.css
+    Contact.jsx
     ContainersTable.jsx
     Footer.css
     Footer.jsx
@@ -85,6 +87,223 @@ vite.config.js
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="src/Components/Contact.css">
+/* ==========================================
+   GIAO DIỆN LIÊN HỆ (CONTACT PAGE)
+   ========================================== */
+.contact-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  padding: 3.5rem 1rem 5rem 1rem;
+  background-color: transparent;
+}
+
+.contact-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Header */
+.contact-header {
+  margin-bottom: 2rem;
+}
+
+.contact-title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.025em;
+}
+
+.contact-subtitle {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #64748b;
+  font-weight: 400;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* Support Card */
+.contact-card {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 3rem 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.email-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  background-color: #eff6ff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.card-heading {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.card-subtext {
+  font-size: 0.925rem;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+}
+
+.email-link {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: none;
+  margin-bottom: 1.75rem;
+  transition: color 0.15s ease;
+}
+
+.email-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.response-time {
+  font-size: 0.825rem;
+  color: #94a3b8;
+  font-weight: 500;
+  max-width: 360px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Divider Line */
+.contact-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #e2e8f0;
+  margin: 2.75rem 0;
+}
+
+/* Faster Answers Section */
+.faster-answers-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.faster-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.35rem;
+}
+
+.faster-subtext {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 1.5rem;
+}
+
+.resource-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.btn-resource {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.15rem;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.btn-resource:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.btn-resource:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 480px) {
+  .resource-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  .btn-resource {
+    width: 100%;
+  }
+}
+</file>
+
+<file path="src/Components/Contact.jsx">
+import React from 'react';
+import './Contact.css';
+
+export default function Contact() {
+  return (
+    <div className="contact-wrapper">
+      <div className="contact-container">
+
+        {/* Tiêu đề chính & Phụ đề */}
+        <div className="contact-header">
+          <h1 className="contact-title">Liên Hệ</h1>
+          <p className="contact-subtitle">
+            Cần trợ giúp thiết lập mẫu hoặc quy trình?<br />
+            Hoặc có thể bạn vừa phát hiện ra lỗi? Hãy gửi cho chúng tôi một email và chúng tôi sẽ phản hồi nhanh nhất có thể!
+          </p>
+        </div>
+
+        {/* Thẻ Email Support chính */}
+        <div className="contact-card">
+          <h2 className="card-heading">Email Hỗ Trợ</h2>
+          <p className="card-subtext">Gửi email trực tiếp đến:</p>
+
+          <a href="mailto:info@filesplice.com" className="email-link">
+            2Dpacking@gmail.com
+          </a>
+
+          <p className="response-time">
+            Chúng tôi thường phản hồi trong vòng vài giờ trong thời gian hoạt động bình thường.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+</file>
 
 <file path="public/favicon.svg">
 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="46" fill="none" viewBox="0 0 48 46"><path fill="#863bff" d="M25.946 44.938c-.664.845-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.287c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.497 0-3.578-1.842-3.578H1.237c-.92 0-1.456-1.04-.92-1.788L10.013.474c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.579 1.842 3.579h11.377c.943 0 1.473 1.088.89 1.83L25.947 44.94z" style="fill:#863bff;fill:color(display-p3 .5252 .23 1);fill-opacity:1"/><mask id="a" width="48" height="46" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M25.842 44.938c-.664.844-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.183c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.498 0-3.579-1.842-3.579H1.133c-.92 0-1.456-1.04-.92-1.787L9.91.473c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.578 1.842 3.578h11.377c.943 0 1.473 1.088.89 1.832L25.843 44.94z" style="fill:#000;fill-opacity:1"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#ede6ff" rx="5.508" ry="14.704" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -4.47 31.516)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#ede6ff" rx="10.399" ry="29.851" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -39.328 7.883)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#7e14ff" rx="5.508" ry="30.487" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.814 -25.913 -14.639)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#7e14ff" rx="5.508" ry="30.599" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.814 -32.644 -3.334)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#7e14ff" rx="5.508" ry="30.599" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -34.34 30.47)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#ede6ff" rx="14.072" ry="22.078" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="rotate(93.35 24.506 48.493)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#7e14ff" rx="3.47" ry="21.501" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.009 28.708 47.59)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#7e14ff" rx="3.47" ry="21.501" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.009 28.708 47.59)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx=".387" cy="8.972" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(39.51 .387 8.972)"/></g><g filter="url(#k)"><ellipse cx="47.523" cy="-6.092" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 47.523 -6.092)"/></g><g filter="url(#l)"><ellipse cx="41.412" cy="6.333" fill="#47bfff" rx="5.971" ry="9.665" style="fill:#47bfff;fill:color(display-p3 .2799 .748 1);fill-opacity:1" transform="rotate(37.892 41.412 6.333)"/></g><g filter="url(#m)"><ellipse cx="-1.879" cy="38.332" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 -1.88 38.332)"/></g><g filter="url(#n)"><ellipse cx="-1.879" cy="38.332" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 -1.88 38.332)"/></g><g filter="url(#o)"><ellipse cx="35.651" cy="29.907" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 35.651 29.907)"/></g><g filter="url(#p)"><ellipse cx="38.418" cy="32.4" fill="#47bfff" rx="5.971" ry="15.297" style="fill:#47bfff;fill:color(display-p3 .2799 .748 1);fill-opacity:1" transform="rotate(37.892 38.418 32.4)"/></g></g><defs><filter id="b" width="60.045" height="41.654" x="-19.77" y="16.149" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-54.613" y="-7.533" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-49.64" y="2.03" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-45.045" y="20.029" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-43.513" y="21.178" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="15.756" y="-17.901" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="23.548" y="2.284" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="23.548" y="2.284" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-27.636" y="-22.853" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="20.116" y="-38.415" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="24.641" y="-11.323" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-29.286" y="6.009" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-29.286" y="6.009" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="8.244" y="-2.416" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="18.713" y="10.588" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter></defs></svg>
@@ -123,400 +342,6 @@ This section contains the contents of the repository's files.
 
 <file path="src/assets/vite.svg">
 <svg xmlns="http://www.w3.org/2000/svg" width="77" height="47" fill="none" aria-labelledby="vite-logo-title" viewBox="0 0 77 47"><title id="vite-logo-title">Vite</title><style>.parenthesis{fill:#000}@media (prefers-color-scheme:dark){.parenthesis{fill:#fff}}</style><path fill="#9135ff" d="M40.151 45.71c-.663.844-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.493c-.92 0-1.457-1.04-.92-1.788l7.479-10.471c1.07-1.498 0-3.578-1.842-3.578H15.443c-.92 0-1.456-1.04-.92-1.788l9.696-13.576c.213-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.472c-1.07 1.497 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.087.89 1.83L40.153 45.712z"/><mask id="a" width="48" height="47" x="14" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M40.047 45.71c-.663.843-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.389c-.92 0-1.457-1.04-.92-1.788l7.479-10.472c1.07-1.497 0-3.578-1.842-3.578H15.34c-.92 0-1.456-1.04-.92-1.788l9.696-13.575c.213-.297.556-.474.92-.474H53.93c.92 0 1.456 1.04.92 1.788L47.37 13.03c-1.07 1.498 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.088.89 1.831L40.049 45.712z"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#eee6ff" rx="5.508" ry="14.704" transform="rotate(269.814 20.96 11.29)scale(-1 1)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#eee6ff" rx="10.399" ry="29.851" transform="rotate(89.814 -16.902 -8.275)scale(1 -1)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#8900ff" rx="5.508" ry="30.487" transform="rotate(89.814 -19.197 -7.127)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.928 4.177)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.738 5.52)scale(1 -1)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#eee6ff" rx="14.072" ry="22.078" transform="rotate(93.35 31.245 55.578)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx="14.592" cy="9.743" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(39.51 14.592 9.743)"/></g><g filter="url(#k)"><ellipse cx="61.728" cy="-5.321" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 61.728 -5.32)"/></g><g filter="url(#l)"><ellipse cx="55.618" cy="7.104" fill="#00c2ff" rx="5.971" ry="9.665" transform="rotate(37.892 55.618 7.104)"/></g><g filter="url(#m)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#n)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#o)"><ellipse cx="49.857" cy="30.678" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 49.857 30.678)"/></g><g filter="url(#p)"><ellipse cx="52.623" cy="33.171" fill="#00c2ff" rx="5.971" ry="15.297" transform="rotate(37.892 52.623 33.17)"/></g></g><path d="M6.919 0c-9.198 13.166-9.252 33.575 0 46.789h6.215c-9.25-13.214-9.196-33.623 0-46.789zm62.424 0h-6.215c9.198 13.166 9.252 33.575 0 46.789h6.215c9.25-13.214 9.196-33.623 0-46.789" class="parenthesis"/><defs><filter id="b" width="60.045" height="41.654" x="-5.564" y="16.92" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-40.407" y="-6.762" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-35.435" y="2.801" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-30.84" y="20.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-29.307" y="21.949" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="29.961" y="-17.13" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-13.43" y="-22.082" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="34.321" y="-37.644" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="38.847" y="-10.552" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="22.45" y="-1.645" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="32.919" y="11.36" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter></defs></svg>
-</file>
-
-<file path="src/Components/ContainersTable.jsx">
-import React from 'react';
-import './PackingTables.css'; // Import CSS thuần
-
-export default function ContainersTable({ containers, setContainers }) {
-
-  const handleAddContainer = () => {
-    const newContainer = {
-      id: Date.now(),
-      name: `Tấm Vật Liệu ${containers.length + 1}`,
-      width: 1000,
-      height: 800,
-      quantity: 1
-    };
-    setContainers([...containers, newContainer]);
-  };
-
-  const handleDeleteContainer = (id) => {
-    setContainers(containers.filter(c => c.id !== id));
-  };
-
-  const handleUpdateContainer = (id, field, value) => {
-    setContainers(containers.map(c => 
-      c.id === id ? { ...c, [field]: field === 'name' ? value : Number(value) || 0 } : c
-    ));
-  };
-
-  return (
-    <div className="packing-card containers-card">
-      <div>
-        <h2 className="card-title" style={{ fontSize: '1.125rem' }}>Tấm vật liệu</h2>
-        
-        <div className="table-wrapper">
-          <table className="custom-table">
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'left', width: '112px' }}>Tên tấm</th>
-                <th>Dài</th>
-                <th>Rộng</th>
-                <th>Số lượng</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {containers.map((container) => (
-                <tr key={container.id}>
-                  <td style={{ textAlign: 'left' }}>
-                    <input 
-                      type="text" 
-                      value={container.name} 
-                      onChange={(e) => handleUpdateContainer(container.id, 'name', e.target.value)}
-                      maxLength={50} 
-                      className="input-name"
-                    />
-                  </td>
-                  <td>
-                    <input 
-                      type="number" 
-                      value={container.width} 
-                      onChange={(e) => handleUpdateContainer(container.id, 'width', e.target.value)}
-                      className="input-style" style={{ width: '64px' }}
-                    />
-                  </td>
-                  <td>
-                    <input 
-                      type="number" 
-                      value={container.height} 
-                      onChange={(e) => handleUpdateContainer(container.id, 'height', e.target.value)}
-                      className="input-style" style={{ width: '64px' }}
-                    />
-                  </td>
-                  <td>
-                    <input 
-                      type="number" 
-                      value={container.quantity} 
-                      onChange={(e) => handleUpdateContainer(container.id, 'quantity', e.target.value)}
-                      className="input-style" style={{ width: '48px' }}
-                    />
-                  </td>
-                  <td>
-                    <button className="btn-delete" onClick={() => handleDeleteContainer(container.id)}>
-                      <span style={{ fontStyle: 'normal' }}>✕</span>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '4px' }}>
-        <button className="btn-add" onClick={handleAddContainer} style={{ padding: '6px 24px' }}>
-          <span style={{ fontStyle: 'normal' }}>Thêm</span>
-        </button>
-      </div>
-    </div>
-  );
-}
-</file>
-
-<file path="src/Components/Footer.css">
-/* ==========================================
-   CHÂN TRANG (FOOTER)
-   ========================================== */
-.site-footer {
-  background-color: #ffffff;
-  border-top: 1px solid #e2e8f0;
-  color: #475569;
-  font-family: 'Roboto', sans-serif;
-  padding: 3.5rem 2rem;
-  margin-top: auto;
-}
-
-.footer-container {
-  max-width: 1700px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 3rem;
-}
-
-.footer-col {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.footer-col h3 {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 0.5rem;
-}
-
-.footer-col ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.footer-col a {
-  color: #475569;
-  text-decoration: none;
-  font-size: 1.125rem;
-  transition: color 0.15s ease;
-}
-
-.footer-col a:hover {
-  color: #0f172a;
-}
-
-.footer-copyright {
-  color: #94a3b8;
-  font-size: 1rem;
-  font-weight: 500;
-  padding-top: 0.5rem;
-}
-
-@media (max-width: 1024px) {
-  .footer-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .footer-container {
-    grid-template-columns: 1fr;
-  }
-  .seo-section {
-    padding: 1.5rem;
-  }
-}
-</file>
-
-<file path="src/Components/Footer.jsx">
-import React from 'react';
-import './Footer.css';
-
-export default function Footer() {
-  return (
-    <footer className="site-footer">
-      <div className="footer-container">
-        
-        {/* Cột 1: Hỗ Trợ & Hướng Dẫn */}
-        <div className="footer-col">
-          <h3>Hỗ Trợ & Hướng Dẫn</h3>
-          <ul>
-            <li><a href="#faqs">Hướng dẫn / FAQs</a></li>
-            <li><a href="#contact">Liên hệ chúng tôi</a></li>
-          </ul>
-        </div>
-
-        {/* Cột 2: Liên Kết Nhanh */}
-        <div className="footer-col">
-          <h3>Liên Kết Nhanh</h3>
-          <ul>
-            <li><a href="#pricing">Bảng Giá</a></li>
-          </ul>
-        </div>
-
-        {/* Cột 3: File Splice & Bản quyền */}
-        <div className="footer-col">
-          <h3>File Splice</h3>
-          <p className="footer-copyright">
-            © 2026 File Splice. Bảo lưu mọi quyền.
-          </p>
-        </div>
-
-        {/* Cột 4: Thanh Toán An Toàn */}
-        <div className="footer-col">
-          <h3>Thanh Toán An Toàn</h3>
-        </div>
-
-      </div>
-    </footer>
-  );
-}
-</file>
-
-<file path="src/Components/ItemsTable.jsx">
-import React from 'react';
-import './PackingTables.css'; // Import CSS thuần
-
-export const SHAPE_TYPES = {
-  RECTANGLE: { id: 'RECTANGLE', name: 'Hình chữ nhật' },
-  CIRCLE: { id: 'CIRCLE', name: 'Hình tròn' },
-  RIGHT_TRIANGLE: { id: 'RIGHT_TRIANGLE', name: 'Tam giác vuông' },
-  ISOSCELES_TRIANGLE: { id: 'ISOSCELES_TRIANGLE', name: 'Tam giác cân' },
-  HEXAGON: { id: 'HEXAGON', name: 'Lục giác đều' },
-  ELLIPSE: { id: 'ELLIPSE', name: 'Ellipse' }
-};
-
-export default function ItemsTable({ items, setItems }) {
-
-  const handleAddItem = () => {
-    const newItem = {
-      id: Date.now(),
-      shape: SHAPE_TYPES.RECTANGLE.id,
-      dimensions: { w: 240, h: 170 },
-      quantity: 5
-    };
-    setItems([...items, newItem]);
-  };
-
-  const handleDeleteItem = (id) => {
-    setItems(items.filter(item => item.id !== id));
-  };
-
-  const handleShapeChange = (id, newShape) => {
-    let defaultDims = { w: 200, h: 200 };
-    if (newShape === SHAPE_TYPES.CIRCLE.id) defaultDims = { d: 150 };
-    if (newShape === SHAPE_TYPES.HEXAGON.id) defaultDims = { a: 200 };
-    if (newShape === SHAPE_TYPES.ELLIPSE.id) defaultDims = { rx: 200, ry: 150 };
-
-    setItems(items.map(item => 
-      item.id === id ? { ...item, shape: newShape, dimensions: defaultDims } : item
-    ));
-  };
-
-  const handleDimensionChange = (id, key, value) => {
-    setItems(items.map(item => 
-      item.id === id 
-        ? { ...item, dimensions: { ...item.dimensions, [key]: Number(value) || 0 } } 
-        : item
-    ));
-  };
-
-  const handleQuantityChange = (id, qty) => {
-    setItems(items.map(item => 
-      item.id === id ? { ...item, quantity: Number(qty) || 1 } : item
-    ));
-  };
-
-  const renderDimensionInputs = (item) => {
-    const { shape, dimensions } = item;
-
-    switch (shape) {
-      case SHAPE_TYPES.CIRCLE.id:
-        return (
-          <div className="flex-center">
-            <span style={{ fontSize: '10px', color: '#94a3b8' }}>Ø:</span>
-            <input 
-              type="number" 
-              value={dimensions.d || 150} 
-              onChange={(e) => handleDimensionChange(item.id, 'd', e.target.value)}
-              className="input-style" style={{ width: '64px' }}
-            />
-          </div>
-        );
-      case SHAPE_TYPES.RIGHT_TRIANGLE.id:
-      case SHAPE_TYPES.ISOSCELES_TRIANGLE.id:
-        return (
-          <div className="flex-center">
-            <input 
-              type="number" 
-              value={dimensions.b || 300} 
-              onChange={(e) => handleDimensionChange(item.id, 'b', e.target.value)}
-              className="input-style" style={{ width: '48px' }}
-            />
-            <span style={{ color: '#94a3b8' }}>x</span>
-            <input 
-              type="number" 
-              value={dimensions.h || 400} 
-              onChange={(e) => handleDimensionChange(item.id, 'h', e.target.value)}
-              className="input-style" style={{ width: '48px' }}
-            />
-          </div>
-        );
-      case SHAPE_TYPES.RECTANGLE.id:
-      default:
-        return (
-          <div className="flex-center">
-            <input 
-              type="number" 
-              value={dimensions.w || 240} 
-              onChange={(e) => handleDimensionChange(item.id, 'w', e.target.value)}
-              className="input-style" style={{ width: '48px' }}
-            />
-            <span style={{ color: '#94a3b8' }}>x</span>
-            <input 
-              type="number" 
-              value={dimensions.h || 170} 
-              onChange={(e) => handleDimensionChange(item.id, 'h', e.target.value)}
-              className="input-style" style={{ width: '48px' }}
-            />
-          </div>
-        );
-    }
-  };
-
-  return (
-    <div className="packing-card items-card">
-      <div>
-        <h2 className="card-title">Chi tiết cần cắt</h2>
-        
-        <div className="table-wrapper">
-          <table className="custom-table">
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'left', width: '140px' }}>Hình dạng</th>
-                <th>Thông số (mm)</th>
-                <th style={{ width: '64px' }}>Số lượng</th>
-                <th style={{ width: '32px' }}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item) => (
-                <tr key={item.id}>
-                  <td style={{ textAlign: 'left' }}>
-                    <select 
-                      value={item.shape} 
-                      onChange={(e) => handleShapeChange(item.id, e.target.value)}
-                      className="select-style" style={{ width: '100%' }}
-                    >
-                      {Object.values(SHAPE_TYPES).map(shape => (
-                        <option key={shape.id} value={shape.id}>{shape.name}</option>
-                      ))}
-                    </select>
-                  </td>
-                  <td>{renderDimensionInputs(item)}</td>
-                  <td>
-                    <input 
-                      type="number" 
-                      value={item.quantity} 
-                      onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                      className="input-style" style={{ width: '48px', fontWeight: 'bold' }}
-                    />
-                  </td>
-                  <td>
-                    <button className="btn-delete" onClick={() => handleDeleteItem(item.id)}>
-                      <span style={{ fontStyle: 'normal' }}>✕</span>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '8px' }}>
-        <button className="btn-add" onClick={handleAddItem}>
-            <span style={{ fontStyle: 'normal' }}>Thêm</span>
-        </button>
-      </div>
-    </div>
-  );
-}
 </file>
 
 <file path="src/Components/Login.css">
@@ -684,85 +509,6 @@ export default function ItemsTable({ items, setItems }) {
 }
 </file>
 
-<file path="src/Components/Login.jsx">
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // 1. Import Link từ react-router-dom
-import './Login.css';
-
-export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Login credentials:', { email, password });
-  };
-
-  return (
-    <div className="login-wrapper">
-      <div className="login-card">
-        <h1 className="login-title">File Splice Login</h1>
-
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="input-group">
-            <input
-              type="email"
-              id="email"
-              className="login-input"
-              placeholder=" "
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <label htmlFor="email" className="login-label">Email Address</label>
-          </div>
-
-          <div className="input-group">
-            <input
-              type="password"
-              id="password"
-              className="login-input"
-              placeholder=" "
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <label htmlFor="password" className="login-label">Password</label>
-          </div>
-
-          <button type="submit" className="btn-login-submit">
-            Sign me in
-          </button>
-        </form>
-
-        <div className="oauth-group">
-          <button type="button" className="btn-oauth">
-            <span className="oauth-icon">G</span> Google
-          </button>
-          <button type="button" className="btn-oauth">
-            <span className="oauth-icon">❖</span> Dropbox
-          </button>
-          <button type="button" className="btn-oauth">
-            <span className="oauth-icon">⊞</span> Microsoft
-          </button>
-        </div>
-
-        {/* 📌 VỊ TRÍ VIẾT DÒNG LINK ĐÂY NHA HẠO */}
-        <div className="login-links">
-          <a href="#forgot-password" className="link-item">Forgot Password</a>
-          
-          {/* Đổi thẻ <a> thành thẻ <Link> để chuyển sang trang Register không reload */}
-          <Link to="/register" className="link-item">
-            Don't have an account? Sign up!
-          </Link>
-        </div>
-
-      </div>
-    </div>
-  );
-}
-</file>
-
 <file path="src/Components/Navbar.css">
 /* 📌 ĐIỂM MẤU CHỐT Ở ĐÂY */
 .navbar {
@@ -809,76 +555,6 @@ export default function Login() {
 
 .navbar-links a:hover {
   color: #63bdea;
-}
-</file>
-
-<file path="src/Components/OptimizationOptions.jsx">
-import React from 'react';
-import './PackingTables.css';
-
-export default function OptimizationOptions({ strategy, setStrategy, onReset, onOptimize }) {
-  const options = [
-    {
-      id: 'REMAINDER_OPTIMAL',
-      title: 'Tối ưu diện tích phần dư',
-      desc: 'Gom cụm phần dư gọn gàng để có thể tái sử dụng cho lần sau.'
-    },
-    {
-      id: 'BALANCED_DISTRIBUTION',
-      title: 'Phân bố đều các chi tiết',
-      desc: 'Phân bố khoảng cách đều đặn giữa các chi tiết trên tấm.'
-    },
-    {
-      id: 'MINIMIZE_CONTAINERS',
-      title: 'Tối ưu số lượng tấm sử dụng',
-      desc: 'Sử dụng ít tấm vật liệu nhất có thể để cắt hết chi tiết.'
-    }
-  ];
-
-  return (
-    <>
-      {/* KHUNG PHƯƠNG ÁN TỐI ƯU CẮT */}
-      <div className="options-card">
-        <h2 className="options-title">
-          <i className="fa-solid fa-sliders"></i> Phương án tối ưu
-        </h2>
-
-        <div className="options-list">
-          {options.map((opt) => {
-            const isSelected = strategy === opt.id;
-            return (
-              <label 
-                key={opt.id} 
-                className={`option-item ${isSelected ? 'active' : ''}`}
-              >
-                <input 
-                  type="radio" 
-                  name="optStrategy" 
-                  value={opt.id}
-                  checked={isSelected}
-                  onChange={(e) => setStrategy(e.target.value)}
-                />
-                <div>
-                  <span className="option-label-title">{opt.title}</span>
-                  <span className="option-label-desc">{opt.desc}</span>
-                </div>
-              </label>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* BỘ NÚT HÀNH ĐỘNG: RESET & BẮT ĐẦU TỐI ƯU */}
-      <div className="action-buttons-group">
-        <button className="btn-action-reset" onClick={onReset}>
-          Đặt lại cài đặt
-        </button>
-        <button className="btn-action-optimize" onClick={onOptimize}>
-          BẮT ĐẦU TỐI ƯU
-        </button>
-      </div>
-    </>
-  );
 }
 </file>
 
@@ -1037,183 +713,6 @@ export default function OptimizationOptions({ strategy, setStrategy, onReset, on
   display: flex;
   justify-content: center;
   margin-top: 1.5rem;
-}
-</file>
-
-<file path="src/Components/Register.jsx">
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './Register.css';
-
-export default function Register() {
-  const [formData, setFormData] = useState({
-    email: '',
-    firstName: '',
-    lastName: '',
-    password: '',
-    agreeTerms: false
-  });
-
-  const handleChange = (e) => {
-    const { id, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [id]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.agreeTerms) {
-      alert('Vui lòng đồng ý với Điều khoản dịch vụ để tiếp tục!');
-      return;
-    }
-    console.log('Register data:', formData);
-    // TODO: Tích hợp gọi API đăng ký của Hạo tại đây
-  };
-
-  return (
-    <div className="register-wrapper">
-      <div className="register-card">
-        <h1 className="register-title">File Splice Registration</h1>
-
-        <form onSubmit={handleSubmit} className="register-form">
-          {/* Email Address */}
-          <div className="input-group">
-            <input
-              type="email"
-              id="email"
-              className="register-input"
-              placeholder=" "
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-            <label htmlFor="email" className="register-label">Email</label>
-          </div>
-
-          {/* First Name & Last Name (Cùng 1 hàng) */}
-          <div className="input-row">
-            <div className="input-group">
-              <input
-                type="text"
-                id="firstName"
-                className="register-input"
-                placeholder=" "
-                value={formData.firstName}
-                onChange={handleChange}
-                required
-              />
-              <label htmlFor="firstName" className="register-label">First name</label>
-            </div>
-
-            <div className="input-group">
-              <input
-                type="text"
-                id="lastName"
-                className="register-input"
-                placeholder=" "
-                value={formData.lastName}
-                onChange={handleChange}
-                required
-              />
-              <label htmlFor="lastName" className="register-label">Last name</label>
-            </div>
-          </div>
-
-          {/* Password */}
-          <div className="input-group">
-            <input
-              type="password"
-              id="password"
-              className="register-input"
-              placeholder=" "
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-            <label htmlFor="password" className="register-label">Password</label>
-          </div>
-
-          {/* Terms Checkbox */}
-          <div className="terms-group">
-            <input
-              type="checkbox"
-              id="agreeTerms"
-              className="terms-checkbox"
-              checked={formData.agreeTerms}
-              onChange={handleChange}
-            />
-            <label htmlFor="agreeTerms" className="terms-label">
-              By clicking Sign Up, you <a href="#terms" className="terms-link">agree to our Terms</a> and that you have read our Data Policy, including our Cookie Use.
-            </label>
-          </div>
-
-          {/* Submit Button */}
-          <button type="submit" className="btn-register-submit">
-            Register
-          </button>
-        </form>
-
-        {/* Link chuyển sang trang Đăng nhập */}
-        <div className="register-links">
-          <Link to="/login" className="link-item">
-            Already Have An Account? Log in
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
-</file>
-
-<file path="src/Components/SeoSection.css">
-/* ==========================================
-   BÀI VIẾT SEO / HƯỚNG DẪN (SEO SECTION)
-   ========================================== */
-.seo-section {
-  width: 100%;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 1rem;
-  padding: 2.5rem 3rem;
-  margin-top: 3rem;
-  margin-bottom: 3rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.seo-title {
-  font-size: 2.25rem;
-  font-weight: 900;
-  color: #0f172a;
-  letter-spacing: -0.025em;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.seo-content {
-  font-size: 1.125rem;
-  line-height: 1.8;
-  color: #334155;
-}
-</file>
-
-<file path="src/Components/SeoSection.jsx">
-import React from 'react';
-import './SeoSection.css';
-
-export default function SeoSection() {
-  return (
-    <section className="seo-section">
-      <h2 className="seo-title">
-        Dễ Dàng Trực Quan Hóa Và Tối Ưu Bố Trí Cắt Của Bạn
-      </h2>
-      <p className="seo-content">
-        Sử dụng công cụ tính toán xếp hình 2D miễn phí này để có cái nhìn trực quan về cách bạn có thể kết hợp các hình dạng kích thước khác nhau trên cùng một trang.
-      </p>
-    </section>
-  );
 }
 </file>
 
@@ -2832,6 +2331,560 @@ export default defineConfig({
 })
 </file>
 
+<file path="src/Components/ContainersTable.jsx">
+import React from 'react';
+import './PackingTables.css';
+
+export default function ContainersTable({ containers, setContainers }) {
+
+  const handleAddContainer = () => {
+    const newContainer = {
+      id: Date.now(),
+      name: `Tấm Vật Liệu ${containers.length + 1}`,
+      width: 1000,
+      height: 800,
+      quantity: 1
+    };
+    setContainers([...containers, newContainer]);
+  };
+
+  const handleDeleteContainer = (id) => {
+    setContainers(containers.filter(c => c.id !== id));
+  };
+
+  // ⚡ Tự động nắn kích thước & số lượng tấm phôi < 1 về 1
+  const handleUpdateContainer = (id, field, value) => {
+    setContainers(containers.map(c => {
+      if (c.id !== id) return c;
+      if (field === 'name') return { ...c, name: value };
+      if (value === '') return { ...c, [field]: '' };
+      
+      const val = Number(value);
+      return { 
+        ...c, 
+        [field]: val < 1 ? 1 : val 
+      };
+    }));
+  };
+
+  return (
+    <div className="packing-card containers-card">
+      <div>
+        <h2 className="card-title" style={{ fontSize: '1.125rem' }}>Tấm vật liệu</h2>
+        
+        <div className="table-wrapper">
+          <table className="custom-table">
+            <thead>
+              <tr>
+                <th style={{ textAlign: 'left', width: '112px' }}>Tên tấm</th>
+                <th>Dài</th>
+                <th>Rộng</th>
+                <th>Số lượng</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {containers.map((container) => (
+                <tr key={container.id}>
+                  <td style={{ textAlign: 'left' }}>
+                    <input 
+                      type="text" 
+                      value={container.name} 
+                      onChange={(e) => handleUpdateContainer(container.id, 'name', e.target.value)}
+                      onFocus={(e) => e.target.select()}
+                      maxLength={50} 
+                      className="input-name"
+                    />
+                  </td>
+                  <td>
+                    <input 
+                      type="number" 
+                      min="1"
+                      value={container.width ?? ''} 
+                      onChange={(e) => handleUpdateContainer(container.id, 'width', e.target.value)}
+                      onFocus={(e) => e.target.select()}
+                      className="input-style" style={{ width: '64px' }}
+                    />
+                  </td>
+                  <td>
+                    <input 
+                      type="number" 
+                      min="1"
+                      value={container.height ?? ''} 
+                      onChange={(e) => handleUpdateContainer(container.id, 'height', e.target.value)}
+                      onFocus={(e) => e.target.select()}
+                      className="input-style" style={{ width: '64px' }}
+                    />
+                  </td>
+                  <td>
+                    <input 
+                      type="number" 
+                      min="1"
+                      value={container.quantity ?? ''} 
+                      onChange={(e) => handleUpdateContainer(container.id, 'quantity', e.target.value)}
+                      onFocus={(e) => e.target.select()}
+                      className="input-style" style={{ width: '48px' }}
+                    />
+                  </td>
+                  <td>
+                    <button className="btn-delete" onClick={() => handleDeleteContainer(container.id)}>
+                      <span style={{ fontStyle: 'normal' }}>✕</span>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '4px' }}>
+        <button className="btn-add" onClick={handleAddContainer} style={{ padding: '6px 24px' }}>
+          <span style={{ fontStyle: 'normal' }}>Thêm</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/Components/Footer.css">
+/* ==========================================
+   CHÂN TRANG (FOOTER)
+   ========================================== */
+.site-footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  color: #475569;
+  font-family: 'Roboto', 'Inter', sans-serif;
+  padding: 3.5rem 2rem;
+  margin-top: auto;
+}
+
+.footer-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3.5rem;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footer-col h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-col a {
+  color: #475569;
+  text-decoration: none;
+  font-size: 0.975rem;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.footer-col a:hover {
+  color: #3b82f6;
+}
+
+.footer-desc {
+  color: #64748b;
+  font-size: 0.925rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.footer-copyright {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding-top: 0.5rem;
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .footer-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+</file>
+
+<file path="src/Components/Footer.jsx">
+import React from 'react';
+import './Footer.css';
+
+export default function Footer() {
+  return (
+    <footer className="site-footer">
+      <div className="footer-container">
+        
+        {/* Cột 1: Support / Hỗ Trợ */}
+        <div className="footer-col">
+          <h3>Support</h3>
+          <ul>
+            <li><a href="#faqs">Instructions/FAQs</a></li>
+            <li><a href="#merge-instructions">Merge (Imposition) Instructions</a></li>
+            <li><a href="#mail-merge">Mail Merge Instructions</a></li>
+            <li><a href="#contact">Contact Us</a></li>
+            <li><a href="#videos">Instructional Videos</a></li>
+            <li><a href="#blog">Blog</a></li>
+          </ul>
+        </div>
+
+        {/* Cột 2: Quick Links / Liên Kết Nhanh */}
+        <div className="footer-col">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#calculators">Free Calculators & Tools</a></li>
+            <li><a href="#demo">Demo Pages</a></li>
+            <li><a href="#templates">System Templates</a></li>
+            <li><a href="#security">Security & Privacy</a></li>
+          </ul>
+        </div>
+
+        {/* Cột 3: Thương hiệu 2D-Packing.net */}
+        <div className="footer-col brand-col">
+          <h3>
+            <span style={{ color: '#0f172a' }}>2D-Packing</span>
+            <span style={{ color: '#3b82f6' }}>.net</span>
+          </h3>
+          <p className="footer-desc">
+            Phần mềm trực tuyến tối ưu bố trí cắt 2D, xếp hình tự động, giảm hao hụt vật liệu và ước tính chi phí gia công nhanh chóng trên mọi thiết bị.
+          </p>
+          <p className="footer-copyright">
+            © 2026 2D-Packing.net. All rights reserved.
+          </p>
+        </div>
+
+      </div>
+    </footer>
+  );
+}
+</file>
+
+<file path="src/Components/ItemsTable.jsx">
+import React from 'react';
+import './PackingTables.css';
+
+export const SHAPE_TYPES = {
+  RECTANGLE: { id: 'RECTANGLE', name: 'Hình chữ nhật' },
+  CIRCLE: { id: 'CIRCLE', name: 'Hình tròn' },
+  RIGHT_TRIANGLE: { id: 'RIGHT_TRIANGLE', name: 'Tam giác vuông' },
+  ISOSCELES_TRIANGLE: { id: 'ISOSCELES_TRIANGLE', name: 'Tam giác cân' },
+  HEXAGON: { id: 'HEXAGON', name: 'Lục giác đều' },
+  ELLIPSE: { id: 'ELLIPSE', name: 'Ellipse' }
+};
+
+export default function ItemsTable({ items, setItems }) {
+
+  const handleAddItem = () => {
+    const newItem = {
+      id: Date.now(),
+      shape: SHAPE_TYPES.RECTANGLE.id,
+      dimensions: { w: 240, h: 170 },
+      quantity: 5
+    };
+    setItems([...items, newItem]);
+  };
+
+  const handleDeleteItem = (id) => {
+    setItems(items.filter(item => item.id !== id));
+  };
+
+  const handleShapeChange = (id, newShape) => {
+    let defaultDims = { w: 200, h: 200 };
+    if (newShape === SHAPE_TYPES.CIRCLE.id) defaultDims = { d: 150 };
+    if (newShape === SHAPE_TYPES.HEXAGON.id) defaultDims = { a: 200 };
+    if (newShape === SHAPE_TYPES.ELLIPSE.id) defaultDims = { rx: 200, ry: 150 };
+
+    setItems(items.map(item => 
+      item.id === id ? { ...item, shape: newShape, dimensions: defaultDims } : item
+    ));
+  };
+
+  // ⚡ Tự động nắn giá trị < 1 về 1 (giữ '' nếu xóa hết)
+  const handleDimensionChange = (id, key, value) => {
+    setItems(items.map(item => {
+      if (item.id !== id) return item;
+      if (value === '') return { ...item, dimensions: { ...item.dimensions, [key]: '' } };
+      const val = Number(value);
+      return { 
+        ...item, 
+        dimensions: { 
+          ...item.dimensions, 
+          [key]: val < 1 ? 1 : val 
+        } 
+      };
+    }));
+  };
+
+  const handleQuantityChange = (id, qty) => {
+    setItems(items.map(item => {
+      if (item.id !== id) return item;
+      if (qty === '') return { ...item, quantity: '' };
+      const val = Number(qty);
+      return { ...item, quantity: val < 1 ? 1 : val };
+    }));
+  };
+
+  const renderDimensionInputs = (item) => {
+    const { shape, dimensions } = item;
+
+    switch (shape) {
+      case SHAPE_TYPES.CIRCLE.id:
+        return (
+          <div className="flex-center">
+            <span style={{ fontSize: '10px', color: '#94a3b8' }}>Ø:</span>
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.d ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'd', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '64px' }}
+            />
+          </div>
+        );
+      case SHAPE_TYPES.HEXAGON.id:
+        return (
+          <div className="flex-center">
+            <span style={{ fontSize: '10px', color: '#94a3b8' }}>Cạnh:</span>
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.a ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'a', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '64px' }}
+            />
+          </div>
+        );
+      case SHAPE_TYPES.ELLIPSE.id:
+        return (
+          <div className="flex-center">
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.rx ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'rx', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '48px' }}
+            />
+            <span style={{ color: '#94a3b8' }}>x</span>
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.ry ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'ry', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '48px' }}
+            />
+          </div>
+        );
+      case SHAPE_TYPES.RIGHT_TRIANGLE.id:
+      case SHAPE_TYPES.ISOSCELES_TRIANGLE.id:
+        return (
+          <div className="flex-center">
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.b ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'b', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '48px' }}
+            />
+            <span style={{ color: '#94a3b8' }}>x</span>
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.h ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'h', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '48px' }}
+            />
+          </div>
+        );
+      case SHAPE_TYPES.RECTANGLE.id:
+      default:
+        return (
+          <div className="flex-center">
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.w ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'w', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '48px' }}
+            />
+            <span style={{ color: '#94a3b8' }}>x</span>
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.h ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'h', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '48px' }}
+            />
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="packing-card items-card">
+      <div>
+        <h2 className="card-title">Chi tiết cần cắt</h2>
+        
+        <div className="table-wrapper">
+          <table className="custom-table">
+            <thead>
+              <tr>
+                <th style={{ textAlign: 'left', width: '140px' }}>Hình dạng</th>
+                <th>Thông số (mm)</th>
+                <th style={{ width: '64px' }}>Số lượng</th>
+                <th style={{ width: '32px' }}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <tr key={item.id}>
+                  <td style={{ textAlign: 'left' }}>
+                    <select 
+                      value={item.shape} 
+                      onChange={(e) => handleShapeChange(item.id, e.target.value)}
+                      className="select-style" style={{ width: '100%' }}
+                    >
+                      {Object.values(SHAPE_TYPES).map(shape => (
+                        <option key={shape.id} value={shape.id}>{shape.name}</option>
+                      ))}
+                    </select>
+                  </td>
+                  <td>{renderDimensionInputs(item)}</td>
+                  <td>
+                    <input 
+                      type="number" 
+                      min="1"
+                      value={item.quantity ?? ''} 
+                      onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                      onFocus={(e) => e.target.select()}
+                      className="input-style" style={{ width: '48px', fontWeight: 'bold' }}
+                    />
+                  </td>
+                  <td>
+                    <button className="btn-delete" onClick={() => handleDeleteItem(item.id)}>
+                      <span style={{ fontStyle: 'normal' }}>✕</span>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '8px' }}>
+        <button className="btn-add" onClick={handleAddItem}>
+            <span style={{ fontStyle: 'normal' }}>Thêm</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/Components/Login.jsx">
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // 1. Import Link từ react-router-dom
+import './Login.css';
+
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Login credentials:', { email, password });
+  };
+
+  return (
+    <div className="login-wrapper">
+      <div className="login-card">
+        <h1 className="login-title">Đăng nhập</h1>
+
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="input-group">
+            <input
+              type="email"
+              id="email"
+              className="login-input"
+              placeholder=" "
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <label htmlFor="email" className="login-label">Email</label>
+          </div>
+
+          <div className="input-group">
+            <input
+              type="password"
+              id="password"
+              className="login-input"
+              placeholder=" "
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <label htmlFor="password" className="login-label">Mật khẩu</label>
+          </div>
+
+          <button type="submit" className="btn-login-submit">
+            Đăng nhập
+          </button>
+        </form>
+
+
+        {/* 📌 VỊ TRÍ VIẾT DÒNG LINK ĐÂY NHA HẠO */}
+        <div className="login-links">
+          <a href="#forgot-password" className="link-item">Quên mật khẩu?</a>
+          
+          {/* Đổi thẻ <a> thành thẻ <Link> để chuyển sang trang Register không reload */}
+          <Link to="/register" className="link-item">
+            Bạn chưa có tài khoản? Đăng ký!
+          </Link>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+</file>
+
 <file path="src/Components/Navbar.jsx">
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -2848,11 +2901,309 @@ export default function Navbar() {
       </div>
       <ul className="navbar-links">
         <li><Link to="/">Tính Năng</Link></li>
-        <li><a href="#about">Liên Hệ</a></li>
+        <li><Link to="/contact">Liên Hệ</Link></li> {/* 👈 Chuyển thành Link tới /contact */}
         <li><Link to="/login">Đăng Nhập</Link></li>
       </ul>
     </nav>
   );
+}
+</file>
+
+<file path="src/Components/OptimizationOptions.jsx">
+import React from 'react';
+import './PackingTables.css';
+
+export default function OptimizationOptions({ strategy, setStrategy, onReset, onOptimize }) {
+  const options = [
+    {
+      id: 'REMAINDER_OPTIMAL',
+      title: 'Tối ưu diện tích phần dư',
+      desc: 'Gom cụm phần dư gọn gàng để có thể tái sử dụng cho lần sau.'
+    },
+    {
+      id: 'BALANCED_DISTRIBUTION',
+      title: 'Phân bố đều các chi tiết',
+      desc: 'Phân bố khoảng cách đều đặn giữa các chi tiết trên tấm.'
+    },
+    {
+      id: 'MINIMIZE_CONTAINERS',
+      title: 'Tối ưu số lượng tấm sử dụng',
+      desc: 'Sử dụng ít tấm vật liệu nhất có thể để cắt hết chi tiết.'
+    }
+  ];
+
+  return (
+    <>
+      {/* KHUNG PHƯƠNG ÁN TỐI ƯU CẮT */}
+      <div className="options-card">
+        <h2 className="options-title">
+          <i className="fa-solid fa-sliders"></i> Phương án tối ưu
+        </h2>
+
+        <div className="options-list">
+          {options.map((opt) => {
+            const isSelected = strategy === opt.id;
+            return (
+              <label 
+                key={opt.id} 
+                className={`option-item ${isSelected ? 'active' : ''}`}
+              >
+                <input 
+                  type="radio" 
+                  name="optStrategy" 
+                  value={opt.id}
+                  checked={isSelected}
+                  onChange={(e) => setStrategy(e.target.value)}
+                />
+                <div>
+                  <span className="option-label-title">{opt.title}</span>
+                  <span className="option-label-desc">{opt.desc}</span>
+                </div>
+              </label>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* BỘ NÚT HÀNH ĐỘNG: RESET & BẮT ĐẦU TỐI ƯU */}
+      <div className="action-buttons-group">
+        <button className="btn-action-reset" onClick={onReset}>
+          Đặt lại cài đặt
+        </button>
+        <button className="btn-action-optimize" onClick={onOptimize}>
+          BẮT ĐẦU TỐI ƯU
+        </button>
+      </div>
+    </>
+  );
+}
+</file>
+
+<file path="src/Components/Register.jsx">
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './Register.css';
+
+export default function Register() {
+  const [formData, setFormData] = useState({
+    email: '',
+    firstName: '',
+    lastName: '',
+    password: '',
+    agreeTerms: false
+  });
+
+  const handleChange = (e) => {
+    const { id, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [id]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.agreeTerms) {
+      alert('Vui lòng đồng ý với Điều khoản dịch vụ để tiếp tục!');
+      return;
+    }
+    console.log('Register data:', formData);
+    // TODO: Tích hợp gọi API đăng ký của Hạo tại đây
+  };
+
+  return (
+    <div className="register-wrapper">
+      <div className="register-card">
+        <h1 className="register-title">Đăng ký tài khoản</h1>
+
+        <form onSubmit={handleSubmit} className="register-form">
+          {/* Email Address */}
+          <div className="input-group">
+            <input
+              type="email"
+              id="email"
+              className="register-input"
+              placeholder=" "
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+            <label htmlFor="email" className="register-label">Email</label>
+          </div>
+
+          {/* First Name & Last Name (Cùng 1 hàng) */}
+          <div className="input-row">
+            <div className="input-group">
+              <input
+                type="text"
+                id="firstName"
+                className="register-input"
+                placeholder=" "
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+              />
+              <label htmlFor="firstName" className="register-label">Tên</label>
+            </div>
+
+            <div className="input-group">
+              <input
+                type="text"
+                id="lastName"
+                className="register-input"
+                placeholder=" "
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+              />
+              <label htmlFor="lastName" className="register-label">Họ</label>
+            </div>
+          </div>
+
+          {/* Password */}
+          <div className="input-group">
+            <input
+              type="password"
+              id="password"
+              className="register-input"
+              placeholder=" "
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <label htmlFor="password" className="register-label">Mật khẩu</label>
+          </div>
+
+          {/* Submit Button */}
+          <button type="submit" className="btn-register-submit">
+            Đăng ký
+          </button>
+        </form>
+
+        {/* Link chuyển sang trang Đăng nhập */}
+        <div className="register-links">
+          <Link to="/login" className="link-item">
+            Bạn đã có tài khoản? Đăng nhập!
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/Components/SeoSection.css">
+/* ==========================================
+   BÀI VIẾT SEO TỐI GIẢN (SEO SECTION)
+   ========================================== */
+.seo-section {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 2rem 2.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.seo-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.seo-content {
+  font-size: 0.975rem;
+  line-height: 1.7;
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.seo-content p {
+  margin: 0;
+}
+</file>
+
+<file path="src/Components/SeoSection.jsx">
+import React from 'react';
+import './SeoSection.css';
+
+export default function SeoSection() {
+  return (
+    <section className="seo-section">
+      <h2 className="seo-title">
+        Dễ Dàng Trực Quan Hóa & Tối Ưu Sơ Đồ Cắt
+      </h2>
+
+      <div className="seo-content">
+        <p>
+          Công cụ <strong>2D-Packing.net</strong> giúp bạn nhanh chóng hình dung cách sắp xếp các chi tiết (nhãn dán, tem nhãn, tấm gia công) lên khung vật liệu gốc. Chỉ cần nhập kích thước và số lượng, hệ thống sẽ lập tức tính toán bố trí tối ưu kèm thống kê diện tích sử dụng chi tiết.
+        </p>
+
+        <p>
+          Ứng dụng vận hành dựa trên <strong>thuật toán tối ưu 2D (Rectangle Packing)</strong> phức tạp nhưng được đóng gói thành giao diện tối giản, dễ dùng. Bạn có thể lập kế hoạch cắt phôi, tiết kiệm vật tư và kiểm tra chính xác số lượng chi tiết vừa vặn trước khi tiến hành gia công thực tế.
+        </p>
+      </div>
+    </section>
+  );
+}
+</file>
+
+<file path="src/App.css">
+
+</file>
+
+<file path="src/main.jsx">
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>,
+)
+</file>
+
+<file path="package.json">
+{
+  "name": "2d-packing",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
+    "vite": "^8.3.5"
+  }
 }
 </file>
 
@@ -3152,248 +3503,20 @@ export default function Navbar() {
 .btn-action-optimize:active {
   transform: scale(0.98);
 }
-</file>
 
-<file path="src/App.css">
-
-</file>
-
-<file path="src/main.jsx">
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
-import './index.css'
-import App from './App.jsx'
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>,
-)
-</file>
-
-<file path="package.json">
-{
-  "name": "2d-packing",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1",
-    "react-router-dom": "^7.18.5"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.2",
-    "eslint": "^10.13.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.7",
-    "globals": "^17.13.0",
-    "vite": "^8.3.5"
-  }
+/* ==========================================
+   ẨN MŨI TÊN TĂNG GIẢM (SPINNER) TRÊN INPUT NUMBER
+   ========================================== */
+/* Chrome, Safari, Edge, Opera */
+.input-style::-webkit-outer-spin-button,
+.input-style::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
-</file>
 
-<file path="src/Components/PreviewPanel.jsx">
-import React, { useState } from 'react';
-
-const AUTO_COLORS = [
-  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
-  '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
-  '#f97316', '#14b8a6', '#6366f1', '#a855f7'
-];
-
-export default function PreviewPanel({ items = [], containers = [], placedBoxes = [], loading = false }) {
-  const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
-  const [showUnpackedDropdown, setShowUnpackedDropdown] = useState(false);
-
-  // ⚡ Kiểm tra đã có kết quả tối ưu hợp lệ được chốt chưa
-  const hasResults = Array.isArray(placedBoxes) && placedBoxes.length > 0 && containers.length > 0;
-
-  // ⚡ Chưa bấm tính toán (hoặc containers chốt chưa có) -> Giữ nguyên 1000 x 1000 mặc định
-  // ⚡ Đã bấm tối ưu -> Lấy kích thước phôi từ containers đã chốt
-  const currentSheet = hasResults ? (containers[selectedSheetIndex] || containers[0]) : null;
-  const sheetW = currentSheet ? (Number(currentSheet.width) || 1000) : 1000;
-  const sheetH = currentSheet ? (Number(currentSheet.height) || 1000) : 1000;
-
-  // ID của tấm phôi hiện tại đang chọn (khớp với ID = index + 1 gửi sang C#)
-  const currentSheetId = selectedSheetIndex + 1;
-
-  // Lọc các hộp thuộc về tấm phôi đang chọn
-  const currentSheetBoxes = hasResults
-    ? placedBoxes.filter(box => {
-        const boxSheetId = Number(box.stockSheetId ?? box.sTockSheetID ?? box.STockSheetID ?? 1);
-        return boxSheetId === currentSheetId;
-      })
-    : [];
-
-  // Tính diện tích đã xếp trên tấm này
-  let usedArea = 0;
-  currentSheetBoxes.forEach(box => {
-    const w = Number(box.Width ?? box.width ?? 0);
-    const h = Number(box.Height ?? box.height ?? 0);
-    usedArea += (w * h);
-  });
-
-  const totalSheetArea = sheetW * sheetH;
-  const efficiency = (hasResults && totalSheetArea > 0) ? ((usedArea / totalSheetArea) * 100).toFixed(2) : '0.00';
-
-  // Tạo bảng ánh xạ màu dựa trên kích thước chi tiết
-  const sizeColorMap = new Map();
-  let colorCounter = 0;
-
-  if (hasResults) {
-    placedBoxes.forEach(box => {
-      const w = Number(box.Width ?? box.width ?? 0);
-      const h = Number(box.Height ?? box.height ?? 0);
-      if (w === 0 || h === 0) return;
-
-      const sizeKey = `${Math.min(w, h)}x${Math.max(w, h)}`;
-
-      if (!sizeColorMap.has(sizeKey)) {
-        sizeColorMap.set(sizeKey, AUTO_COLORS[colorCounter % AUTO_COLORS.length]);
-        colorCounter++;
-      }
-    });
-  }
-
-  return (
-    <div className="right-column">
-      <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        <h2 className="preview-title">
-          Kết Quả Tối Ưu {loading && <span style={{ color: '#3b82f6', fontSize: '1rem' }}>(Đang tính toán...)</span>}
-        </h2>
-
-        <div id="previewContainer" className="preview-box">
-          <svg
-            id="canvasSheet"
-            width="100%"
-            height="100%"
-            viewBox={`0 0 ${sheetW} ${sheetH}`}
-            style={{
-              width: '100%',
-              height: '100%',
-              flexGrow: 1,
-              backgroundColor: '#ffffff',
-              border: 'none',
-              borderRadius: '0px',
-              boxShadow: 'none'
-            }}
-          >
-            {/* Lưới caro mờ */}
-            <defs>
-              <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
-                <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#cbd5e1" strokeWidth="2" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-
-            {/* Khung viền tấm phôi */}
-            <rect
-              x="0"
-              y="0"
-              width={sheetW}
-              height={sheetH}
-              fill="none"
-              stroke="#0f172a"
-              strokeWidth="4"
-            />
-
-            {/* Vẽ các chi tiết cắt */}
-            {currentSheetBoxes.length > 0 ? (
-              currentSheetBoxes.map((box, index) => {
-                const x = Number(box.X ?? box.x ?? 0);
-                const y = Number(box.Y ?? box.y ?? 0);
-                const w = Number(box.Width ?? box.width ?? 0);
-                const h = Number(box.Height ?? box.height ?? 0);
-
-                if (w === 0 || h === 0) return null;
-
-                const sizeKey = `${Math.min(w, h)}x${Math.max(w, h)}`;
-                const color = sizeColorMap.get(sizeKey) || AUTO_COLORS[0];
-
-                return (
-                  <rect
-                    key={index}
-                    x={x}
-                    y={y}
-                    width={w}
-                    height={h}
-                    fill={color}
-                    fillOpacity="0.85"
-                    rx="3"
-                    ry="3"
-                    stroke="#0f172a"
-                    strokeOpacity="0.95"
-                    strokeWidth="2.5"
-                  />
-                );
-              })
-            ) : (
-              <text x={sheetW / 2} y={sheetH / 2} textAnchor="middle" fill="#94a3b8" fontSize="22" fontWeight="600">
-                {loading 
-                  ? "Đang xử lý thuật toán..." 
-                  : hasResults 
-                    ? "Tấm phôi này chưa được sử dụng (Trống)" 
-                    : "Nhấn \"BẮT ĐẦU TỐI ƯU\" để hiển thị sơ đồ cắt"}
-              </text>
-            )}
-          </svg>
-        </div>
-      </div>
-
-      {/* STATS FOOTER */}
-      <div className="stats-footer">
-        <div className="stats-group">
-          <label className="stats-label">Hiển thị tấm kết quả:</label>
-          <div className="stats-select-wrapper">
-            <i className="fa-solid fa-layer-group stats-select-icon"></i>
-            <select 
-              className="stats-select" 
-              value={selectedSheetIndex} 
-              onChange={(e) => setSelectedSheetIndex(Number(e.target.value))}
-            >
-              {(hasResults ? containers : []).map((c, idx) => (
-                <option key={c.id || idx} value={idx}>
-                  {c.name || `Tấm ${idx + 1}`} ({c.width}x{c.height})
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="stats-group">
-          <label className="stats-label">Chi tiết trên tấm này:</label>
-          <button className="stats-unpacked-btn" onClick={() => setShowUnpackedDropdown(!showUnpackedDropdown)}>
-            <span className="unpacked-text">
-              <i className="fa-solid fa-circle-check" style={{ color: '#10b981' }}></i>
-              <span>{currentSheetBoxes.length} chi tiết đã xếp</span>
-            </span>
-            <i className="fa-solid fa-chevron-down" style={{ fontSize: '12px', color: '#94a3b8' }}></i>
-          </button>
-        </div>
-
-        <div className="stats-group">
-          <label className="stats-label">Diện tích sử dụng:</label>
-          <div style={{ display: 'flex', alignItems: 'baseline' }}>
-            <span className="area-value">{usedArea.toLocaleString()} mm²</span>
-            <span className="area-efficiency">({efficiency}%)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+/* Firefox */
+.input-style[type="number"] {
+  -moz-appearance: textfield;
 }
 </file>
 
@@ -3652,6 +3775,198 @@ input, select, button, textarea {
 }
 </file>
 
+<file path="src/Components/PreviewPanel.jsx">
+import React, { useState } from 'react';
+
+const AUTO_COLORS = [
+  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
+  '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
+  '#f97316', '#14b8a6', '#6366f1', '#a855f7'
+];
+
+export default function PreviewPanel({ items = [], containers = [], placedBoxes = [], loading = false }) {
+  const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
+  const [showUnpackedDropdown, setShowUnpackedDropdown] = useState(false);
+
+  // ⚡ Kiểm tra đã có kết quả tối ưu hợp lệ được chốt chưa
+  const hasResults = Array.isArray(placedBoxes) && placedBoxes.length > 0 && containers.length > 0;
+
+  // ⚡ Chưa bấm tính toán (hoặc containers chốt chưa có) -> Giữ nguyên 1000 x 1000 mặc định
+  // ⚡ Đã bấm tối ưu -> Lấy kích thước phôi từ containers đã chốt
+  const currentSheet = hasResults ? (containers[selectedSheetIndex] || containers[0]) : null;
+  const sheetW = currentSheet ? (Number(currentSheet.width) || 1000) : 1000;
+  const sheetH = currentSheet ? (Number(currentSheet.height) || 1000) : 1000;
+
+  // ID của tấm phôi hiện tại đang chọn (khớp với ID = index + 1 gửi sang C#)
+  const currentSheetId = selectedSheetIndex + 1;
+
+  // Lọc các hộp thuộc về tấm phôi đang chọn
+  const currentSheetBoxes = hasResults
+    ? placedBoxes.filter(box => {
+        const boxSheetId = Number(box.stockSheetId ?? box.sTockSheetID ?? box.STockSheetID ?? 1);
+        return boxSheetId === currentSheetId;
+      })
+    : [];
+
+  // Tính diện tích đã xếp trên tấm này
+  let usedArea = 0;
+  currentSheetBoxes.forEach(box => {
+    const w = Number(box.Width ?? box.width ?? 0);
+    const h = Number(box.Height ?? box.height ?? 0);
+    usedArea += (w * h);
+  });
+
+  const totalSheetArea = sheetW * sheetH;
+  const efficiency = (hasResults && totalSheetArea > 0) ? ((usedArea / totalSheetArea) * 100).toFixed(2) : '0.00';
+
+  // Tạo bảng ánh xạ màu dựa trên kích thước chi tiết
+  const sizeColorMap = new Map();
+  let colorCounter = 0;
+
+  if (hasResults) {
+    placedBoxes.forEach(box => {
+      const w = Number(box.Width ?? box.width ?? 0);
+      const h = Number(box.Height ?? box.height ?? 0);
+      if (w === 0 || h === 0) return;
+
+      const sizeKey = `${Math.min(w, h)}x${Math.max(w, h)}`;
+
+      if (!sizeColorMap.has(sizeKey)) {
+        sizeColorMap.set(sizeKey, AUTO_COLORS[colorCounter % AUTO_COLORS.length]);
+        colorCounter++;
+      }
+    });
+  }
+
+  return (
+    <div className="right-column">
+      <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        <h2 className="preview-title">
+          Kết Quả Tối Ưu {loading && <span style={{ color: '#3b82f6', fontSize: '1rem' }}>(Đang tính toán...)</span>}
+        </h2>
+
+        <div id="previewContainer" className="preview-box">
+          <svg
+            id="canvasSheet"
+            width="100%"
+            height="100%"
+            viewBox={`0 0 ${sheetW} ${sheetH}`}
+            style={{
+              width: '100%',
+              height: '100%',
+              flexGrow: 1,
+              backgroundColor: '#ffffff',
+              border: 'none',
+              borderRadius: '0px',
+              boxShadow: 'none'
+            }}
+          >
+            {/* Lưới caro mờ */}
+            <defs>
+              <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+                <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#cbd5e1" strokeWidth="2" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+
+            {/* Khung viền tấm phôi */}
+            <rect
+              x="0"
+              y="0"
+              width={sheetW}
+              height={sheetH}
+              fill="none"
+              stroke="#0f172a"
+              strokeWidth="4"
+            />
+
+            {/* Vẽ các chi tiết cắt */}
+            {currentSheetBoxes.length > 0 ? (
+              currentSheetBoxes.map((box, index) => {
+                const x = Number(box.X ?? box.x ?? 0);
+                const y = Number(box.Y ?? box.y ?? 0);
+                const w = Number(box.Width ?? box.width ?? 0);
+                const h = Number(box.Height ?? box.height ?? 0);
+
+                if (w === 0 || h === 0) return null;
+
+                const sizeKey = `${Math.min(w, h)}x${Math.max(w, h)}`;
+                const color = sizeColorMap.get(sizeKey) || AUTO_COLORS[0];
+
+                return (
+                  <rect
+                    key={index}
+                    x={x}
+                    y={y}
+                    width={w}
+                    height={h}
+                    fill={color}
+                    fillOpacity="0.85"
+                    rx="3"
+                    ry="3"
+                    stroke="#0f172a"
+                    strokeOpacity="0.95"
+                    strokeWidth="2.5"
+                  />
+                );
+              })
+            ) : (
+              <text x={sheetW / 2} y={sheetH / 2} textAnchor="middle" fill="#94a3b8" fontSize="22" fontWeight="600">
+                {loading 
+                  ? "Đang xử lý thuật toán..." 
+                  : hasResults 
+                    ? "Tấm phôi này chưa được sử dụng (Trống)" 
+                    : "Nhấn \"BẮT ĐẦU TỐI ƯU\" để hiển thị sơ đồ cắt"}
+              </text>
+            )}
+          </svg>
+        </div>
+      </div>
+
+      {/* STATS FOOTER */}
+      <div className="stats-footer">
+        <div className="stats-group">
+          <label className="stats-label">Hiển thị tấm kết quả:</label>
+          <div className="stats-select-wrapper">
+            <i className="fa-solid fa-layer-group stats-select-icon"></i>
+            <select 
+              className="stats-select" 
+              value={selectedSheetIndex} 
+              onChange={(e) => setSelectedSheetIndex(Number(e.target.value))}
+            >
+              {(hasResults ? containers : []).map((c, idx) => (
+                <option key={c.id || idx} value={idx}>
+                  {c.name || `Tấm ${idx + 1}`} ({c.width}x{c.height})
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="stats-group">
+          <label className="stats-label">Chi tiết trên tấm này:</label>
+          <button className="stats-unpacked-btn" onClick={() => setShowUnpackedDropdown(!showUnpackedDropdown)}>
+            <span className="unpacked-text">
+              <i className="fa-solid fa-circle-check" style={{ color: '#10b981' }}></i>
+              <span>{currentSheetBoxes.length} chi tiết đã xếp</span>
+            </span>
+            <i className="fa-solid fa-chevron-down" style={{ fontSize: '12px', color: '#94a3b8' }}></i>
+          </button>
+        </div>
+
+        <div className="stats-group">
+          <label className="stats-label">Diện tích sử dụng:</label>
+          <div style={{ display: 'flex', alignItems: 'baseline' }}>
+            <span className="area-value">{usedArea.toLocaleString()} mm²</span>
+            <span className="area-efficiency">({efficiency}%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
 <file path="index.html">
 <!doctype html>
 <html lang="en">
@@ -3684,6 +3999,7 @@ import SeoSection from './Components/SeoSection';
 import Footer from './Components/Footer';
 import Login from './Components/Login';
 import Register from './Components/Register';
+import Contact from './Components/Contact'; 
 import { calculateLayoutApi } from './services/apiService';
 
 // Component chứa toàn bộ giao diện Trang chủ cắt 2D
@@ -3773,6 +4089,7 @@ export default function App() {
 
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>

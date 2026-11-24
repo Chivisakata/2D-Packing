@@ -1,7 +1,7 @@
 const API_BASE_URL = 'https://localhost:7187/api';
 
 export async function calculateLayoutApi(items, containers, strategy) {
-  // ⚡ 1. CHUẨN HÓA & NHÂN BẢN PHÔI (StockSheets) THEO QUANTITY VỚI ID DUY NHẤT (1, 2, 3...)
+  // 1. CHUẨN HÓA & NHÂN BẢN PHÔI (StockSheets) THEO QUANTITY VỚI ID DUY NHẤT
   const stockSheets = [];
   let sheetIdCounter = 1;
 
@@ -11,13 +11,12 @@ export async function calculateLayoutApi(items, containers, strategy) {
     const height = Number(c.height);
     const name = c.name || 'Tấm phôi';
 
-    // Nhân bản từng tấm phôi thực tế để C# hiểu và phân bổ chi tiết chuẩn xác
     for (let i = 0; i < qty; i++) {
       stockSheets.push({
-        ID: sheetIdCounter++, // ⚡ ID luôn là số nguyên tăng dần 1, 2, 3... không lo trùng!
+        ID: sheetIdCounter++,
         Width: width,
         Height: height,
-        Quantity: 1, // Đã tách thành từng tấm riêng biệt
+        Quantity: 1,
         Name: qty > 1 ? `${name} (#${i + 1})` : name
       });
     }
@@ -27,7 +26,7 @@ export async function calculateLayoutApi(items, containers, strategy) {
     stockSheets.push({ ID: 1, Width: 1200, Height: 800, Quantity: 1, Name: 'Tấm A' });
   }
 
-  // 2. Chuyển đổi danh sách chi tiết cắt (CuttingPack)
+  // 2. CHUYỂN ĐỔI DANH SÁCH CHI TIẾT CẮT (CuttingPack)
   const cuttingPackData = [];
 
   items.forEach((item) => {
@@ -68,15 +67,25 @@ export async function calculateLayoutApi(items, containers, strategy) {
     }
   });
 
-  // 3. Đóng gói Payload
+  // ⚡ 3. ÁNH XẠ STRATEGY SANG CÁC GIÁ TRỊ ENUM CỦA C# BE
+  // 1 = MaximalRectanglesCutting (Tối ưu diện tích phần dư)
+  // 2 = SlackDistributedMaxRects (Phân bố đều các chi tiết)
+  let cuttingType = 1;
+if (strategy === 'BALANCED_DISTRIBUTION') {
+  cuttingType = 2; // Phân bố đều các chi tiết
+} else if (strategy === 'REMAINDER_OPTIMAL') {
+  cuttingType = 1; // Tối ưu diện tích phần dư
+}
+
+  // 4. ĐÓNG GÓI PAYLOAD VỚI DẠNG TYPE ĐÃ MAP LINH HOẠT
   const payload = {
-    Type: 1, // 1 = MaximalRectanglesCutting
+    Type: cuttingType,
     SawKerf: 0,
     StockSheets: stockSheets,
     CuttingPack: cuttingPackData
   };
 
-  console.log("🚀 Payload gửi sang C# (Đã tách ID phôi chuẩn):", payload);
+  console.log("🚀 Payload gửi sang C#:", payload);
 
   try {
     const response = await fetch(`${API_BASE_URL}/CalculateLayout`, {
@@ -97,8 +106,7 @@ export async function calculateLayoutApi(items, containers, strategy) {
 
     const rawBoxes = result?.data || result || [];
 
-    // ⚡ CHUẨN HÓA THUỘC TÍNH
-    // ⚡ CHUẨN HÓA THUỘC TÍNH: Bổ sung sTockSheetID (s nhỏ, T hoa)
+    // CHUẨN HÓA THUỘC TÍNH TRẢ VỀ CHO FE
     const normalizedBoxes = Array.isArray(rawBoxes) 
       ? rawBoxes.map((box) => {
           const isRotated = Boolean(box.IsRotated ?? box.isRotated ?? false);
@@ -110,7 +118,6 @@ export async function calculateLayoutApi(items, containers, strategy) {
             y: Number(box.Y ?? box.y ?? 0),
             width: isRotated ? rawH : rawW,
             height: isRotated ? rawW : rawH,
-            // 🎯 BẮT ĐÚNG TÊN FIELD C# TRẢ VỀ: sTockSheetID
             stockSheetId: Number(box.sTockSheetID ?? box.STockSheetID ?? box.stockSheetId ?? 1),
             isRotated: isRotated
           };

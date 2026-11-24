@@ -13,7 +13,7 @@ export default function Navbar() {
       </div>
       <ul className="navbar-links">
         <li><Link to="/">Tính Năng</Link></li>
-        <li><a href="#about">Liên Hệ</a></li>
+        <li><Link to="/contact">Liên Hệ</Link></li> {/* 👈 Chuyển thành Link tới /contact */}
         <li><Link to="/login">Đăng Nhập</Link></li>
       </ul>
     </nav>

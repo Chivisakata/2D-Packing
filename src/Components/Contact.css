@@ -1,0 +1,176 @@
+/* ==========================================
+   GIAO DIỆN LIÊN HỆ (CONTACT PAGE)
+   ========================================== */
+.contact-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  padding: 3.5rem 1rem 5rem 1rem;
+  background-color: transparent;
+}
+
+.contact-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Header */
+.contact-header {
+  margin-bottom: 2rem;
+}
+
+.contact-title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.025em;
+}
+
+.contact-subtitle {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #64748b;
+  font-weight: 400;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* Support Card */
+.contact-card {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 3rem 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.email-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  background-color: #eff6ff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.card-heading {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.card-subtext {
+  font-size: 0.925rem;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+}
+
+.email-link {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: none;
+  margin-bottom: 1.75rem;
+  transition: color 0.15s ease;
+}
+
+.email-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.response-time {
+  font-size: 0.825rem;
+  color: #94a3b8;
+  font-weight: 500;
+  max-width: 360px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Divider Line */
+.contact-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #e2e8f0;
+  margin: 2.75rem 0;
+}
+
+/* Faster Answers Section */
+.faster-answers-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.faster-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.35rem;
+}
+
+.faster-subtext {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 1.5rem;
+}
+
+.resource-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.btn-resource {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.15rem;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.btn-resource:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.btn-resource:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 480px) {
+  .resource-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  .btn-resource {
+    width: 100%;
+  }
+}

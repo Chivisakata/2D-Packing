@@ -9,6 +9,7 @@ import SeoSection from './Components/SeoSection';
 import Footer from './Components/Footer';
 import Login from './Components/Login';
 import Register from './Components/Register';
+import Contact from './Components/Contact'; 
 import { calculateLayoutApi } from './services/apiService';
 
 // Component chứa toàn bộ giao diện Trang chủ cắt 2D
@@ -98,6 +99,7 @@ export default function App() {
 
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
