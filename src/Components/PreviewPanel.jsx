@@ -26,8 +26,8 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
   const hasResults = Array.isArray(placedBoxes) && placedBoxes.length > 0 && containers.length > 0;
 
   const currentSheet = hasResults ? (containers[selectedSheetIndex] || containers[0]) : null;
-  const sheetW = currentSheet ? (Number(currentSheet.width) || 100) : 100;
-  const sheetH = currentSheet ? (Number(currentSheet.height) || 100) : 100;
+  const sheetW = currentSheet ? (Number(currentSheet.width) || 800) : 800;
+  const sheetH = currentSheet ? (Number(currentSheet.height) || 800) : 800;
 
   const currentSheetId = selectedSheetIndex + 1;
 
@@ -234,8 +234,6 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
         y={y}
         width={w}
         height={h}
-        rx={cornerRadius}
-        ry={cornerRadius}
         {...commonProps}
       />
     );
@@ -329,7 +327,7 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
                 {loading 
                   ? "Đang xử lý thuật toán..." 
                   : hasResults 
-                    ? "Tấm phôi này chưa được sử dụng (Trống)" 
+                    ? "Tấm phôi này chưa được sử dụng" 
                     : "Nhấn \"BẮT ĐẦU TỐI ƯU\" để hiển thị sơ đồ cắt"}
               </text>
               )}

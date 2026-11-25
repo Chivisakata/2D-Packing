@@ -30,20 +30,16 @@ function HomePage({
   setLoading
 }) {
   const handleReset = () => {
-    // ⚡ Dữ liệu mặc định tính chuẩn theo cm (24x17 cm, 12.5x12.5 cm, Ø15 cm)
-    setItems([
-      { id: Date.now() + 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 24, h: 17 }, quantity: 15 },
-      { id: Date.now() + 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 12.5, h: 12.5 }, quantity: 10 },
-      { id: Date.now() + 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 15 }, quantity: 5 },
-    ]);
-    // ⚡ Tấm phôi mặc định 120x80 cm
-    setContainers([
-      { id: Date.now(), name: 'Tấm A', width: 120, height: 80, quantity: 1 }
-    ]);
-    setActiveContainers([]);
-    setStrategy('REMAINDER_OPTIMAL');
-    setPlacedBoxes([]);
-  };
+      setItems([
+        { id: Date.now() + 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 100, h: 100 }, quantity: 5 },
+      ]);
+      setContainers([
+        { id: Date.now(), name: 'Tấm A', width: 800, height: 800, quantity: 1 }
+      ]);
+      setActiveContainers([]);
+      setStrategy('REMAINDER_OPTIMAL');
+      setPlacedBoxes([]);
+    };
 
   const handleOptimize = async () => {
     setLoading(true);
@@ -139,14 +135,13 @@ export default function App() {
   const [toast, setToast] = useState(null);
 
   // ⚡ Dữ liệu khởi tạo chuẩn đơn vị cm
+  // Trong component App -> khởi tạo state mặc định:
   const [items, setItems] = useState([
-    { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 24, h: 17 }, quantity: 15 },
-    { id: 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 12.5, h: 12.5 }, quantity: 10 },
-    { id: 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 15 }, quantity: 5 },
+    { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 100, h: 100 }, quantity: 5 },
   ]);
 
   const [containers, setContainers] = useState([
-    { id: 1, name: 'Tấm A', width: 120, height: 80, quantity: 1 }
+    { id: 1, name: 'Tấm A', width: 800, height: 800, quantity: 1 }
   ]);
 
   const [activeContainers, setActiveContainers] = useState([]);

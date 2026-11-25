@@ -71,9 +71,6 @@ export default function History({ userSession, onLoadHistory, showToast }) {
         <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
           Lịch Sử Cắt Phôi
         </h1>
-        <span style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 600 }}>
-          Tổng cộng: {totalItems} lịch sử
-        </span>
       </div>
 
       {histories.length === 0 ? (
@@ -88,11 +85,11 @@ export default function History({ userSession, onLoadHistory, showToast }) {
               <thead>
                 <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', textAlign: 'left', fontSize: '0.85rem', color: '#475569', textTransform: 'uppercase' }}>
                   <th style={{ padding: '12px 16px', width: '60px', textAlign: 'center' }}>STT</th>
-                  <th style={{ padding: '12px 16px' }}>Tiêu đề & Thời gian</th>
+                  <th style={{ padding: '12px 16px' }}>Thời gian</th>
                   <th style={{ padding: '12px 16px', width: '130px', textAlign: 'center' }}>Tấm phôi</th>
                   <th style={{ padding: '12px 16px', width: '140px', textAlign: 'center' }}>Loại chi tiết</th>
                   <th style={{ padding: '12px 16px', width: '130px', textAlign: 'center' }}>Số hình đã xếp</th>
-                  <th style={{ padding: '12px 16px', width: '160px', textAlign: 'center' }}>Hành động</th>
+                  <th style={{ padding: '12px 16px', width: '160px', textAlign: 'center' }}></th>
                 </tr>
               </thead>
               <tbody>
@@ -145,7 +142,7 @@ export default function History({ userSession, onLoadHistory, showToast }) {
                       <td style={{ padding: '14px 16px', textAlign: 'center', fontWeight: 600, color: '#334155', fontSize: '0.9rem' }}>
                         {items.length} loại
                       </td>
-                      <td style={{ padding: '14px 16px', textAlign: 'center', fontWeight: 800, color: '#10b981', fontSize: '0.95rem' }}>
+                      <td style={{ padding: '14px 16px', textAlign: 'center', fontWeight: 800, color: '#334155', fontSize: '0.95rem' }}>
                         {placedBoxes.length} hình
                       </td>
                       <td style={{ padding: '14px 16px', textAlign: 'center' }}>

@@ -35,7 +35,7 @@ export default function Navbar({ userSession, onLogout }) {
         </Link>
       </div>
       <ul className="navbar-links">
-        <li><Link to="/">Tính Năng</Link></li>
+        <li><Link to="/">Trang Chủ</Link></li>
         <li><Link to="/contact">Liên Hệ</Link></li>
 
         {userSession ? (

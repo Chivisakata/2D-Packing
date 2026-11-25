@@ -10,11 +10,11 @@ export const SHAPE_TYPES = {
 
 export default function ItemsTable({ items, setItems }) {
 
-  const handleAddItem = () => {
+ const handleAddItem = () => {
     const newItem = {
       id: Date.now(),
       shape: SHAPE_TYPES.RECTANGLE.id,
-      dimensions: { w: 240, h: 170 },
+      dimensions: { w: 100, h: 100 },
       quantity: 5
     };
     setItems([...items, newItem]);
@@ -25,10 +25,10 @@ export default function ItemsTable({ items, setItems }) {
   };
 
   const handleShapeChange = (id, newShape) => {
-    let defaultDims = { w: 200, h: 200 };
-    if (newShape === SHAPE_TYPES.CIRCLE.id) defaultDims = { d: 150 };
-    if (newShape === SHAPE_TYPES.HEXAGON.id) defaultDims = { a: 200 };
-    if (newShape === SHAPE_TYPES.ELLIPSE.id) defaultDims = { rx: 200, ry: 150 };
+    let defaultDims = { w: 100, h: 100 };
+    if (newShape === SHAPE_TYPES.CIRCLE.id) defaultDims = { d: 100 };
+    if (newShape === SHAPE_TYPES.HEXAGON.id) defaultDims = { a: 100 };
+    if (newShape === SHAPE_TYPES.ELLIPSE.id) defaultDims = { rx: 100, ry: 150 };
 
     setItems(items.map(item => 
       item.id === id ? { ...item, shape: newShape, dimensions: defaultDims } : item

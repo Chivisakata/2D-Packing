@@ -3,11 +3,11 @@ import './PackingTables.css';
 
 export default function ContainersTable({ containers, setContainers }) {
 
-  const handleAddContainer = () => {
+ const handleAddContainer = () => {
     const newContainer = {
       id: Date.now(),
       name: `Tấm Vật Liệu ${containers.length + 1}`,
-      width: 1000,
+      width: 800,
       height: 800,
       quantity: 1
     };

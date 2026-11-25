@@ -23,7 +23,7 @@ export async function calculateLayoutApi(items, containers, strategy) {
   });
 
   if (stockSheets.length === 0) {
-    stockSheets.push({ ID: 1, Width: 1200, Height: 800, Quantity: 1, Name: 'Tấm A' });
+    stockSheets.push({ ID: 1, Width: 800, Height: 800, Quantity: 1, Name: 'Tấm A' });
   }
 
   // 2. CHUYỂN ĐỔI DANH SÁCH CHI TIẾT CẮT (CuttingPack)
