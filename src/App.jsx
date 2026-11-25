@@ -106,11 +106,13 @@ function HomePage({
           />
         </div>
 
-        <PreviewPanel 
+       <PreviewPanel 
           items={items} 
           containers={activeContainers} 
           placedBoxes={placedBoxes}
           loading={loading}
+          userSession={userSession}
+          onShowToast={showToast}
         />
       </div>
 

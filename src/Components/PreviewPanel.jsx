@@ -17,7 +17,14 @@ const removeAccents = (str = '') => {
     .replace(/Đ/g, 'D');
 };
 
-export default function PreviewPanel({ items = [], containers = [], placedBoxes = [], loading = false }) {
+export default function PreviewPanel({
+   items = [], 
+  containers = [], 
+  placedBoxes = [], 
+  loading = false,
+  userSession = null,
+  onShowToast
+  }) {
   const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
   const [showUnpackedDropdown, setShowUnpackedDropdown] = useState(false);
   
@@ -67,8 +74,12 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
 
   // ⚡ HÀM XUẤT PDF TRẮNG ĐEN ĐỒNG NHẤT CM
   const handleExportPDF = async () => {
-    if (!exportRef.current || !hasResults) return;
-
+    if (!userSession) {
+      if (onShowToast) {
+        onShowToast('Bạn cần phải đăng nhập để xuất file PDF!', 'warning');
+      }
+      return;
+    }
     try {
       const canvas = await html2canvas(exportRef.current, {
         scale: 1.5,
