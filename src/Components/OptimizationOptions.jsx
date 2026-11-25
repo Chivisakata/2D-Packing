@@ -1,7 +1,16 @@
 import React from 'react';
 import './PackingTables.css';
 
-export default function OptimizationOptions({ strategy, setStrategy, onReset, onOptimize }) {
+export default function OptimizationOptions({ 
+  strategy, 
+  setStrategy, 
+  onReset, 
+  onOptimize,
+  hasResults,
+  userSession,
+  onSaveHistory,
+  onShowToast
+}) {
   const options = [
     {
       id: 'REMAINDER_OPTIMAL',
@@ -15,9 +24,18 @@ export default function OptimizationOptions({ strategy, setStrategy, onReset, on
     }
   ];
 
+  const handleSaveClick = () => {
+    if (!userSession) {
+      onShowToast('Bạn cần phải đăng nhập để lưu kết quả!', 'warning');
+      return;
+    }
+    if (onSaveHistory) {
+      onSaveHistory();
+    }
+  };
+
   return (
     <>
-      {/* KHUNG PHƯƠNG ÁN TỐI ƯU CẮT */}
       <div className="options-card">
         <h2 className="options-title">
           <i className="fa-solid fa-sliders"></i> Phương án tối ưu
@@ -48,7 +66,6 @@ export default function OptimizationOptions({ strategy, setStrategy, onReset, on
         </div>
       </div>
 
-      {/* BỘ NÚT HÀNH ĐỘNG: RESET & BẮT ĐẦU TỐI ƯU */}
       <div className="action-buttons-group">
         <button className="btn-action-reset" onClick={onReset}>
           Đặt lại cài đặt
@@ -56,6 +73,12 @@ export default function OptimizationOptions({ strategy, setStrategy, onReset, on
         <button className="btn-action-optimize" onClick={onOptimize}>
           BẮT ĐẦU TỐI ƯU
         </button>
+
+        {hasResults && (
+          <button className="btn-action-save" onClick={handleSaveClick}>
+            LƯU KẾT QUẢ
+          </button>
+        )}
       </div>
     </>
   );

@@ -308,3 +308,28 @@
 .input-style[type="number"] {
   -moz-appearance: textfield;
 }
+
+/* Nút Lưu Kết Quả */
+.btn-action-save {
+  width: 100%;
+  background-color: #10b981;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.125rem;
+  padding: 16px 24px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+}
+
+.btn-action-save:hover {
+  background-color: #059669;
+}
+
+.btn-action-save:active {
+  transform: scale(0.98);
+}

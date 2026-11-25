@@ -10,9 +10,9 @@ import Footer from './Components/Footer';
 import Login from './Components/Login';
 import Register from './Components/Register';
 import Contact from './Components/Contact'; 
-import { calculateLayoutApi } from './services/apiService';
+import { calculateLayoutApi, saveHistoryApi } from './services/apiService';
 
-function HomePage() {
+function HomePage({ userSession, showToast }) {
   const [items, setItems] = useState([
     { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
     { id: 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 125, h: 125 }, quantity: 10 },
@@ -49,11 +49,27 @@ function HomePage() {
       setActiveContainers(containers);
       setPlacedBoxes(boxes);
     } catch (err) {
-      alert(`Không thể tính toán tối ưu: ${err.message}`);
+      showToast(`Không thể tính toán tối ưu: ${err.message}`, 'error');
     } finally {
       setLoading(false);
     }
   };
+
+  const handleSaveHistory = async () => {
+    if (!userSession?.userId) return;
+    try {
+      const inputData = { items, containers, strategy };
+      const resultData = placedBoxes;
+      const title = `Sơ đồ cắt phôi ngày ${new Date().toLocaleDateString('vi-VN')}`;
+
+      await saveHistoryApi(userSession.userId, title, inputData, resultData);
+      showToast('Đã lưu kết quả thành công!', 'success');
+    } catch (err) {
+      showToast(`Không thể lưu kết quả: ${err.message}`, 'error');
+    }
+  };
+
+  const hasResults = placedBoxes && placedBoxes.length > 0;
 
   return (
     <main className="main-container">
@@ -71,6 +87,10 @@ function HomePage() {
             setStrategy={setStrategy} 
             onReset={handleReset}
             onOptimize={handleOptimize}
+            hasResults={hasResults}
+            userSession={userSession}
+            onSaveHistory={handleSaveHistory}
+            onShowToast={showToast}
           />
         </div>
 
@@ -89,8 +109,15 @@ function HomePage() {
 
 export default function App() {
   const [userSession, setUserSession] = useState(null);
+  const [toast, setToast] = useState(null);
 
-  // ⚡ Load session người dùng từ localStorage khi tải ứng dụng
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(null);
+    }, 3000);
+  };
+
   useEffect(() => {
     const savedSession = localStorage.getItem('userSession');
     if (savedSession) {
@@ -104,10 +131,17 @@ export default function App() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      {/* ⚡ Thông báo Toast hiển thị trực tiếp trên giao diện */}
+      {toast && (
+        <div className={`toast-notification ${toast.type}`}>
+          {toast.message}
+        </div>
+      )}
+
       <Navbar userSession={userSession} onLogout={() => setUserSession(null)} />
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage userSession={userSession} showToast={showToast} />} />
         <Route path="/contact" element={<Contact />} />
         <Route 
           path="/login" 

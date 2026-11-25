@@ -251,3 +251,26 @@ input, select, button, textarea {
   }
 }
 
+/* Toast Notification Nổi Trực Tiếp Trên Màn Hình */
+.toast-notification {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.25s ease-out;
+}
+
+.toast-notification.success { background-color: #10b981; }
+.toast-notification.error   { background-color: #ef4444; }
+.toast-notification.warning { background-color: #f59e0b; }
+
+@keyframes slideIn {
+  from { transform: translateY(-15px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
