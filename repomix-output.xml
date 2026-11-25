@@ -509,55 +509,6 @@ export default function Contact() {
 }
 </file>
 
-<file path="src/Components/Navbar.css">
-/* 📌 ĐIỂM MẤU CHỐT Ở ĐÂY */
-.navbar {
-  position: sticky;     /* Dính lại khi cuộn màn hình */
-  top: 0;               /* Dính sát mép trên cùng */
-  left: 0;
-  width: 100%;
-  z-index: 1000;        /* Đảm bảo Navbar luôn đè lên các nội dung khác */
-
-  /* Trang trí giao diện */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: rgba(255, 255, 255, 1); /* Màu tối + hơi trong suốt */
-  backdrop-filter: blur(8px);                 /* Hiệu ứng kính mờ (Glassmorphism) */
-  box-sizing: border-box;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Đường viền dưới mờ */
-}
-
-/* Style cho Logo */
-.navbar-logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #005eff; /* Màu xanh React */
-}
-
-/* Style cho Menu Links */
-.navbar-links {
-  display: flex;
-  list-style: none;
-  gap: 2rem;
-  margin: 0;
-  padding: 0;
-}
-
-.navbar-links a {
-  color: #454242;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 1.1rem;
-  transition: color 0.3s ease;
-}
-
-.navbar-links a:hover {
-  color: #63bdea;
-}
-</file>
-
 <file path="src/Components/Register.css">
 /* ==========================================
    GIAO DIỆN ĐĂNG KÝ (REGISTER PAGE)
@@ -2688,24 +2639,285 @@ export default function ItemsTable({ items, setItems }) {
 }
 </file>
 
+<file path="src/Components/Navbar.css">
+/* 📌 ĐIỂM MẤU CHỐT Ở ĐÂY */
+.navbar {
+  position: sticky;     /* Dính lại khi cuộn màn hình */
+  top: 0;               /* Dính sát mép trên cùng */
+  left: 0;
+  width: 100%;
+  z-index: 1000;        /* Đảm bảo Navbar luôn đè lên các nội dung khác */
+
+  /* Trang trí giao diện */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: rgba(255, 255, 255, 1); /* Màu tối + hơi trong suốt */
+  backdrop-filter: blur(8px);                 /* Hiệu ứng kính mờ (Glassmorphism) */
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Đường viền dưới mờ */
+}
+
+/* Style cho Logo */
+.navbar-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #005eff; /* Màu xanh React */
+}
+
+/* Style cho Menu Links */
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links a {
+  color: #454242;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+  color: #63bdea;
+}
+
+/* User Menu & Dropdown đơn giản */
+.user-menu {
+  position: relative;
+}
+
+.user-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #454242;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+}
+
+.user-btn:hover {
+  color: #3b82f6;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 6px 0;
+  min-width: 130px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.dropdown-menu a,
+.dropdown-menu button {
+  padding: 8px 16px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  font-weight: 500;
+  color: #334155;
+  text-decoration: none;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+  background-color: #f1f5f9;
+  color: #3b82f6;
+}
+</file>
+
+<file path="src/Components/SeoSection.css">
+/* ==========================================
+   BÀI VIẾT SEO TỐI GIẢN (SEO SECTION)
+   ========================================== */
+.seo-section {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 2rem 2.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.seo-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.seo-content {
+  font-size: 0.975rem;
+  line-height: 1.7;
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.seo-content p {
+  margin: 0;
+}
+</file>
+
+<file path="src/Components/SeoSection.jsx">
+import React from 'react';
+import './SeoSection.css';
+
+export default function SeoSection() {
+  return (
+    <section className="seo-section">
+      <h2 className="seo-title">
+        Dễ Dàng Trực Quan Hóa & Tối Ưu Sơ Đồ Cắt
+      </h2>
+
+      <div className="seo-content">
+        <p>
+          Công cụ <strong>2D-Packing.net</strong> giúp bạn nhanh chóng hình dung cách sắp xếp các chi tiết (nhãn dán, tem nhãn, tấm gia công) lên khung vật liệu gốc. Chỉ cần nhập kích thước và số lượng, hệ thống sẽ lập tức tính toán bố trí tối ưu kèm thống kê diện tích sử dụng chi tiết.
+        </p>
+
+        <p>
+          Ứng dụng vận hành dựa trên <strong>thuật toán tối ưu 2D (Rectangle Packing)</strong> phức tạp nhưng được đóng gói thành giao diện tối giản, dễ dùng. Bạn có thể lập kế hoạch cắt phôi, tiết kiệm vật tư và kiểm tra chính xác số lượng chi tiết vừa vặn trước khi tiến hành gia công thực tế.
+        </p>
+      </div>
+    </section>
+  );
+}
+</file>
+
+<file path="src/App.css">
+
+</file>
+
+<file path="src/main.jsx">
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>,
+)
+</file>
+
+<file path="package.json">
+{
+  "name": "2d-packing",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
+    "vite": "^8.3.5"
+  }
+}
+</file>
+
 <file path="src/Components/Login.jsx">
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // 1. Import Link từ react-router-dom
+import { Link, useNavigate } from 'react-router-dom';
+import { loginApi } from '../services/apiService';
 import './Login.css';
 
-export default function Login() {
+export default function Login({ onLoginSuccess }) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login credentials:', { email, password });
+    setErrorMessage('');
+    setLoading(true);
+
+    try {
+      const res = await loginApi(email, password);
+      
+      // ⚡ Lưu Session User vào localStorage
+      localStorage.setItem('userSession', JSON.stringify(res.user));
+
+      if (onLoginSuccess) {
+        onLoginSuccess(res.user);
+      }
+
+      // Chuyển hướng về trang chủ
+      navigate('/');
+    } catch (err) {
+      setErrorMessage(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="login-wrapper">
       <div className="login-card">
         <h1 className="login-title">Đăng nhập</h1>
+
+        {errorMessage && (
+          <div style={{
+            color: '#ef4444',
+            backgroundColor: '#fef2f2',
+            padding: '10px',
+            borderRadius: '8px',
+            fontSize: '0.85rem',
+            marginBottom: '1rem',
+            textAlign: 'center'
+          }}>
+            {errorMessage}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="input-group">
@@ -2734,89 +2946,18 @@ export default function Login() {
             <label htmlFor="password" className="login-label">Mật khẩu</label>
           </div>
 
-          <button type="submit" className="btn-login-submit">
-            Đăng nhập
+          <button type="submit" className="btn-login-submit" disabled={loading}>
+            {loading ? 'Đang xử lý...' : 'Đăng nhập'}
           </button>
         </form>
 
-
-        {/* 📌 VỊ TRÍ VIẾT DÒNG LINK ĐÂY NHA HẠO */}
         <div className="login-links">
-          <a href="#forgot-password" className="link-item">Quên mật khẩu?</a>
-          
-          {/* Đổi thẻ <a> thành thẻ <Link> để chuyển sang trang Register không reload */}
           <Link to="/register" className="link-item">
             Bạn chưa có tài khoản? Đăng ký!
           </Link>
         </div>
-
       </div>
     </div>
-  );
-}
-</file>
-
-<file path="src/Components/OptimizationOptions.jsx">
-import React from 'react';
-import './PackingTables.css';
-
-export default function OptimizationOptions({ strategy, setStrategy, onReset, onOptimize }) {
-  const options = [
-    {
-      id: 'REMAINDER_OPTIMAL',
-      title: 'Tối ưu diện tích phần dư',
-      desc: 'Gom cụm phần dư gọn gàng để có thể tái sử dụng cho lần sau.'
-    },
-    {
-      id: 'BALANCED_DISTRIBUTION',
-      title: 'Phân bố đều các chi tiết',
-      desc: 'Phân bố khoảng cách đều đặn giữa các chi tiết trên tấm.'
-    }
-  ];
-
-  return (
-    <>
-      {/* KHUNG PHƯƠNG ÁN TỐI ƯU CẮT */}
-      <div className="options-card">
-        <h2 className="options-title">
-          <i className="fa-solid fa-sliders"></i> Phương án tối ưu
-        </h2>
-
-        <div className="options-list">
-          {options.map((opt) => {
-            const isSelected = strategy === opt.id;
-            return (
-              <label 
-                key={opt.id} 
-                className={`option-item ${isSelected ? 'active' : ''}`}
-              >
-                <input 
-                  type="radio" 
-                  name="optStrategy" 
-                  value={opt.id}
-                  checked={isSelected}
-                  onChange={(e) => setStrategy(e.target.value)}
-                />
-                <div>
-                  <span className="option-label-title">{opt.title}</span>
-                  <span className="option-label-desc">{opt.desc}</span>
-                </div>
-              </label>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* BỘ NÚT HÀNH ĐỘNG: RESET & BẮT ĐẦU TỐI ƯU */}
-      <div className="action-buttons-group">
-        <button className="btn-action-reset" onClick={onReset}>
-          Đặt lại cài đặt
-        </button>
-        <button className="btn-action-optimize" onClick={onOptimize}>
-          BẮT ĐẦU TỐI ƯU
-        </button>
-      </div>
-    </>
   );
 }
 </file>
@@ -2920,70 +3061,6 @@ export default function Register() {
         </div>
       </div>
     </div>
-  );
-}
-</file>
-
-<file path="src/Components/SeoSection.css">
-/* ==========================================
-   BÀI VIẾT SEO TỐI GIẢN (SEO SECTION)
-   ========================================== */
-.seo-section {
-  width: 100%;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 1rem;
-  padding: 2rem 2.5rem;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.seo-title {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #0f172a;
-  letter-spacing: -0.02em;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 0.75rem;
-  margin-bottom: 1.25rem;
-}
-
-.seo-content {
-  font-size: 0.975rem;
-  line-height: 1.7;
-  color: #334155;
-  display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
-}
-
-.seo-content p {
-  margin: 0;
-}
-</file>
-
-<file path="src/Components/SeoSection.jsx">
-import React from 'react';
-import './SeoSection.css';
-
-export default function SeoSection() {
-  return (
-    <section className="seo-section">
-      <h2 className="seo-title">
-        Dễ Dàng Trực Quan Hóa & Tối Ưu Sơ Đồ Cắt
-      </h2>
-
-      <div className="seo-content">
-        <p>
-          Công cụ <strong>2D-Packing.net</strong> giúp bạn nhanh chóng hình dung cách sắp xếp các chi tiết (nhãn dán, tem nhãn, tấm gia công) lên khung vật liệu gốc. Chỉ cần nhập kích thước và số lượng, hệ thống sẽ lập tức tính toán bố trí tối ưu kèm thống kê diện tích sử dụng chi tiết.
-        </p>
-
-        <p>
-          Ứng dụng vận hành dựa trên <strong>thuật toán tối ưu 2D (Rectangle Packing)</strong> phức tạp nhưng được đóng gói thành giao diện tối giản, dễ dùng. Bạn có thể lập kế hoạch cắt phôi, tiết kiệm vật tư và kiểm tra chính xác số lượng chi tiết vừa vặn trước khi tiến hành gia công thực tế.
-        </p>
-      </div>
-    </section>
   );
 }
 </file>
@@ -3135,6 +3212,18 @@ export async function registerApi(email, password) {
   return data;
 }
 
+// ⚡ Bổ sung API Đăng nhập
+export async function loginApi(email, password) {
+  const response = await fetch(`${API_BASE_URL}/Auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Đăng nhập thất bại!');
+  return data;
+}
+
 // API Lưu Lịch Sử Cắt
 export async function saveHistoryApi(userId, title, inputData, resultData) {
   const response = await fetch(`${API_BASE_URL}/History/save`, {
@@ -3156,63 +3245,35 @@ export async function getUserHistoriesApi(userId) {
 }
 </file>
 
-<file path="src/App.css">
-
-</file>
-
-<file path="src/main.jsx">
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
-import './index.css'
-import App from './App.jsx'
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>,
-)
-</file>
-
-<file path="package.json">
-{
-  "name": "2d-packing",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1",
-    "react-router-dom": "^7.18.5"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.2",
-    "eslint": "^10.13.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.7",
-    "globals": "^17.13.0",
-    "vite": "^8.3.5"
-  }
-}
-</file>
-
 <file path="src/Components/Navbar.jsx">
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 
-export default function Navbar() {
+export default function Navbar({ userSession, onLogout }) {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Đóng menu khi bấm ra ngoài
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('userSession');
+    if (onLogout) onLogout();
+    setShowDropdown(false);
+  };
+
+  // Cắt lấy chuỗi trước dấu '@'
+  const username = userSession?.email ? userSession.email.split('@')[0] : '';
+
   return (
     <nav className="navbar">
       <div className="navbar-logo">
@@ -3223,10 +3284,124 @@ export default function Navbar() {
       </div>
       <ul className="navbar-links">
         <li><Link to="/">Tính Năng</Link></li>
-        <li><Link to="/contact">Liên Hệ</Link></li> {/* 👈 Chuyển thành Link tới /contact */}
-        <li><Link to="/login">Đăng Nhập</Link></li>
+        <li><Link to="/contact">Liên Hệ</Link></li>
+
+        {userSession ? (
+          <li className="user-menu" ref={dropdownRef}>
+            <button 
+              type="button" 
+              className="user-btn" 
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span>{username}</span>
+            </button>
+
+            {showDropdown && (
+              <div className="dropdown-menu">
+                <Link to="/history" onClick={() => setShowDropdown(false)}>Xem lịch sử</Link>
+                <button type="button" onClick={handleLogout}>Đăng xuất</button>
+              </div>
+            )}
+          </li>
+        ) : (
+          <li>
+            <Link to="/login">Đăng Nhập</Link>
+          </li>
+        )}
       </ul>
     </nav>
+  );
+}
+</file>
+
+<file path="src/Components/OptimizationOptions.jsx">
+import React from 'react';
+import './PackingTables.css';
+
+export default function OptimizationOptions({ 
+  strategy, 
+  setStrategy, 
+  onReset, 
+  onOptimize,
+  hasResults,
+  userSession,
+  onSaveHistory,
+  onShowToast
+}) {
+  const options = [
+    {
+      id: 'REMAINDER_OPTIMAL',
+      title: 'Tối ưu diện tích phần dư',
+      desc: 'Gom cụm phần dư gọn gàng để có thể tái sử dụng cho lần sau.'
+    },
+    {
+      id: 'BALANCED_DISTRIBUTION',
+      title: 'Phân bố đều các chi tiết',
+      desc: 'Phân bố khoảng cách đều đặn giữa các chi tiết trên tấm.'
+    }
+  ];
+
+  const handleSaveClick = () => {
+    if (!userSession) {
+      onShowToast('Bạn cần phải đăng nhập để lưu kết quả!', 'warning');
+      return;
+    }
+    if (onSaveHistory) {
+      onSaveHistory();
+    }
+  };
+
+  return (
+    <>
+      <div className="options-card">
+        <h2 className="options-title">
+          <i className="fa-solid fa-sliders"></i> Phương án tối ưu
+        </h2>
+
+        <div className="options-list">
+          {options.map((opt) => {
+            const isSelected = strategy === opt.id;
+            return (
+              <label 
+                key={opt.id} 
+                className={`option-item ${isSelected ? 'active' : ''}`}
+              >
+                <input 
+                  type="radio" 
+                  name="optStrategy" 
+                  value={opt.id}
+                  checked={isSelected}
+                  onChange={(e) => setStrategy(e.target.value)}
+                />
+                <div>
+                  <span className="option-label-title">{opt.title}</span>
+                  <span className="option-label-desc">{opt.desc}</span>
+                </div>
+              </label>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="action-buttons-group">
+        <button className="btn-action-reset" onClick={onReset}>
+          Đặt lại cài đặt
+        </button>
+        <button className="btn-action-optimize" onClick={onOptimize}>
+          BẮT ĐẦU TỐI ƯU
+        </button>
+
+        {hasResults && (
+          <button className="btn-action-save" onClick={handleSaveClick}>
+            LƯU KẾT QUẢ
+          </button>
+        )}
+      </div>
+    </>
   );
 }
 </file>
@@ -3542,6 +3717,223 @@ export default function Navbar() {
 .input-style[type="number"] {
   -moz-appearance: textfield;
 }
+
+/* Nút Lưu Kết Quả */
+.btn-action-save {
+  width: 100%;
+  background-color: #10b981;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.125rem;
+  padding: 16px 24px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+}
+
+.btn-action-save:hover {
+  background-color: #059669;
+}
+
+.btn-action-save:active {
+  transform: scale(0.98);
+}
+</file>
+
+<file path="src/Components/PreviewPanel.jsx">
+import React, { useState } from 'react';
+
+const AUTO_COLORS = [
+  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
+  '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
+  '#f97316', '#14b8a6', '#6366f1', '#a855f7'
+];
+
+export default function PreviewPanel({ items = [], containers = [], placedBoxes = [], loading = false }) {
+  const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
+  const [showUnpackedDropdown, setShowUnpackedDropdown] = useState(false);
+
+  // ⚡ Kiểm tra đã có kết quả tối ưu hợp lệ được chốt chưa
+  const hasResults = Array.isArray(placedBoxes) && placedBoxes.length > 0 && containers.length > 0;
+
+  // ⚡ Chưa bấm tính toán (hoặc containers chốt chưa có) -> Giữ nguyên 1000 x 1000 mặc định
+  // ⚡ Đã bấm tối ưu -> Lấy kích thước phôi từ containers đã chốt
+  const currentSheet = hasResults ? (containers[selectedSheetIndex] || containers[0]) : null;
+  const sheetW = currentSheet ? (Number(currentSheet.width) || 1000) : 1000;
+  const sheetH = currentSheet ? (Number(currentSheet.height) || 1000) : 1000;
+
+  // ID của tấm phôi hiện tại đang chọn (khớp với ID = index + 1 gửi sang C#)
+  const currentSheetId = selectedSheetIndex + 1;
+
+  // Lọc các hộp thuộc về tấm phôi đang chọn
+  const currentSheetBoxes = hasResults
+    ? placedBoxes.filter(box => {
+        const boxSheetId = Number(box.stockSheetId ?? box.sTockSheetID ?? box.STockSheetID ?? 1);
+        return boxSheetId === currentSheetId;
+      })
+    : [];
+
+  // Tính diện tích đã xếp trên tấm này
+  let usedArea = 0;
+  currentSheetBoxes.forEach(box => {
+    const w = Number(box.Width ?? box.width ?? 0);
+    const h = Number(box.Height ?? box.height ?? 0);
+    usedArea += (w * h);
+  });
+
+  const totalSheetArea = sheetW * sheetH;
+  const efficiency = (hasResults && totalSheetArea > 0) ? ((usedArea / totalSheetArea) * 100).toFixed(2) : '0.00';
+
+  // Tạo bảng ánh xạ màu dựa trên kích thước chi tiết
+  const sizeColorMap = new Map();
+  let colorCounter = 0;
+
+  if (hasResults) {
+    placedBoxes.forEach(box => {
+      const w = Number(box.Width ?? box.width ?? 0);
+      const h = Number(box.Height ?? box.height ?? 0);
+      if (w === 0 || h === 0) return;
+
+      const sizeKey = `${Math.min(w, h)}x${Math.max(w, h)}`;
+
+      if (!sizeColorMap.has(sizeKey)) {
+        sizeColorMap.set(sizeKey, AUTO_COLORS[colorCounter % AUTO_COLORS.length]);
+        colorCounter++;
+      }
+    });
+  }
+
+  return (
+    <div className="right-column">
+      <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        <h2 className="preview-title">
+          Kết Quả Tối Ưu {loading && <span style={{ color: '#3b82f6', fontSize: '1rem' }}>(Đang tính toán...)</span>}
+        </h2>
+
+        <div id="previewContainer" className="preview-box">
+          <svg
+            id="canvasSheet"
+            width="100%"
+            height="100%"
+            viewBox={`0 0 ${sheetW} ${sheetH}`}
+            style={{
+              width: '100%',
+              height: '100%',
+              flexGrow: 1,
+              backgroundColor: '#ffffff',
+              border: 'none',
+              borderRadius: '0px',
+              boxShadow: 'none'
+            }}
+          >
+            {/* Lưới caro mờ */}
+            <defs>
+              <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+                <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#cbd5e1" strokeWidth="2" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+
+            {/* Khung viền tấm phôi */}
+            <rect
+              x="0"
+              y="0"
+              width={sheetW}
+              height={sheetH}
+              fill="none"
+              stroke="#0f172a"
+              strokeWidth="4"
+            />
+
+            {/* Vẽ các chi tiết cắt */}
+            {currentSheetBoxes.length > 0 ? (
+              currentSheetBoxes.map((box, index) => {
+                const x = Number(box.X ?? box.x ?? 0);
+                const y = Number(box.Y ?? box.y ?? 0);
+                const w = Number(box.Width ?? box.width ?? 0);
+                const h = Number(box.Height ?? box.height ?? 0);
+
+                if (w === 0 || h === 0) return null;
+
+                const sizeKey = `${Math.min(w, h)}x${Math.max(w, h)}`;
+                const color = sizeColorMap.get(sizeKey) || AUTO_COLORS[0];
+
+                return (
+                  <rect
+                    key={index}
+                    x={x}
+                    y={y}
+                    width={w}
+                    height={h}
+                    fill={color}
+                    fillOpacity="0.85"
+                    rx="3"
+                    ry="3"
+                    stroke="#0f172a"
+                    strokeOpacity="0.95"
+                    strokeWidth="2.5"
+                  />
+                );
+              })
+            ) : (
+              <text x={sheetW / 2} y={sheetH / 2} textAnchor="middle" fill="#94a3b8" fontSize="22" fontWeight="600">
+                {loading 
+                  ? "Đang xử lý thuật toán..." 
+                  : hasResults 
+                    ? "Tấm phôi này chưa được sử dụng (Trống)" 
+                    : "Nhấn \"BẮT ĐẦU TỐI ƯU\" để hiển thị sơ đồ cắt"}
+              </text>
+            )}
+          </svg>
+        </div>
+      </div>
+
+      {/* STATS FOOTER */}
+      <div className="stats-footer">
+        <div className="stats-group">
+          <label className="stats-label">Hiển thị tấm kết quả:</label>
+          <div className="stats-select-wrapper">
+            <i className="fa-solid fa-layer-group stats-select-icon"></i>
+            <select 
+              className="stats-select" 
+              value={selectedSheetIndex} 
+              onChange={(e) => setSelectedSheetIndex(Number(e.target.value))}
+            >
+              {(hasResults ? containers : []).map((c, idx) => (
+                <option key={c.id || idx} value={idx}>
+                  {c.name || `Tấm ${idx + 1}`} ({c.width}x{c.height})
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="stats-group">
+          <label className="stats-label">Chi tiết trên tấm này:</label>
+          <button className="stats-unpacked-btn" onClick={() => setShowUnpackedDropdown(!showUnpackedDropdown)}>
+            <span className="unpacked-text">
+              <i className="fa-solid fa-circle-check" style={{ color: '#10b981' }}></i>
+              <span>{currentSheetBoxes.length} chi tiết đã xếp</span>
+            </span>
+            <i className="fa-solid fa-chevron-down" style={{ fontSize: '12px', color: '#94a3b8' }}></i>
+          </button>
+        </div>
+
+        <div className="stats-group">
+          <label className="stats-label">Diện tích sử dụng:</label>
+          <div style={{ display: 'flex', alignItems: 'baseline' }}>
+            <span className="area-value">{usedArea.toLocaleString()} mm²</span>
+            <span className="area-efficiency">({efficiency}%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 </file>
 
 <file path="src/index.css">
@@ -3797,197 +4189,29 @@ input, select, button, textarea {
     grid-template-columns: 1fr;
   }
 }
-</file>
 
-<file path="src/Components/PreviewPanel.jsx">
-import React, { useState } from 'react';
+/* Toast Notification Nổi Trực Tiếp Trên Màn Hình */
+.toast-notification {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.25s ease-out;
+}
 
-const AUTO_COLORS = [
-  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
-  '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
-  '#f97316', '#14b8a6', '#6366f1', '#a855f7'
-];
+.toast-notification.success { background-color: #10b981; }
+.toast-notification.error   { background-color: #ef4444; }
+.toast-notification.warning { background-color: #f59e0b; }
 
-export default function PreviewPanel({ items = [], containers = [], placedBoxes = [], loading = false }) {
-  const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
-  const [showUnpackedDropdown, setShowUnpackedDropdown] = useState(false);
-
-  // ⚡ Kiểm tra đã có kết quả tối ưu hợp lệ được chốt chưa
-  const hasResults = Array.isArray(placedBoxes) && placedBoxes.length > 0 && containers.length > 0;
-
-  // ⚡ Chưa bấm tính toán (hoặc containers chốt chưa có) -> Giữ nguyên 1000 x 1000 mặc định
-  // ⚡ Đã bấm tối ưu -> Lấy kích thước phôi từ containers đã chốt
-  const currentSheet = hasResults ? (containers[selectedSheetIndex] || containers[0]) : null;
-  const sheetW = currentSheet ? (Number(currentSheet.width) || 1000) : 1000;
-  const sheetH = currentSheet ? (Number(currentSheet.height) || 1000) : 1000;
-
-  // ID của tấm phôi hiện tại đang chọn (khớp với ID = index + 1 gửi sang C#)
-  const currentSheetId = selectedSheetIndex + 1;
-
-  // Lọc các hộp thuộc về tấm phôi đang chọn
-  const currentSheetBoxes = hasResults
-    ? placedBoxes.filter(box => {
-        const boxSheetId = Number(box.stockSheetId ?? box.sTockSheetID ?? box.STockSheetID ?? 1);
-        return boxSheetId === currentSheetId;
-      })
-    : [];
-
-  // Tính diện tích đã xếp trên tấm này
-  let usedArea = 0;
-  currentSheetBoxes.forEach(box => {
-    const w = Number(box.Width ?? box.width ?? 0);
-    const h = Number(box.Height ?? box.height ?? 0);
-    usedArea += (w * h);
-  });
-
-  const totalSheetArea = sheetW * sheetH;
-  const efficiency = (hasResults && totalSheetArea > 0) ? ((usedArea / totalSheetArea) * 100).toFixed(2) : '0.00';
-
-  // Tạo bảng ánh xạ màu dựa trên kích thước chi tiết
-  const sizeColorMap = new Map();
-  let colorCounter = 0;
-
-  if (hasResults) {
-    placedBoxes.forEach(box => {
-      const w = Number(box.Width ?? box.width ?? 0);
-      const h = Number(box.Height ?? box.height ?? 0);
-      if (w === 0 || h === 0) return;
-
-      const sizeKey = `${Math.min(w, h)}x${Math.max(w, h)}`;
-
-      if (!sizeColorMap.has(sizeKey)) {
-        sizeColorMap.set(sizeKey, AUTO_COLORS[colorCounter % AUTO_COLORS.length]);
-        colorCounter++;
-      }
-    });
-  }
-
-  return (
-    <div className="right-column">
-      <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        <h2 className="preview-title">
-          Kết Quả Tối Ưu {loading && <span style={{ color: '#3b82f6', fontSize: '1rem' }}>(Đang tính toán...)</span>}
-        </h2>
-
-        <div id="previewContainer" className="preview-box">
-          <svg
-            id="canvasSheet"
-            width="100%"
-            height="100%"
-            viewBox={`0 0 ${sheetW} ${sheetH}`}
-            style={{
-              width: '100%',
-              height: '100%',
-              flexGrow: 1,
-              backgroundColor: '#ffffff',
-              border: 'none',
-              borderRadius: '0px',
-              boxShadow: 'none'
-            }}
-          >
-            {/* Lưới caro mờ */}
-            <defs>
-              <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
-                <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#cbd5e1" strokeWidth="2" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-
-            {/* Khung viền tấm phôi */}
-            <rect
-              x="0"
-              y="0"
-              width={sheetW}
-              height={sheetH}
-              fill="none"
-              stroke="#0f172a"
-              strokeWidth="4"
-            />
-
-            {/* Vẽ các chi tiết cắt */}
-            {currentSheetBoxes.length > 0 ? (
-              currentSheetBoxes.map((box, index) => {
-                const x = Number(box.X ?? box.x ?? 0);
-                const y = Number(box.Y ?? box.y ?? 0);
-                const w = Number(box.Width ?? box.width ?? 0);
-                const h = Number(box.Height ?? box.height ?? 0);
-
-                if (w === 0 || h === 0) return null;
-
-                const sizeKey = `${Math.min(w, h)}x${Math.max(w, h)}`;
-                const color = sizeColorMap.get(sizeKey) || AUTO_COLORS[0];
-
-                return (
-                  <rect
-                    key={index}
-                    x={x}
-                    y={y}
-                    width={w}
-                    height={h}
-                    fill={color}
-                    fillOpacity="0.85"
-                    rx="3"
-                    ry="3"
-                    stroke="#0f172a"
-                    strokeOpacity="0.95"
-                    strokeWidth="2.5"
-                  />
-                );
-              })
-            ) : (
-              <text x={sheetW / 2} y={sheetH / 2} textAnchor="middle" fill="#94a3b8" fontSize="22" fontWeight="600">
-                {loading 
-                  ? "Đang xử lý thuật toán..." 
-                  : hasResults 
-                    ? "Tấm phôi này chưa được sử dụng (Trống)" 
-                    : "Nhấn \"BẮT ĐẦU TỐI ƯU\" để hiển thị sơ đồ cắt"}
-              </text>
-            )}
-          </svg>
-        </div>
-      </div>
-
-      {/* STATS FOOTER */}
-      <div className="stats-footer">
-        <div className="stats-group">
-          <label className="stats-label">Hiển thị tấm kết quả:</label>
-          <div className="stats-select-wrapper">
-            <i className="fa-solid fa-layer-group stats-select-icon"></i>
-            <select 
-              className="stats-select" 
-              value={selectedSheetIndex} 
-              onChange={(e) => setSelectedSheetIndex(Number(e.target.value))}
-            >
-              {(hasResults ? containers : []).map((c, idx) => (
-                <option key={c.id || idx} value={idx}>
-                  {c.name || `Tấm ${idx + 1}`} ({c.width}x{c.height})
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="stats-group">
-          <label className="stats-label">Chi tiết trên tấm này:</label>
-          <button className="stats-unpacked-btn" onClick={() => setShowUnpackedDropdown(!showUnpackedDropdown)}>
-            <span className="unpacked-text">
-              <i className="fa-solid fa-circle-check" style={{ color: '#10b981' }}></i>
-              <span>{currentSheetBoxes.length} chi tiết đã xếp</span>
-            </span>
-            <i className="fa-solid fa-chevron-down" style={{ fontSize: '12px', color: '#94a3b8' }}></i>
-          </button>
-        </div>
-
-        <div className="stats-group">
-          <label className="stats-label">Diện tích sử dụng:</label>
-          <div style={{ display: 'flex', alignItems: 'baseline' }}>
-            <span className="area-value">{usedArea.toLocaleString()} mm²</span>
-            <span className="area-efficiency">({efficiency}%)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+@keyframes slideIn {
+  from { transform: translateY(-15px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
 }
 </file>
 
@@ -4012,7 +4236,7 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
 </file>
 
 <file path="src/App.jsx">
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './Components/Navbar';
 import ItemsTable, { SHAPE_TYPES } from './Components/ItemsTable';
@@ -4024,10 +4248,9 @@ import Footer from './Components/Footer';
 import Login from './Components/Login';
 import Register from './Components/Register';
 import Contact from './Components/Contact'; 
-import { calculateLayoutApi } from './services/apiService';
+import { calculateLayoutApi, saveHistoryApi } from './services/apiService';
 
-// Component chứa toàn bộ giao diện Trang chủ cắt 2D
-function HomePage() {
+function HomePage({ userSession, showToast }) {
   const [items, setItems] = useState([
     { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
     { id: 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 125, h: 125 }, quantity: 10 },
@@ -4038,9 +4261,7 @@ function HomePage() {
     { id: 1, name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
   ]);
 
-  // ⚡ State chốt snapshot phôi đã bấm tính toán (Ban đầu là rỗng)
   const [activeContainers, setActiveContainers] = useState([]);
-
   const [strategy, setStrategy] = useState('REMAINDER_OPTIMAL');
   const [placedBoxes, setPlacedBoxes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -4054,7 +4275,7 @@ function HomePage() {
     setContainers([
       { id: Date.now(), name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
     ]);
-    setActiveContainers([]); // ⚡ Reset danh sách phôi đã chốt
+    setActiveContainers([]);
     setStrategy('REMAINDER_OPTIMAL');
     setPlacedBoxes([]);
   };
@@ -4063,15 +4284,30 @@ function HomePage() {
     setLoading(true);
     try {
       const boxes = await calculateLayoutApi(items, containers, strategy);
-      // ⚡ CHỈ KHI BẤM NÚT BẮT ĐẦU TỐI ƯU: Mới chốt snapshot phôi mới nhất sang cho PreviewPanel
       setActiveContainers(containers);
       setPlacedBoxes(boxes);
     } catch (err) {
-      alert(`Không thể tính toán tối ưu: ${err.message}`);
+      showToast(`Không thể tính toán tối ưu: ${err.message}`, 'error');
     } finally {
       setLoading(false);
     }
   };
+
+  const handleSaveHistory = async () => {
+    if (!userSession?.userId) return;
+    try {
+      const inputData = { items, containers, strategy };
+      const resultData = placedBoxes;
+      const title = `Sơ đồ cắt phôi ngày ${new Date().toLocaleDateString('vi-VN')}`;
+
+      await saveHistoryApi(userSession.userId, title, inputData, resultData);
+      showToast('Đã lưu kết quả thành công!', 'success');
+    } catch (err) {
+      showToast(`Không thể lưu kết quả: ${err.message}`, 'error');
+    }
+  };
+
+  const hasResults = placedBoxes && placedBoxes.length > 0;
 
   return (
     <main className="main-container">
@@ -4089,10 +4325,13 @@ function HomePage() {
             setStrategy={setStrategy} 
             onReset={handleReset}
             onOptimize={handleOptimize}
+            hasResults={hasResults}
+            userSession={userSession}
+            onSaveHistory={handleSaveHistory}
+            onShowToast={showToast}
           />
         </div>
 
-        {/* ⚡ Truyền activeContainers vào prop containers để PreviewPanel nhận phôi đã chốt */}
         <PreviewPanel 
           items={items} 
           containers={activeContainers} 
@@ -4107,14 +4346,45 @@ function HomePage() {
 }
 
 export default function App() {
+  const [userSession, setUserSession] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(null);
+    }, 3000);
+  };
+
+  useEffect(() => {
+    const savedSession = localStorage.getItem('userSession');
+    if (savedSession) {
+      try {
+        setUserSession(JSON.parse(savedSession));
+      } catch (e) {
+        localStorage.removeItem('userSession');
+      }
+    }
+  }, []);
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <Navbar />
+      {/* ⚡ Thông báo Toast hiển thị trực tiếp trên giao diện */}
+      {toast && (
+        <div className={`toast-notification ${toast.type}`}>
+          {toast.message}
+        </div>
+      )}
+
+      <Navbar userSession={userSession} onLogout={() => setUserSession(null)} />
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage userSession={userSession} showToast={showToast} />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<Login />} />
+        <Route 
+          path="/login" 
+          element={<Login onLoginSuccess={(user) => setUserSession(user)} />} 
+        />
         <Route path="/register" element={<Register />} />
       </Routes>
 

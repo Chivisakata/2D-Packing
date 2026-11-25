@@ -4,8 +4,6 @@ import './PackingTables.css';
 export const SHAPE_TYPES = {
   RECTANGLE: { id: 'RECTANGLE', name: 'Hình chữ nhật' },
   CIRCLE: { id: 'CIRCLE', name: 'Hình tròn' },
-  RIGHT_TRIANGLE: { id: 'RIGHT_TRIANGLE', name: 'Tam giác vuông' },
-  ISOSCELES_TRIANGLE: { id: 'ISOSCELES_TRIANGLE', name: 'Tam giác cân' },
   HEXAGON: { id: 'HEXAGON', name: 'Lục giác đều' },
   ELLIPSE: { id: 'ELLIPSE', name: 'Ellipse' }
 };
@@ -111,29 +109,6 @@ export default function ItemsTable({ items, setItems }) {
               min="1"
               value={dimensions.ry ?? ''} 
               onChange={(e) => handleDimensionChange(item.id, 'ry', e.target.value)}
-              onFocus={(e) => e.target.select()}
-              className="input-style" style={{ width: '48px' }}
-            />
-          </div>
-        );
-      case SHAPE_TYPES.RIGHT_TRIANGLE.id:
-      case SHAPE_TYPES.ISOSCELES_TRIANGLE.id:
-        return (
-          <div className="flex-center">
-            <input 
-              type="number" 
-              min="1"
-              value={dimensions.b ?? ''} 
-              onChange={(e) => handleDimensionChange(item.id, 'b', e.target.value)}
-              onFocus={(e) => e.target.select()}
-              className="input-style" style={{ width: '48px' }}
-            />
-            <span style={{ color: '#94a3b8' }}>x</span>
-            <input 
-              type="number" 
-              min="1"
-              value={dimensions.h ?? ''} 
-              onChange={(e) => handleDimensionChange(item.id, 'h', e.target.value)}
               onFocus={(e) => e.target.select()}
               className="input-style" style={{ width: '48px' }}
             />

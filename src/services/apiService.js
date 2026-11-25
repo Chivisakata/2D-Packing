@@ -105,25 +105,37 @@ if (strategy === 'BALANCED_DISTRIBUTION') {
     console.log("🔥 [API Response] Kết quả JSON gốc từ C#:", result);
 
     const rawBoxes = result?.data || result || [];
+// CHUẨN HÓA THUỘC TÍNH TRẢ VỀ CHO FE VÀ LƯU LỊCH SỬ
+const normalizedBoxes = Array.isArray(rawBoxes) 
+  ? rawBoxes.map((box) => {
+      const isRotated = Boolean(box.IsRotated ?? box.isRotated ?? false);
+      const rawW = Number(box.Width ?? box.width ?? 0);
+      const rawH = Number(box.Height ?? box.height ?? 0);
+      const part = box.CuttingPart ?? box.cuttingPart ?? {};
 
-    // CHUẨN HÓA THUỘC TÍNH TRẢ VỀ CHO FE
-    const normalizedBoxes = Array.isArray(rawBoxes) 
-      ? rawBoxes.map((box) => {
-          const isRotated = Boolean(box.IsRotated ?? box.isRotated ?? false);
-          const rawW = Number(box.Width ?? box.width ?? 0);
-          const rawH = Number(box.Height ?? box.height ?? 0);
-
-          return {
-            x: Number(box.X ?? box.x ?? 0),
-            y: Number(box.Y ?? box.y ?? 0),
-            width: isRotated ? rawH : rawW,
-            height: isRotated ? rawW : rawH,
-            stockSheetId: Number(box.sTockSheetID ?? box.STockSheetID ?? box.stockSheetId ?? 1),
-            isRotated: isRotated
-          };
-        })
-      : [];
-
+      return {
+        x: Number(box.X ?? box.x ?? 0),
+        y: Number(box.Y ?? box.y ?? 0),
+        width: isRotated ? rawH : rawW,
+        height: isRotated ? rawW : rawH,
+        stockSheetId: Number(box.sTockSheetID ?? box.STockSheetID ?? box.stockSheetId ?? 1),
+        isRotated: isRotated,
+        // ⚡ Lưu trữ đầy đủ thuộc tính hình học để tái vẽ chính xác khi tải lịch sử
+        cuttingPart: {
+          id: part.ID ?? part.id,
+          shape: part.Shape ?? part.shape ?? part.$type,
+          sideLength: part.SideLength ?? part.sideLength,
+          radius: part.Radius ?? part.radius,
+          radiusX: part.RadiusX ?? part.radiusX,
+          radiusY: part.RadiusY ?? part.radiusY,
+          majorAxis: part.MajorAxis ?? part.majorAxis,
+          minorAxis: part.MinorAxis ?? part.minorAxis,
+          width: part.Width ?? part.width,
+          height: part.Height ?? part.height
+        }
+      };
+    })
+  : [];
     return normalizedBoxes;
 
   } catch (error) {

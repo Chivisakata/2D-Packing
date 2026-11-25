@@ -10,24 +10,25 @@ import Footer from './Components/Footer';
 import Login from './Components/Login';
 import Register from './Components/Register';
 import Contact from './Components/Contact'; 
+import History from './Components/History';
 import { calculateLayoutApi, saveHistoryApi } from './services/apiService';
 
-function HomePage({ userSession, showToast }) {
-  const [items, setItems] = useState([
-    { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
-    { id: 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 125, h: 125 }, quantity: 10 },
-    { id: 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 150 }, quantity: 5 },
-  ]);
-
-  const [containers, setContainers] = useState([
-    { id: 1, name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
-  ]);
-
-  const [activeContainers, setActiveContainers] = useState([]);
-  const [strategy, setStrategy] = useState('REMAINDER_OPTIMAL');
-  const [placedBoxes, setPlacedBoxes] = useState([]);
-  const [loading, setLoading] = useState(false);
-
+function HomePage({ 
+  userSession, 
+  showToast,
+  items,
+  setItems,
+  containers,
+  setContainers,
+  activeContainers,
+  setActiveContainers,
+  strategy,
+  setStrategy,
+  placedBoxes,
+  setPlacedBoxes,
+  loading,
+  setLoading
+}) {
   const handleReset = () => {
     setItems([
       { id: Date.now() + 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
@@ -56,14 +57,27 @@ function HomePage({ userSession, showToast }) {
   };
 
   const handleSaveHistory = async () => {
-    if (!userSession?.userId) return;
+    if (!userSession?.userId) {
+      showToast('Bạn cần đăng nhập để lưu kết quả!', 'warning');
+      return;
+    }
+    
     try {
-      const inputData = { items, containers, strategy };
-      const resultData = placedBoxes;
-      const title = `Sơ đồ cắt phôi ngày ${new Date().toLocaleDateString('vi-VN')}`;
+      const inputData = { 
+        items, 
+        containers, 
+        strategy 
+      };
+      
+      const resultData = {
+        placedBoxes,
+        containers: activeContainers
+      };
+      
+      const title = `Sơ đồ cắt phôi ngày ${new Date().toLocaleDateString('vi-VN')} ${new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
 
       await saveHistoryApi(userSession.userId, title, inputData, resultData);
-      showToast('Đã lưu kết quả thành công!', 'success');
+      showToast('Đã lưu lịch sử cắt thành công!', 'success');
     } catch (err) {
       showToast(`Không thể lưu kết quả: ${err.message}`, 'error');
     }
@@ -108,8 +122,36 @@ function HomePage({ userSession, showToast }) {
 }
 
 export default function App() {
-  const [userSession, setUserSession] = useState(null);
+  // ⚡ Khởi tạo trực tiếp từ localStorage để tránh bị reset về null khi reload trang
+  const [userSession, setUserSession] = useState(() => {
+    const savedSession = localStorage.getItem('userSession');
+    if (savedSession) {
+      try {
+        return JSON.parse(savedSession);
+      } catch (e) {
+        localStorage.removeItem('userSession');
+      }
+    }
+    return null;
+  });
+
   const [toast, setToast] = useState(null);
+
+  // ⚡ Nâng State lên App để duy trì và khôi phục từ Lịch sử
+  const [items, setItems] = useState([
+    { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
+    { id: 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 125, h: 125 }, quantity: 10 },
+    { id: 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 150 }, quantity: 5 },
+  ]);
+
+  const [containers, setContainers] = useState([
+    { id: 1, name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
+  ]);
+
+  const [activeContainers, setActiveContainers] = useState([]);
+  const [strategy, setStrategy] = useState('REMAINDER_OPTIMAL');
+  const [placedBoxes, setPlacedBoxes] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -118,16 +160,18 @@ export default function App() {
     }, 3000);
   };
 
-  useEffect(() => {
-    const savedSession = localStorage.getItem('userSession');
-    if (savedSession) {
-      try {
-        setUserSession(JSON.parse(savedSession));
-      } catch (e) {
-        localStorage.removeItem('userSession');
-      }
-    }
-  }, []);
+  // ⚡ Hàm khôi phục dữ liệu từ Lịch sử
+  const handleLoadHistory = (inputData, resultData) => {
+    if (inputData?.items) setItems(inputData.items);
+    if (inputData?.containers) setContainers(inputData.containers);
+    if (inputData?.strategy) setStrategy(inputData.strategy);
+
+    const boxes = resultData?.placedBoxes || (Array.isArray(resultData) ? resultData : []);
+    const activeConts = resultData?.containers || inputData?.containers || [];
+
+    setPlacedBoxes(boxes);
+    setActiveContainers(activeConts);
+  };
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -141,13 +185,43 @@ export default function App() {
       <Navbar userSession={userSession} onLogout={() => setUserSession(null)} />
 
       <Routes>
-        <Route path="/" element={<HomePage userSession={userSession} showToast={showToast} />} />
+        <Route 
+          path="/" 
+          element={
+            <HomePage 
+              userSession={userSession} 
+              showToast={showToast} 
+              items={items}
+              setItems={setItems}
+              containers={containers}
+              setContainers={setContainers}
+              activeContainers={activeContainers}
+              setActiveContainers={setActiveContainers}
+              strategy={strategy}
+              setStrategy={setStrategy}
+              placedBoxes={placedBoxes}
+              setPlacedBoxes={setPlacedBoxes}
+              loading={loading}
+              setLoading={setLoading}
+            />
+          } 
+        />
         <Route path="/contact" element={<Contact />} />
         <Route 
           path="/login" 
           element={<Login onLoginSuccess={(user) => setUserSession(user)} />} 
         />
         <Route path="/register" element={<Register />} />
+        <Route 
+          path="/history" 
+          element={
+            <History 
+              userSession={userSession} 
+              onLoadHistory={handleLoadHistory} 
+              showToast={showToast} 
+            />
+          } 
+        />
       </Routes>
 
       <Footer />
