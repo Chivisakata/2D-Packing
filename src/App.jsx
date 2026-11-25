@@ -30,13 +30,15 @@ function HomePage({
   setLoading
 }) {
   const handleReset = () => {
+    // ⚡ Dữ liệu mặc định tính chuẩn theo cm (24x17 cm, 12.5x12.5 cm, Ø15 cm)
     setItems([
-      { id: Date.now() + 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
-      { id: Date.now() + 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 125, h: 125 }, quantity: 10 },
-      { id: Date.now() + 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 150 }, quantity: 5 },
+      { id: Date.now() + 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 24, h: 17 }, quantity: 15 },
+      { id: Date.now() + 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 12.5, h: 12.5 }, quantity: 10 },
+      { id: Date.now() + 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 15 }, quantity: 5 },
     ]);
+    // ⚡ Tấm phôi mặc định 120x80 cm
     setContainers([
-      { id: Date.now(), name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
+      { id: Date.now(), name: 'Tấm A', width: 120, height: 80, quantity: 1 }
     ]);
     setActiveContainers([]);
     setStrategy('REMAINDER_OPTIMAL');
@@ -122,7 +124,6 @@ function HomePage({
 }
 
 export default function App() {
-  // ⚡ Khởi tạo trực tiếp từ localStorage để tránh bị reset về null khi reload trang
   const [userSession, setUserSession] = useState(() => {
     const savedSession = localStorage.getItem('userSession');
     if (savedSession) {
@@ -137,15 +138,15 @@ export default function App() {
 
   const [toast, setToast] = useState(null);
 
-  // ⚡ Nâng State lên App để duy trì và khôi phục từ Lịch sử
+  // ⚡ Dữ liệu khởi tạo chuẩn đơn vị cm
   const [items, setItems] = useState([
-    { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
-    { id: 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 125, h: 125 }, quantity: 10 },
-    { id: 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 150 }, quantity: 5 },
+    { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 24, h: 17 }, quantity: 15 },
+    { id: 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 12.5, h: 12.5 }, quantity: 10 },
+    { id: 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 15 }, quantity: 5 },
   ]);
 
   const [containers, setContainers] = useState([
-    { id: 1, name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
+    { id: 1, name: 'Tấm A', width: 120, height: 80, quantity: 1 }
   ]);
 
   const [activeContainers, setActiveContainers] = useState([]);
@@ -160,7 +161,6 @@ export default function App() {
     }, 3000);
   };
 
-  // ⚡ Hàm khôi phục dữ liệu từ Lịch sử
   const handleLoadHistory = (inputData, resultData) => {
     if (inputData?.items) setItems(inputData.items);
     if (inputData?.containers) setContainers(inputData.containers);
@@ -175,7 +175,6 @@ export default function App() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      {/* ⚡ Thông báo Toast hiển thị trực tiếp trên giao diện */}
       {toast && (
         <div className={`toast-notification ${toast.type}`}>
           {toast.message}

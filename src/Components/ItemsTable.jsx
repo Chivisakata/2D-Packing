@@ -147,14 +147,14 @@ export default function ItemsTable({ items, setItems }) {
         
         <div className="table-wrapper">
           <table className="custom-table">
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'left', width: '140px' }}>Hình dạng</th>
-                <th>Thông số (mm)</th>
-                <th style={{ width: '64px' }}>Số lượng</th>
-                <th style={{ width: '32px' }}></th>
-              </tr>
-            </thead>
+           <thead>
+            <tr>
+              <th style={{ textAlign: 'left', width: '140px' }}>Hình dạng</th>
+              <th>Thông số (cm)</th> {/* ⚡ Đã đổi mm -> cm */}
+              <th style={{ width: '64px' }}>Số lượng</th>
+              <th style={{ width: '32px' }}></th>
+            </tr>
+          </thead>
             <tbody>
               {items.map((item) => (
                 <tr key={item.id}>

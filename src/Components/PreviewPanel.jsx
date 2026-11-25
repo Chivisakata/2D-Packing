@@ -8,7 +8,7 @@ const AUTO_COLORS = [
   '#f97316', '#14b8a6', '#6366f1', '#a855f7'
 ];
 
-// ⚡ Hàm bỏ dấu tiếng Việt để jsPDF không bị crash font helvetica
+// ⚡ Hàm bỏ dấu tiếng Việt cho font Helvetica của jsPDF
 const removeAccents = (str = '') => {
   return String(str)
     .normalize('NFD')
@@ -21,14 +21,13 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
   const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
   const [showUnpackedDropdown, setShowUnpackedDropdown] = useState(false);
   
-  // ⚡ Ref gắn vào thẻ DIV bọc ngoài SVG
   const exportRef = useRef(null);
 
   const hasResults = Array.isArray(placedBoxes) && placedBoxes.length > 0 && containers.length > 0;
 
   const currentSheet = hasResults ? (containers[selectedSheetIndex] || containers[0]) : null;
-  const sheetW = currentSheet ? (Number(currentSheet.width) || 1000) : 1000;
-  const sheetH = currentSheet ? (Number(currentSheet.height) || 1000) : 1000;
+  const sheetW = currentSheet ? (Number(currentSheet.width) || 100) : 100;
+  const sheetH = currentSheet ? (Number(currentSheet.height) || 100) : 100;
 
   const currentSheetId = selectedSheetIndex + 1;
 
@@ -66,49 +65,45 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
     });
   }
 
-  // ⚡ HÀM XUẤT PDF TRẮNG ĐEN & SIÊU NHẸ
+  // ⚡ HÀM XUẤT PDF TRẮNG ĐEN ĐỒNG NHẤT CM
   const handleExportPDF = async () => {
     if (!exportRef.current || !hasResults) return;
 
     try {
-      // Chụp DIV bọc ngoài SVG và biến đổi sang trắng đen thô qua onclone
       const canvas = await html2canvas(exportRef.current, {
-        scale: 1.5, // Giảm scale xuống 1.5 giúp ảnh nhẹ hơn mà vẫn nét
+        scale: 1.5,
         useCORS: true,
         backgroundColor: '#ffffff',
         logging: false,
         onclone: (clonedDoc) => {
           const svg = clonedDoc.querySelector('#canvasSheet');
           if (svg) {
-            // Nền SVG màu trắng tinh
             svg.style.backgroundColor = '#ffffff';
 
-            // Ẩn các đường lưới caro nền để PDF vừa sạch vừa tối ưu dung lượng
             const gridPath = svg.querySelector('pattern#grid path');
             if (gridPath) {
               gridPath.setAttribute('stroke', 'none');
             }
 
-            // Chuyển toàn bộ các nét vẽ chi tiết (polygon, ellipse, circle, rect) sang ĐEN TRẮNG
             const shapes = svg.querySelectorAll('polygon, ellipse, circle, rect');
             shapes.forEach((shape) => {
               shape.setAttribute('fill', '#ffffff');
               shape.setAttribute('fill-opacity', '1');
               shape.setAttribute('stroke', '#000000');
-              shape.setAttribute('stroke-width', '2');
+              shape.setAttribute('stroke-width', '1.5');
+              shape.setAttribute('vector-effect', 'non-scaling-stroke');
             });
           }
         }
       });
 
-      // Xuất định dạng JPEG với chất lượng nén 70% (Dung lượng file giảm mạnh)
       const imgData = canvas.toDataURL('image/jpeg', 0.7);
       
       const pdf = new jsPDF({
         orientation: sheetW >= sheetH ? 'landscape' : 'portrait',
         unit: 'mm',
         format: 'a4',
-        compress: true // Bật nén file PDF của jsPDF
+        compress: true
       });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -123,13 +118,13 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
       const xOffset = (pdfWidth - finalWidth) / 2;
       const yOffset = 25;
 
-      const widthCm = (sheetW / 10).toLocaleString('vi-VN');
-      const heightCm = (sheetH / 10).toLocaleString('vi-VN');
+      // ⚡ Nhập vào bao nhiêu cm thì hiển thị đúng bấy nhiêu cm
+      const widthCm = sheetW.toLocaleString('vi-VN');
+      const heightCm = sheetH.toLocaleString('vi-VN');
       const rawSheetName = containers[selectedSheetIndex]?.name || `Tam ${selectedSheetIndex + 1}`;
       
       const safeSheetName = removeAccents(rawSheetName).toUpperCase();
 
-      // Vẽ tiêu đề bản vẽ kỹ thuật trắng đen
       pdf.setFont('helvetica', 'bold');
       pdf.setFontSize(15);
       pdf.text(`SO DO CAT PHOI 2D: ${safeSheetName}`, pdfWidth / 2, 12, { align: 'center' });
@@ -143,7 +138,6 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
         { align: 'center' }
       );
 
-      // Chèn ảnh sơ đồ cắt đen trắng vào PDF
       pdf.addImage(imgData, 'JPEG', xOffset, yOffset, finalWidth, finalHeight);
       pdf.save(`So_Do_Cat_${safeSheetName.replace(/\s+/g, '_')}.pdf`);
     } catch (error) {
@@ -152,7 +146,6 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
     }
   };
 
-  // Render các hình dạng chi tiết
   const renderShapeSVG = (box, index, color) => {
     const x = Number(box.X ?? box.x ?? 0);
     const y = Number(box.Y ?? box.y ?? 0);
@@ -168,7 +161,8 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
       fillOpacity: '0.85',
       stroke: '#0f172a',
       strokeOpacity: '0.95',
-      strokeWidth: '2.5'
+      strokeWidth: '1.5',
+      vectorEffect: 'non-scaling-stroke'
     };
 
     // 1. LỤC GIÁC ĐỀU
@@ -229,7 +223,10 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
       return <circle key={index} cx={cx} cy={cy} r={r} {...commonProps} />;
     }
 
-    // 4. MẶC ĐỊNH: Hình chữ nhật
+    // 4. MẶC ĐỊNH: HÌNH CHỮ NHẬT
+    // Bo góc tự điều chỉnh theo tỉ lệ kích thước (tránh biến hình chữ nhật nhỏ thành hình tròn)
+    const cornerRadius = Math.min(w, h) > 20 ? 3 : 0;
+
     return (
       <rect
         key={index}
@@ -237,12 +234,14 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
         y={y}
         width={w}
         height={h}
-        rx="3"
-        ry="3"
+        rx={cornerRadius}
+        ry={cornerRadius}
         {...commonProps}
       />
     );
   };
+
+  const pad = 6;
 
   return (
     <div className="right-column">
@@ -260,14 +259,15 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
               backgroundColor: '#ffffff', 
               display: 'flex', 
               justifyContent: 'center', 
-              alignItems: 'center' 
+              alignItems: 'center',
+              padding: '8px'
             }}
           >
             <svg
               id="canvasSheet"
               width="100%"
               height="100%"
-              viewBox={`0 0 ${sheetW} ${sheetH}`}
+              viewBox={`${-pad} ${-pad} ${sheetW + pad * 2} ${sheetH + pad * 2}`}
               style={{
                 width: '100%',
                 height: '100%',
@@ -275,16 +275,24 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
                 backgroundColor: '#ffffff',
                 border: 'none',
                 borderRadius: '0px',
-                boxShadow: 'none'
+                boxShadow: 'none',
+                overflow: 'visible'
               }}
             >
               <defs>
-                <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
-                  <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#cbd5e1" strokeWidth="2" />
+                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                  <path 
+                    d="M 10 0 L 0 0 0 10" 
+                    fill="none" 
+                    stroke="#cbd5e1" 
+                    strokeWidth="1" 
+                    vectorEffect="non-scaling-stroke" 
+                  />
                 </pattern>
               </defs>
-              <rect width="100%" height="100%" fill="url(#grid)" />
+              <rect width={sheetW} height={sheetH} fill="url(#grid)" />
 
+              {/* Khung phôi nguyên */}
               <rect
                 x="0"
                 y="0"
@@ -292,9 +300,11 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
                 height={sheetH}
                 fill="none"
                 stroke="#0f172a"
-                strokeWidth="4"
+                strokeWidth="2"
+                vectorEffect="non-scaling-stroke"
               />
 
+              {/* Các chi tiết cắt */}
               {currentSheetBoxes.length > 0 ? (
                 currentSheetBoxes.map((box, index) => {
                   const w = Number(box.Width ?? box.width ?? 0);
@@ -307,13 +317,21 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
                   return renderShapeSVG(box, index, color);
                 })
               ) : (
-                <text x={sheetW / 2} y={sheetH / 2} textAnchor="middle" fill="#94a3b8" fontSize="22" fontWeight="600">
-                  {loading 
-                    ? "Đang xử lý thuật toán..." 
-                    : hasResults 
-                      ? "Tấm phôi này chưa được sử dụng (Trống)" 
-                      : "Nhấn \"BẮT ĐẦU TỐI ƯU\" để hiển thị sơ đồ cắt"}
-                </text>
+                <text 
+                x={sheetW / 2} 
+                y={sheetH / 2} 
+                textAnchor="middle" 
+                dominantBaseline="middle"
+                fill="#94a3b8" 
+                fontSize={Math.max(sheetH * 0.04, 3)} 
+                fontWeight="600"
+              >
+                {loading 
+                  ? "Đang xử lý thuật toán..." 
+                  : hasResults 
+                    ? "Tấm phôi này chưa được sử dụng (Trống)" 
+                    : "Nhấn \"BẮT ĐẦU TỐI ƯU\" để hiển thị sơ đồ cắt"}
+              </text>
               )}
             </svg>
           </div>
@@ -333,7 +351,7 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
             >
               {(hasResults ? containers : []).map((c, idx) => (
                 <option key={c.id || idx} value={idx}>
-                  {c.name || `Tấm ${idx + 1}`} ({c.width}x{c.height})
+                  {c.name || `Tấm ${idx + 1}`} ({c.width}x{c.height} cm)
                 </option>
               ))}
             </select>
@@ -354,7 +372,8 @@ export default function PreviewPanel({ items = [], containers = [], placedBoxes 
         <div className="stats-group">
           <label className="stats-label">Diện tích sử dụng:</label>
           <div style={{ display: 'flex', alignItems: 'baseline' }}>
-            <span className="area-value">{usedArea.toLocaleString()} mm²</span>
+            {/* ⚡ Hiển thị diện tích chuẩn cm² */}
+            <span className="area-value">{usedArea.toLocaleString()} cm²</span>
             <span className="area-efficiency">({efficiency}%)</span>
           </div>
         </div>

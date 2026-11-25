@@ -54,6 +54,7 @@ src/
     ContainersTable.jsx
     Footer.css
     Footer.jsx
+    History.jsx
     ItemsTable.jsx
     Login.css
     Login.jsx
@@ -339,6 +340,237 @@ export default function Contact() {
         </div>
 
       </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/Components/History.jsx">
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getUserHistoriesApi } from '../services/apiService';
+import './PackingTables.css';
+
+export default function History({ userSession, onLoadHistory, showToast }) {
+  const [histories, setHistories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 20; // ⚡ Mỗi lần hiển thị tối đa 20 mục
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!userSession?.userId) {
+      showToast('Vui lòng đăng nhập để xem lịch sử!', 'warning');
+      navigate('/login');
+      return;
+    }
+
+    const fetchHistories = async () => {
+      try {
+        const data = await getUserHistoriesApi(userSession.userId);
+        if (Array.isArray(data)) {
+          setHistories(data);
+        } else {
+          setHistories([]);
+        }
+      } catch (err) {
+        showToast('Không thể tải danh sách lịch sử!', 'error');
+        setHistories([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHistories();
+  }, [userSession, navigate, showToast]);
+
+  const handleRestore = (history) => {
+    const inputData = history.inputData || history.InputData;
+    const resultData = history.resultData || history.ResultData;
+
+    if (onLoadHistory) {
+      onLoadHistory(inputData, resultData);
+      showToast('Đã khôi phục sơ đồ cắt từ lịch sử!', 'success');
+      navigate('/');
+    }
+  };
+
+  if (loading) {
+    return <div style={{ textAlign: 'center', padding: '3rem', fontSize: '1.2rem' }}>Đang tải lịch sử...</div>;
+  }
+
+  // ⚡ Tính toán phân trang (20 mục / trang)
+  const totalItems = histories.length;
+  const totalPages = Math.ceil(totalItems / pageSize) || 1;
+  const startIndex = (currentPage - 1) * pageSize;
+  const currentHistories = histories.slice(startIndex, startIndex + pageSize);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  return (
+    <div style={{ maxWidth: '1200px', margin: '2rem auto', padding: '0 1rem', width: '100%' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+          Lịch Sử Cắt Phôi
+        </h1>
+        <span style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 600 }}>
+          Tổng cộng: {totalItems} lịch sử
+        </span>
+      </div>
+
+      {histories.length === 0 ? (
+        <div style={{ background: '#fff', padding: '2.5rem', borderRadius: '12px', textAlign: 'center', border: '1px solid #e2e8f0', color: '#64748b' }}>
+          Chưa có lịch sử cắt nào được lưu.
+        </div>
+      ) : (
+        <>
+          {/* ⚡ Giao diện danh sách (List Table) */}
+          <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', textAlign: 'left', fontSize: '0.85rem', color: '#475569', textTransform: 'uppercase' }}>
+                  <th style={{ padding: '12px 16px', width: '60px', textAlign: 'center' }}>STT</th>
+                  <th style={{ padding: '12px 16px' }}>Tiêu đề & Thời gian</th>
+                  <th style={{ padding: '12px 16px', width: '130px', textAlign: 'center' }}>Tấm phôi</th>
+                  <th style={{ padding: '12px 16px', width: '140px', textAlign: 'center' }}>Loại chi tiết</th>
+                  <th style={{ padding: '12px 16px', width: '130px', textAlign: 'center' }}>Số hình đã xếp</th>
+                  <th style={{ padding: '12px 16px', width: '160px', textAlign: 'center' }}>Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentHistories.map((h, index) => {
+                  const historyId = h.historyId || h.HistoryId;
+                  const title = h.title || h.Title || 'Sơ đồ cắt phôi';
+                  const rawDate = h.createdAt || h.CreatedAt;
+
+                  let formattedDate = 'Không rõ thời gian';
+                  if (rawDate && rawDate !== '0001-01-01T00:00:00Z') {
+                    const parsedDate = new Date(rawDate);
+                    if (!isNaN(parsedDate.getTime())) {
+                      formattedDate = parsedDate.toLocaleString('vi-VN');
+                    }
+                  }
+
+                  const inputData = h.inputData || h.InputData || {};
+                  const resultData = h.resultData || h.ResultData || {};
+
+                  const items = inputData.items || inputData.Items || [];
+                  const containers = inputData.containers || inputData.Containers || [];
+                  const placedBoxes = resultData.placedBoxes || resultData.PlacedBoxes || (Array.isArray(resultData) ? resultData : []);
+
+                  const stt = startIndex + index + 1;
+
+                  return (
+                    <tr 
+                      key={historyId || index}
+                      style={{ 
+                        borderBottom: '1px solid #f1f5f9', 
+                        transition: 'background-color 0.15s ease'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      <td style={{ padding: '14px 16px', textAlign: 'center', fontWeight: 700, color: '#64748b', fontSize: '0.9rem' }}>
+                        {stt}
+                      </td>
+                      <td style={{ padding: '14px 16px' }}>
+                        <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '0.95rem', marginBottom: '2px' }}>
+                          {title}
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
+                          {formattedDate}
+                        </div>
+                      </td>
+                      <td style={{ padding: '14px 16px', textAlign: 'center', fontWeight: 600, color: '#334155', fontSize: '0.9rem' }}>
+                        {containers.length} tấm
+                      </td>
+                      <td style={{ padding: '14px 16px', textAlign: 'center', fontWeight: 600, color: '#334155', fontSize: '0.9rem' }}>
+                        {items.length} loại
+                      </td>
+                      <td style={{ padding: '14px 16px', textAlign: 'center', fontWeight: 800, color: '#10b981', fontSize: '0.95rem' }}>
+                        {placedBoxes.length} hình
+                      </td>
+                      <td style={{ padding: '14px 16px', textAlign: 'center' }}>
+                        <button
+                          onClick={() => handleRestore(h)}
+                          style={{
+                            padding: '6px 14px',
+                            backgroundColor: '#3b82f6',
+                            color: '#ffffff',
+                            border: 'none',
+                            borderRadius: '6px',
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            cursor: 'pointer',
+                            transition: 'background-color 0.15s ease'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3b82f6'}
+                        >
+                          Tải lại sơ đồ
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* ⚡ Thanh điều hướng phân trang (Chuyển 20 mục) */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.25rem' }}>
+            <span style={{ fontSize: '0.875rem', color: '#64748b', fontWeight: 500 }}>
+              Hiển thị {startIndex + 1} - {Math.min(startIndex + pageSize, totalItems)} / tổng {totalItems} lịch sử
+            </span>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  border: '1px solid #cbd5e1',
+                  background: currentPage === 1 ? '#f1f5f9' : '#ffffff',
+                  color: currentPage === 1 ? '#94a3b8' : '#334155',
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
+                }}
+              >
+                &laquo; Trang trước
+              </button>
+
+              <span style={{ padding: '0 8px', fontSize: '0.9rem', fontWeight: 700, color: '#0f172a' }}>
+                Trang {currentPage} / {totalPages}
+              </span>
+
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  border: '1px solid #cbd5e1',
+                  background: currentPage === totalPages ? '#f1f5f9' : '#ffffff',
+                  color: currentPage === totalPages ? '#94a3b8' : '#334155',
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer'
+                }}
+              >
+                Trang tiếp &raquo;
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -2409,236 +2641,6 @@ export default function Footer() {
 }
 </file>
 
-<file path="src/Components/ItemsTable.jsx">
-import React from 'react';
-import './PackingTables.css';
-
-export const SHAPE_TYPES = {
-  RECTANGLE: { id: 'RECTANGLE', name: 'Hình chữ nhật' },
-  CIRCLE: { id: 'CIRCLE', name: 'Hình tròn' },
-  RIGHT_TRIANGLE: { id: 'RIGHT_TRIANGLE', name: 'Tam giác vuông' },
-  ISOSCELES_TRIANGLE: { id: 'ISOSCELES_TRIANGLE', name: 'Tam giác cân' },
-  HEXAGON: { id: 'HEXAGON', name: 'Lục giác đều' },
-  ELLIPSE: { id: 'ELLIPSE', name: 'Ellipse' }
-};
-
-export default function ItemsTable({ items, setItems }) {
-
-  const handleAddItem = () => {
-    const newItem = {
-      id: Date.now(),
-      shape: SHAPE_TYPES.RECTANGLE.id,
-      dimensions: { w: 240, h: 170 },
-      quantity: 5
-    };
-    setItems([...items, newItem]);
-  };
-
-  const handleDeleteItem = (id) => {
-    setItems(items.filter(item => item.id !== id));
-  };
-
-  const handleShapeChange = (id, newShape) => {
-    let defaultDims = { w: 200, h: 200 };
-    if (newShape === SHAPE_TYPES.CIRCLE.id) defaultDims = { d: 150 };
-    if (newShape === SHAPE_TYPES.HEXAGON.id) defaultDims = { a: 200 };
-    if (newShape === SHAPE_TYPES.ELLIPSE.id) defaultDims = { rx: 200, ry: 150 };
-
-    setItems(items.map(item => 
-      item.id === id ? { ...item, shape: newShape, dimensions: defaultDims } : item
-    ));
-  };
-
-  // ⚡ Tự động nắn giá trị < 1 về 1 (giữ '' nếu xóa hết)
-  const handleDimensionChange = (id, key, value) => {
-    setItems(items.map(item => {
-      if (item.id !== id) return item;
-      if (value === '') return { ...item, dimensions: { ...item.dimensions, [key]: '' } };
-      const val = Number(value);
-      return { 
-        ...item, 
-        dimensions: { 
-          ...item.dimensions, 
-          [key]: val < 1 ? 1 : val 
-        } 
-      };
-    }));
-  };
-
-  const handleQuantityChange = (id, qty) => {
-    setItems(items.map(item => {
-      if (item.id !== id) return item;
-      if (qty === '') return { ...item, quantity: '' };
-      const val = Number(qty);
-      return { ...item, quantity: val < 1 ? 1 : val };
-    }));
-  };
-
-  const renderDimensionInputs = (item) => {
-    const { shape, dimensions } = item;
-
-    switch (shape) {
-      case SHAPE_TYPES.CIRCLE.id:
-        return (
-          <div className="flex-center">
-            <span style={{ fontSize: '10px', color: '#94a3b8' }}>Ø:</span>
-            <input 
-              type="number" 
-              min="1"
-              value={dimensions.d ?? ''} 
-              onChange={(e) => handleDimensionChange(item.id, 'd', e.target.value)}
-              onFocus={(e) => e.target.select()}
-              className="input-style" style={{ width: '64px' }}
-            />
-          </div>
-        );
-      case SHAPE_TYPES.HEXAGON.id:
-        return (
-          <div className="flex-center">
-            <span style={{ fontSize: '10px', color: '#94a3b8' }}>Cạnh:</span>
-            <input 
-              type="number" 
-              min="1"
-              value={dimensions.a ?? ''} 
-              onChange={(e) => handleDimensionChange(item.id, 'a', e.target.value)}
-              onFocus={(e) => e.target.select()}
-              className="input-style" style={{ width: '64px' }}
-            />
-          </div>
-        );
-      case SHAPE_TYPES.ELLIPSE.id:
-        return (
-          <div className="flex-center">
-            <input 
-              type="number" 
-              min="1"
-              value={dimensions.rx ?? ''} 
-              onChange={(e) => handleDimensionChange(item.id, 'rx', e.target.value)}
-              onFocus={(e) => e.target.select()}
-              className="input-style" style={{ width: '48px' }}
-            />
-            <span style={{ color: '#94a3b8' }}>x</span>
-            <input 
-              type="number" 
-              min="1"
-              value={dimensions.ry ?? ''} 
-              onChange={(e) => handleDimensionChange(item.id, 'ry', e.target.value)}
-              onFocus={(e) => e.target.select()}
-              className="input-style" style={{ width: '48px' }}
-            />
-          </div>
-        );
-      case SHAPE_TYPES.RIGHT_TRIANGLE.id:
-      case SHAPE_TYPES.ISOSCELES_TRIANGLE.id:
-        return (
-          <div className="flex-center">
-            <input 
-              type="number" 
-              min="1"
-              value={dimensions.b ?? ''} 
-              onChange={(e) => handleDimensionChange(item.id, 'b', e.target.value)}
-              onFocus={(e) => e.target.select()}
-              className="input-style" style={{ width: '48px' }}
-            />
-            <span style={{ color: '#94a3b8' }}>x</span>
-            <input 
-              type="number" 
-              min="1"
-              value={dimensions.h ?? ''} 
-              onChange={(e) => handleDimensionChange(item.id, 'h', e.target.value)}
-              onFocus={(e) => e.target.select()}
-              className="input-style" style={{ width: '48px' }}
-            />
-          </div>
-        );
-      case SHAPE_TYPES.RECTANGLE.id:
-      default:
-        return (
-          <div className="flex-center">
-            <input 
-              type="number" 
-              min="1"
-              value={dimensions.w ?? ''} 
-              onChange={(e) => handleDimensionChange(item.id, 'w', e.target.value)}
-              onFocus={(e) => e.target.select()}
-              className="input-style" style={{ width: '48px' }}
-            />
-            <span style={{ color: '#94a3b8' }}>x</span>
-            <input 
-              type="number" 
-              min="1"
-              value={dimensions.h ?? ''} 
-              onChange={(e) => handleDimensionChange(item.id, 'h', e.target.value)}
-              onFocus={(e) => e.target.select()}
-              className="input-style" style={{ width: '48px' }}
-            />
-          </div>
-        );
-    }
-  };
-
-  return (
-    <div className="packing-card items-card">
-      <div>
-        <h2 className="card-title">Chi tiết cần cắt</h2>
-        
-        <div className="table-wrapper">
-          <table className="custom-table">
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'left', width: '140px' }}>Hình dạng</th>
-                <th>Thông số (mm)</th>
-                <th style={{ width: '64px' }}>Số lượng</th>
-                <th style={{ width: '32px' }}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item) => (
-                <tr key={item.id}>
-                  <td style={{ textAlign: 'left' }}>
-                    <select 
-                      value={item.shape} 
-                      onChange={(e) => handleShapeChange(item.id, e.target.value)}
-                      className="select-style" style={{ width: '100%' }}
-                    >
-                      {Object.values(SHAPE_TYPES).map(shape => (
-                        <option key={shape.id} value={shape.id}>{shape.name}</option>
-                      ))}
-                    </select>
-                  </td>
-                  <td>{renderDimensionInputs(item)}</td>
-                  <td>
-                    <input 
-                      type="number" 
-                      min="1"
-                      value={item.quantity ?? ''} 
-                      onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                      onFocus={(e) => e.target.select()}
-                      className="input-style" style={{ width: '48px', fontWeight: 'bold' }}
-                    />
-                  </td>
-                  <td>
-                    <button className="btn-delete" onClick={() => handleDeleteItem(item.id)}>
-                      <span style={{ fontStyle: 'normal' }}>✕</span>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '8px' }}>
-        <button className="btn-add" onClick={handleAddItem}>
-            <span style={{ fontStyle: 'normal' }}>Thêm</span>
-        </button>
-      </div>
-    </div>
-  );
-}
-</file>
-
 <file path="src/Components/Navbar.css">
 /* 📌 ĐIỂM MẤU CHỐT Ở ĐÂY */
 .navbar {
@@ -2832,34 +2834,208 @@ createRoot(document.getElementById('root')).render(
 )
 </file>
 
-<file path="package.json">
-{
-  "name": "2d-packing",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1",
-    "react-router-dom": "^7.18.5"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.2",
-    "eslint": "^10.13.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.7",
-    "globals": "^17.13.0",
-    "vite": "^8.3.5"
-  }
+<file path="src/Components/ItemsTable.jsx">
+import React from 'react';
+import './PackingTables.css';
+
+export const SHAPE_TYPES = {
+  RECTANGLE: { id: 'RECTANGLE', name: 'Hình chữ nhật' },
+  CIRCLE: { id: 'CIRCLE', name: 'Hình tròn' },
+  HEXAGON: { id: 'HEXAGON', name: 'Lục giác đều' },
+  ELLIPSE: { id: 'ELLIPSE', name: 'Ellipse' }
+};
+
+export default function ItemsTable({ items, setItems }) {
+
+  const handleAddItem = () => {
+    const newItem = {
+      id: Date.now(),
+      shape: SHAPE_TYPES.RECTANGLE.id,
+      dimensions: { w: 240, h: 170 },
+      quantity: 5
+    };
+    setItems([...items, newItem]);
+  };
+
+  const handleDeleteItem = (id) => {
+    setItems(items.filter(item => item.id !== id));
+  };
+
+  const handleShapeChange = (id, newShape) => {
+    let defaultDims = { w: 200, h: 200 };
+    if (newShape === SHAPE_TYPES.CIRCLE.id) defaultDims = { d: 150 };
+    if (newShape === SHAPE_TYPES.HEXAGON.id) defaultDims = { a: 200 };
+    if (newShape === SHAPE_TYPES.ELLIPSE.id) defaultDims = { rx: 200, ry: 150 };
+
+    setItems(items.map(item => 
+      item.id === id ? { ...item, shape: newShape, dimensions: defaultDims } : item
+    ));
+  };
+
+  // ⚡ Tự động nắn giá trị < 1 về 1 (giữ '' nếu xóa hết)
+  const handleDimensionChange = (id, key, value) => {
+    setItems(items.map(item => {
+      if (item.id !== id) return item;
+      if (value === '') return { ...item, dimensions: { ...item.dimensions, [key]: '' } };
+      const val = Number(value);
+      return { 
+        ...item, 
+        dimensions: { 
+          ...item.dimensions, 
+          [key]: val < 1 ? 1 : val 
+        } 
+      };
+    }));
+  };
+
+  const handleQuantityChange = (id, qty) => {
+    setItems(items.map(item => {
+      if (item.id !== id) return item;
+      if (qty === '') return { ...item, quantity: '' };
+      const val = Number(qty);
+      return { ...item, quantity: val < 1 ? 1 : val };
+    }));
+  };
+
+  const renderDimensionInputs = (item) => {
+    const { shape, dimensions } = item;
+
+    switch (shape) {
+      case SHAPE_TYPES.CIRCLE.id:
+        return (
+          <div className="flex-center">
+            <span style={{ fontSize: '10px', color: '#94a3b8' }}>Ø:</span>
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.d ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'd', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '64px' }}
+            />
+          </div>
+        );
+      case SHAPE_TYPES.HEXAGON.id:
+        return (
+          <div className="flex-center">
+            <span style={{ fontSize: '10px', color: '#94a3b8' }}>Cạnh:</span>
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.a ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'a', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '64px' }}
+            />
+          </div>
+        );
+      case SHAPE_TYPES.ELLIPSE.id:
+        return (
+          <div className="flex-center">
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.rx ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'rx', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '48px' }}
+            />
+            <span style={{ color: '#94a3b8' }}>x</span>
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.ry ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'ry', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '48px' }}
+            />
+          </div>
+        );
+      case SHAPE_TYPES.RECTANGLE.id:
+      default:
+        return (
+          <div className="flex-center">
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.w ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'w', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '48px' }}
+            />
+            <span style={{ color: '#94a3b8' }}>x</span>
+            <input 
+              type="number" 
+              min="1"
+              value={dimensions.h ?? ''} 
+              onChange={(e) => handleDimensionChange(item.id, 'h', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className="input-style" style={{ width: '48px' }}
+            />
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="packing-card items-card">
+      <div>
+        <h2 className="card-title">Chi tiết cần cắt</h2>
+        
+        <div className="table-wrapper">
+          <table className="custom-table">
+            <thead>
+              <tr>
+                <th style={{ textAlign: 'left', width: '140px' }}>Hình dạng</th>
+                <th>Thông số (mm)</th>
+                <th style={{ width: '64px' }}>Số lượng</th>
+                <th style={{ width: '32px' }}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <tr key={item.id}>
+                  <td style={{ textAlign: 'left' }}>
+                    <select 
+                      value={item.shape} 
+                      onChange={(e) => handleShapeChange(item.id, e.target.value)}
+                      className="select-style" style={{ width: '100%' }}
+                    >
+                      {Object.values(SHAPE_TYPES).map(shape => (
+                        <option key={shape.id} value={shape.id}>{shape.name}</option>
+                      ))}
+                    </select>
+                  </td>
+                  <td>{renderDimensionInputs(item)}</td>
+                  <td>
+                    <input 
+                      type="number" 
+                      min="1"
+                      value={item.quantity ?? ''} 
+                      onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                      onFocus={(e) => e.target.select()}
+                      className="input-style" style={{ width: '48px', fontWeight: 'bold' }}
+                    />
+                  </td>
+                  <td>
+                    <button className="btn-delete" onClick={() => handleDeleteItem(item.id)}>
+                      <span style={{ fontStyle: 'normal' }}>✕</span>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '8px' }}>
+        <button className="btn-add" onClick={handleAddItem}>
+            <span style={{ fontStyle: 'normal' }}>Thêm</span>
+        </button>
+      </div>
+    </div>
+  );
 }
 </file>
 
@@ -3065,183 +3241,36 @@ export default function Register() {
 }
 </file>
 
-<file path="src/services/apiService.js">
-const API_BASE_URL = 'https://localhost:7187/api';
-
-export async function calculateLayoutApi(items, containers, strategy) {
-  // 1. CHUẨN HÓA & NHÂN BẢN PHÔI (StockSheets) THEO QUANTITY VỚI ID DUY NHẤT
-  const stockSheets = [];
-  let sheetIdCounter = 1;
-
-  containers.forEach((c) => {
-    const qty = Number(c.quantity) || 1;
-    const width = Number(c.width);
-    const height = Number(c.height);
-    const name = c.name || 'Tấm phôi';
-
-    for (let i = 0; i < qty; i++) {
-      stockSheets.push({
-        ID: sheetIdCounter++,
-        Width: width,
-        Height: height,
-        Quantity: 1,
-        Name: qty > 1 ? `${name} (#${i + 1})` : name
-      });
-    }
-  });
-
-  if (stockSheets.length === 0) {
-    stockSheets.push({ ID: 1, Width: 1200, Height: 800, Quantity: 1, Name: 'Tấm A' });
+<file path="package.json">
+{
+  "name": "2d-packing",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
+    "vite": "^8.3.5"
   }
-
-  // 2. CHUYỂN ĐỔI DANH SÁCH CHI TIẾT CẮT (CuttingPack)
-  const cuttingPackData = [];
-
-  items.forEach((item) => {
-    const qty = Number(item.quantity) || 1;
-    let shapeName = "Rectangle";
-    let objData = {};
-
-    switch (item.shape) {
-      case 'CIRCLE':
-        shapeName = "Circle";
-        objData = { ShapeName: shapeName, Radius: Number(item.dimensions?.d || 100) / 2 };
-        break;
-      case 'RIGHT_TRIANGLE':
-        shapeName = "RightAngledTriangle";
-        objData = { ShapeName: shapeName, Base: Number(item.dimensions?.b || 100), Height: Number(item.dimensions?.h || 100) };
-        break;
-      case 'ISOSCELES_TRIANGLE':
-        shapeName = "IsoscelesTriangle";
-        objData = { ShapeName: shapeName, Base: Number(item.dimensions?.b || 100), Height: Number(item.dimensions?.h || 100) };
-        break;
-      case 'HEXAGON':
-        shapeName = "RegularHexagon";
-        objData = { ShapeName: shapeName, SideLength: Number(item.dimensions?.a || 100) };
-        break;
-      case 'ELLIPSE':
-        shapeName = "Ellipse";
-        objData = { ShapeName: shapeName, MajorAxis: Number(item.dimensions?.rx || 100), MinorAxis: Number(item.dimensions?.ry || 100) };
-        break;
-      case 'RECTANGLE':
-      default:
-        shapeName = "Rectangle";
-        objData = { ShapeName: shapeName, Width: Number(item.dimensions?.w || 100), Height: Number(item.dimensions?.h || 100) };
-        break;
-    }
-
-    for (let i = 0; i < qty; i++) {
-      cuttingPackData.push(JSON.stringify(objData));
-    }
-  });
-
-  // ⚡ 3. ÁNH XẠ STRATEGY SANG CÁC GIÁ TRỊ ENUM CỦA C# BE
-  // 1 = MaximalRectanglesCutting (Tối ưu diện tích phần dư)
-  // 2 = SlackDistributedMaxRects (Phân bố đều các chi tiết)
-  let cuttingType = 1;
-if (strategy === 'BALANCED_DISTRIBUTION') {
-  cuttingType = 2; // Phân bố đều các chi tiết
-} else if (strategy === 'REMAINDER_OPTIMAL') {
-  cuttingType = 1; // Tối ưu diện tích phần dư
-}
-
-  // 4. ĐÓNG GÓI PAYLOAD VỚI DẠNG TYPE ĐÃ MAP LINH HOẠT
-  const payload = {
-    Type: cuttingType,
-    SawKerf: 0,
-    StockSheets: stockSheets,
-    CuttingPack: cuttingPackData
-  };
-
-  console.log("🚀 Payload gửi sang C#:", payload);
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/CalculateLayout`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || 'Lỗi từ Server');
-    }
-
-    const result = await response.json();
-    console.log("🔥 [API Response] Kết quả JSON gốc từ C#:", result);
-
-    const rawBoxes = result?.data || result || [];
-
-    // CHUẨN HÓA THUỘC TÍNH TRẢ VỀ CHO FE
-    const normalizedBoxes = Array.isArray(rawBoxes) 
-      ? rawBoxes.map((box) => {
-          const isRotated = Boolean(box.IsRotated ?? box.isRotated ?? false);
-          const rawW = Number(box.Width ?? box.width ?? 0);
-          const rawH = Number(box.Height ?? box.height ?? 0);
-
-          return {
-            x: Number(box.X ?? box.x ?? 0),
-            y: Number(box.Y ?? box.y ?? 0),
-            width: isRotated ? rawH : rawW,
-            height: isRotated ? rawW : rawH,
-            stockSheetId: Number(box.sTockSheetID ?? box.STockSheetID ?? box.stockSheetId ?? 1),
-            isRotated: isRotated
-          };
-        })
-      : [];
-
-    return normalizedBoxes;
-
-  } catch (error) {
-    console.error('Lỗi API CalculateLayout:', error);
-    throw error;
-  }
-}
-
-// API Đăng ký tinh gọn (chỉ Email & Password)
-export async function registerApi(email, password) {
-  const response = await fetch(`${API_BASE_URL}/Auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.message || 'Đăng ký thất bại!');
-  return data;
-}
-
-// ⚡ Bổ sung API Đăng nhập
-export async function loginApi(email, password) {
-  const response = await fetch(`${API_BASE_URL}/Auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.message || 'Đăng nhập thất bại!');
-  return data;
-}
-
-// API Lưu Lịch Sử Cắt
-export async function saveHistoryApi(userId, title, inputData, resultData) {
-  const response = await fetch(`${API_BASE_URL}/History/save`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, title, inputData, resultData })
-  });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.message || 'Lưu lịch sử thất bại!');
-  return data;
-}
-
-// API Lấy Danh Sách Lịch Sử
-export async function getUserHistoriesApi(userId) {
-  const response = await fetch(`${API_BASE_URL}/History/user/${userId}`);
-  const data = await response.json();
-  if (!response.ok) throw new Error('Không thể tải lịch sử!');
-  return data;
 }
 </file>
 
@@ -3744,195 +3773,195 @@ export default function OptimizationOptions({
 }
 </file>
 
-<file path="src/Components/PreviewPanel.jsx">
-import React, { useState } from 'react';
+<file path="src/services/apiService.js">
+const API_BASE_URL = 'https://localhost:7187/api';
 
-const AUTO_COLORS = [
-  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
-  '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
-  '#f97316', '#14b8a6', '#6366f1', '#a855f7'
-];
+export async function calculateLayoutApi(items, containers, strategy) {
+  // 1. CHUẨN HÓA & NHÂN BẢN PHÔI (StockSheets) THEO QUANTITY VỚI ID DUY NHẤT
+  const stockSheets = [];
+  let sheetIdCounter = 1;
 
-export default function PreviewPanel({ items = [], containers = [], placedBoxes = [], loading = false }) {
-  const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
-  const [showUnpackedDropdown, setShowUnpackedDropdown] = useState(false);
+  containers.forEach((c) => {
+    const qty = Number(c.quantity) || 1;
+    const width = Number(c.width);
+    const height = Number(c.height);
+    const name = c.name || 'Tấm phôi';
 
-  // ⚡ Kiểm tra đã có kết quả tối ưu hợp lệ được chốt chưa
-  const hasResults = Array.isArray(placedBoxes) && placedBoxes.length > 0 && containers.length > 0;
-
-  // ⚡ Chưa bấm tính toán (hoặc containers chốt chưa có) -> Giữ nguyên 1000 x 1000 mặc định
-  // ⚡ Đã bấm tối ưu -> Lấy kích thước phôi từ containers đã chốt
-  const currentSheet = hasResults ? (containers[selectedSheetIndex] || containers[0]) : null;
-  const sheetW = currentSheet ? (Number(currentSheet.width) || 1000) : 1000;
-  const sheetH = currentSheet ? (Number(currentSheet.height) || 1000) : 1000;
-
-  // ID của tấm phôi hiện tại đang chọn (khớp với ID = index + 1 gửi sang C#)
-  const currentSheetId = selectedSheetIndex + 1;
-
-  // Lọc các hộp thuộc về tấm phôi đang chọn
-  const currentSheetBoxes = hasResults
-    ? placedBoxes.filter(box => {
-        const boxSheetId = Number(box.stockSheetId ?? box.sTockSheetID ?? box.STockSheetID ?? 1);
-        return boxSheetId === currentSheetId;
-      })
-    : [];
-
-  // Tính diện tích đã xếp trên tấm này
-  let usedArea = 0;
-  currentSheetBoxes.forEach(box => {
-    const w = Number(box.Width ?? box.width ?? 0);
-    const h = Number(box.Height ?? box.height ?? 0);
-    usedArea += (w * h);
+    for (let i = 0; i < qty; i++) {
+      stockSheets.push({
+        ID: sheetIdCounter++,
+        Width: width,
+        Height: height,
+        Quantity: 1,
+        Name: qty > 1 ? `${name} (#${i + 1})` : name
+      });
+    }
   });
 
-  const totalSheetArea = sheetW * sheetH;
-  const efficiency = (hasResults && totalSheetArea > 0) ? ((usedArea / totalSheetArea) * 100).toFixed(2) : '0.00';
-
-  // Tạo bảng ánh xạ màu dựa trên kích thước chi tiết
-  const sizeColorMap = new Map();
-  let colorCounter = 0;
-
-  if (hasResults) {
-    placedBoxes.forEach(box => {
-      const w = Number(box.Width ?? box.width ?? 0);
-      const h = Number(box.Height ?? box.height ?? 0);
-      if (w === 0 || h === 0) return;
-
-      const sizeKey = `${Math.min(w, h)}x${Math.max(w, h)}`;
-
-      if (!sizeColorMap.has(sizeKey)) {
-        sizeColorMap.set(sizeKey, AUTO_COLORS[colorCounter % AUTO_COLORS.length]);
-        colorCounter++;
-      }
-    });
+  if (stockSheets.length === 0) {
+    stockSheets.push({ ID: 1, Width: 1200, Height: 800, Quantity: 1, Name: 'Tấm A' });
   }
 
-  return (
-    <div className="right-column">
-      <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        <h2 className="preview-title">
-          Kết Quả Tối Ưu {loading && <span style={{ color: '#3b82f6', fontSize: '1rem' }}>(Đang tính toán...)</span>}
-        </h2>
+  // 2. CHUYỂN ĐỔI DANH SÁCH CHI TIẾT CẮT (CuttingPack)
+  const cuttingPackData = [];
 
-        <div id="previewContainer" className="preview-box">
-          <svg
-            id="canvasSheet"
-            width="100%"
-            height="100%"
-            viewBox={`0 0 ${sheetW} ${sheetH}`}
-            style={{
-              width: '100%',
-              height: '100%',
-              flexGrow: 1,
-              backgroundColor: '#ffffff',
-              border: 'none',
-              borderRadius: '0px',
-              boxShadow: 'none'
-            }}
-          >
-            {/* Lưới caro mờ */}
-            <defs>
-              <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
-                <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#cbd5e1" strokeWidth="2" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
+  items.forEach((item) => {
+    const qty = Number(item.quantity) || 1;
+    let shapeName = "Rectangle";
+    let objData = {};
 
-            {/* Khung viền tấm phôi */}
-            <rect
-              x="0"
-              y="0"
-              width={sheetW}
-              height={sheetH}
-              fill="none"
-              stroke="#0f172a"
-              strokeWidth="4"
-            />
+    switch (item.shape) {
+      case 'CIRCLE':
+        shapeName = "Circle";
+        objData = { ShapeName: shapeName, Radius: Number(item.dimensions?.d || 100) / 2 };
+        break;
+      case 'RIGHT_TRIANGLE':
+        shapeName = "RightAngledTriangle";
+        objData = { ShapeName: shapeName, Base: Number(item.dimensions?.b || 100), Height: Number(item.dimensions?.h || 100) };
+        break;
+      case 'ISOSCELES_TRIANGLE':
+        shapeName = "IsoscelesTriangle";
+        objData = { ShapeName: shapeName, Base: Number(item.dimensions?.b || 100), Height: Number(item.dimensions?.h || 100) };
+        break;
+      case 'HEXAGON':
+        shapeName = "RegularHexagon";
+        objData = { ShapeName: shapeName, SideLength: Number(item.dimensions?.a || 100) };
+        break;
+      case 'ELLIPSE':
+        shapeName = "Ellipse";
+        objData = { ShapeName: shapeName, MajorAxis: Number(item.dimensions?.rx || 100), MinorAxis: Number(item.dimensions?.ry || 100) };
+        break;
+      case 'RECTANGLE':
+      default:
+        shapeName = "Rectangle";
+        objData = { ShapeName: shapeName, Width: Number(item.dimensions?.w || 100), Height: Number(item.dimensions?.h || 100) };
+        break;
+    }
 
-            {/* Vẽ các chi tiết cắt */}
-            {currentSheetBoxes.length > 0 ? (
-              currentSheetBoxes.map((box, index) => {
-                const x = Number(box.X ?? box.x ?? 0);
-                const y = Number(box.Y ?? box.y ?? 0);
-                const w = Number(box.Width ?? box.width ?? 0);
-                const h = Number(box.Height ?? box.height ?? 0);
+    for (let i = 0; i < qty; i++) {
+      cuttingPackData.push(JSON.stringify(objData));
+    }
+  });
 
-                if (w === 0 || h === 0) return null;
+  // ⚡ 3. ÁNH XẠ STRATEGY SANG CÁC GIÁ TRỊ ENUM CỦA C# BE
+  // 1 = MaximalRectanglesCutting (Tối ưu diện tích phần dư)
+  // 2 = SlackDistributedMaxRects (Phân bố đều các chi tiết)
+  let cuttingType = 1;
+if (strategy === 'BALANCED_DISTRIBUTION') {
+  cuttingType = 2; // Phân bố đều các chi tiết
+} else if (strategy === 'REMAINDER_OPTIMAL') {
+  cuttingType = 1; // Tối ưu diện tích phần dư
+}
 
-                const sizeKey = `${Math.min(w, h)}x${Math.max(w, h)}`;
-                const color = sizeColorMap.get(sizeKey) || AUTO_COLORS[0];
+  // 4. ĐÓNG GÓI PAYLOAD VỚI DẠNG TYPE ĐÃ MAP LINH HOẠT
+  const payload = {
+    Type: cuttingType,
+    SawKerf: 0,
+    StockSheets: stockSheets,
+    CuttingPack: cuttingPackData
+  };
 
-                return (
-                  <rect
-                    key={index}
-                    x={x}
-                    y={y}
-                    width={w}
-                    height={h}
-                    fill={color}
-                    fillOpacity="0.85"
-                    rx="3"
-                    ry="3"
-                    stroke="#0f172a"
-                    strokeOpacity="0.95"
-                    strokeWidth="2.5"
-                  />
-                );
-              })
-            ) : (
-              <text x={sheetW / 2} y={sheetH / 2} textAnchor="middle" fill="#94a3b8" fontSize="22" fontWeight="600">
-                {loading 
-                  ? "Đang xử lý thuật toán..." 
-                  : hasResults 
-                    ? "Tấm phôi này chưa được sử dụng (Trống)" 
-                    : "Nhấn \"BẮT ĐẦU TỐI ƯU\" để hiển thị sơ đồ cắt"}
-              </text>
-            )}
-          </svg>
-        </div>
-      </div>
+  console.log("🚀 Payload gửi sang C#:", payload);
 
-      {/* STATS FOOTER */}
-      <div className="stats-footer">
-        <div className="stats-group">
-          <label className="stats-label">Hiển thị tấm kết quả:</label>
-          <div className="stats-select-wrapper">
-            <i className="fa-solid fa-layer-group stats-select-icon"></i>
-            <select 
-              className="stats-select" 
-              value={selectedSheetIndex} 
-              onChange={(e) => setSelectedSheetIndex(Number(e.target.value))}
-            >
-              {(hasResults ? containers : []).map((c, idx) => (
-                <option key={c.id || idx} value={idx}>
-                  {c.name || `Tấm ${idx + 1}`} ({c.width}x{c.height})
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+  try {
+    const response = await fetch(`${API_BASE_URL}/CalculateLayout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
 
-        <div className="stats-group">
-          <label className="stats-label">Chi tiết trên tấm này:</label>
-          <button className="stats-unpacked-btn" onClick={() => setShowUnpackedDropdown(!showUnpackedDropdown)}>
-            <span className="unpacked-text">
-              <i className="fa-solid fa-circle-check" style={{ color: '#10b981' }}></i>
-              <span>{currentSheetBoxes.length} chi tiết đã xếp</span>
-            </span>
-            <i className="fa-solid fa-chevron-down" style={{ fontSize: '12px', color: '#94a3b8' }}></i>
-          </button>
-        </div>
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || 'Lỗi từ Server');
+    }
 
-        <div className="stats-group">
-          <label className="stats-label">Diện tích sử dụng:</label>
-          <div style={{ display: 'flex', alignItems: 'baseline' }}>
-            <span className="area-value">{usedArea.toLocaleString()} mm²</span>
-            <span className="area-efficiency">({efficiency}%)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+    const result = await response.json();
+    console.log("🔥 [API Response] Kết quả JSON gốc từ C#:", result);
+
+    const rawBoxes = result?.data || result || [];
+// CHUẨN HÓA THUỘC TÍNH TRẢ VỀ CHO FE VÀ LƯU LỊCH SỬ
+const normalizedBoxes = Array.isArray(rawBoxes) 
+  ? rawBoxes.map((box) => {
+      const isRotated = Boolean(box.IsRotated ?? box.isRotated ?? false);
+      const rawW = Number(box.Width ?? box.width ?? 0);
+      const rawH = Number(box.Height ?? box.height ?? 0);
+      const part = box.CuttingPart ?? box.cuttingPart ?? {};
+
+      return {
+        x: Number(box.X ?? box.x ?? 0),
+        y: Number(box.Y ?? box.y ?? 0),
+        width: isRotated ? rawH : rawW,
+        height: isRotated ? rawW : rawH,
+        stockSheetId: Number(box.sTockSheetID ?? box.STockSheetID ?? box.stockSheetId ?? 1),
+        isRotated: isRotated,
+        // ⚡ Lưu trữ đầy đủ thuộc tính hình học để tái vẽ chính xác khi tải lịch sử
+        cuttingPart: {
+          id: part.ID ?? part.id,
+          shape: part.Shape ?? part.shape ?? part.$type,
+          sideLength: part.SideLength ?? part.sideLength,
+          radius: part.Radius ?? part.radius,
+          radiusX: part.RadiusX ?? part.radiusX,
+          radiusY: part.RadiusY ?? part.radiusY,
+          majorAxis: part.MajorAxis ?? part.majorAxis,
+          minorAxis: part.MinorAxis ?? part.minorAxis,
+          width: part.Width ?? part.width,
+          height: part.Height ?? part.height
+        }
+      };
+    })
+  : [];
+    return normalizedBoxes;
+
+  } catch (error) {
+    console.error('Lỗi API CalculateLayout:', error);
+    throw error;
+  }
+}
+
+// API Đăng ký tinh gọn (chỉ Email & Password)
+export async function registerApi(email, password) {
+  const response = await fetch(`${API_BASE_URL}/Auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Đăng ký thất bại!');
+  return data;
+}
+
+// ⚡ Bổ sung API Đăng nhập
+export async function loginApi(email, password) {
+  const response = await fetch(`${API_BASE_URL}/Auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Đăng nhập thất bại!');
+  return data;
+}
+
+// API Lưu Lịch Sử Cắt
+export async function saveHistoryApi(userId, title, inputData, resultData) {
+  const response = await fetch(`${API_BASE_URL}/History/save`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, title, inputData, resultData })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Lưu lịch sử thất bại!');
+  return data;
+}
+
+// API Lấy Danh Sách Lịch Sử
+export async function getUserHistoriesApi(userId) {
+  const response = await fetch(`${API_BASE_URL}/History/user/${userId}`);
+  const data = await response.json();
+  if (!response.ok) throw new Error('Không thể tải lịch sử!');
+  return data;
 }
 </file>
 
@@ -4235,6 +4264,400 @@ input, select, button, textarea {
 </html>
 </file>
 
+<file path="src/Components/PreviewPanel.jsx">
+import React, { useState, useRef } from 'react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+
+const AUTO_COLORS = [
+  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
+  '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
+  '#f97316', '#14b8a6', '#6366f1', '#a855f7'
+];
+
+// ⚡ Hàm bỏ dấu tiếng Việt để jsPDF không bị crash font helvetica
+const removeAccents = (str = '') => {
+  return String(str)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D');
+};
+
+export default function PreviewPanel({ items = [], containers = [], placedBoxes = [], loading = false }) {
+  const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
+  const [showUnpackedDropdown, setShowUnpackedDropdown] = useState(false);
+  
+  // ⚡ Ref gắn vào thẻ DIV bọc ngoài SVG
+  const exportRef = useRef(null);
+
+  const hasResults = Array.isArray(placedBoxes) && placedBoxes.length > 0 && containers.length > 0;
+
+  const currentSheet = hasResults ? (containers[selectedSheetIndex] || containers[0]) : null;
+  const sheetW = currentSheet ? (Number(currentSheet.width) || 1000) : 1000;
+  const sheetH = currentSheet ? (Number(currentSheet.height) || 1000) : 1000;
+
+  const currentSheetId = selectedSheetIndex + 1;
+
+  const currentSheetBoxes = hasResults
+    ? placedBoxes.filter(box => {
+        const boxSheetId = Number(box.stockSheetId ?? box.sTockSheetID ?? box.STockSheetID ?? 1);
+        return boxSheetId === currentSheetId;
+      })
+    : [];
+
+  let usedArea = 0;
+  currentSheetBoxes.forEach(box => {
+    const w = Number(box.Width ?? box.width ?? 0);
+    const h = Number(box.Height ?? box.height ?? 0);
+    usedArea += (w * h);
+  });
+
+  const totalSheetArea = sheetW * sheetH;
+  const efficiency = (hasResults && totalSheetArea > 0) ? ((usedArea / totalSheetArea) * 100).toFixed(2) : '0.00';
+
+  const sizeColorMap = new Map();
+  let colorCounter = 0;
+
+  if (hasResults) {
+    placedBoxes.forEach(box => {
+      const w = Number(box.Width ?? box.width ?? 0);
+      const h = Number(box.Height ?? box.height ?? 0);
+      if (w === 0 || h === 0) return;
+
+      const sizeKey = `${Math.min(w, h)}x${Math.max(w, h)}`;
+      if (!sizeColorMap.has(sizeKey)) {
+        sizeColorMap.set(sizeKey, AUTO_COLORS[colorCounter % AUTO_COLORS.length]);
+        colorCounter++;
+      }
+    });
+  }
+
+  // ⚡ HÀM XUẤT PDF TRẮNG ĐEN & SIÊU NHẸ
+  const handleExportPDF = async () => {
+    if (!exportRef.current || !hasResults) return;
+
+    try {
+      // Chụp DIV bọc ngoài SVG và biến đổi sang trắng đen thô qua onclone
+      const canvas = await html2canvas(exportRef.current, {
+        scale: 1.5, // Giảm scale xuống 1.5 giúp ảnh nhẹ hơn mà vẫn nét
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        onclone: (clonedDoc) => {
+          const svg = clonedDoc.querySelector('#canvasSheet');
+          if (svg) {
+            // Nền SVG màu trắng tinh
+            svg.style.backgroundColor = '#ffffff';
+
+            // Ẩn các đường lưới caro nền để PDF vừa sạch vừa tối ưu dung lượng
+            const gridPath = svg.querySelector('pattern#grid path');
+            if (gridPath) {
+              gridPath.setAttribute('stroke', 'none');
+            }
+
+            // Chuyển toàn bộ các nét vẽ chi tiết (polygon, ellipse, circle, rect) sang ĐEN TRẮNG
+            const shapes = svg.querySelectorAll('polygon, ellipse, circle, rect');
+            shapes.forEach((shape) => {
+              shape.setAttribute('fill', '#ffffff');
+              shape.setAttribute('fill-opacity', '1');
+              shape.setAttribute('stroke', '#000000');
+              shape.setAttribute('stroke-width', '2');
+            });
+          }
+        }
+      });
+
+      // Xuất định dạng JPEG với chất lượng nén 70% (Dung lượng file giảm mạnh)
+      const imgData = canvas.toDataURL('image/jpeg', 0.7);
+      
+      const pdf = new jsPDF({
+        orientation: sheetW >= sheetH ? 'landscape' : 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true // Bật nén file PDF của jsPDF
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      
+      const ratio = Math.min((pdfWidth - 30) / imgWidth, (pdfHeight - 40) / imgHeight);
+      const finalWidth = imgWidth * ratio;
+      const finalHeight = imgHeight * ratio;
+
+      const xOffset = (pdfWidth - finalWidth) / 2;
+      const yOffset = 25;
+
+      const widthCm = (sheetW / 10).toLocaleString('vi-VN');
+      const heightCm = (sheetH / 10).toLocaleString('vi-VN');
+      const rawSheetName = containers[selectedSheetIndex]?.name || `Tam ${selectedSheetIndex + 1}`;
+      
+      const safeSheetName = removeAccents(rawSheetName).toUpperCase();
+
+      // Vẽ tiêu đề bản vẽ kỹ thuật trắng đen
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(15);
+      pdf.text(`SO DO CAT PHOI 2D: ${safeSheetName}`, pdfWidth / 2, 12, { align: 'center' });
+
+      pdf.setFontSize(10);
+      pdf.setFont('helvetica', 'normal');
+      pdf.text(
+        `Kich thuoc phoi: Ngang ${widthCm} cm  x  Cao ${heightCm} cm`, 
+        pdfWidth / 2, 
+        18, 
+        { align: 'center' }
+      );
+
+      // Chèn ảnh sơ đồ cắt đen trắng vào PDF
+      pdf.addImage(imgData, 'JPEG', xOffset, yOffset, finalWidth, finalHeight);
+      pdf.save(`So_Do_Cat_${safeSheetName.replace(/\s+/g, '_')}.pdf`);
+    } catch (error) {
+      console.error('Lỗi chi tiết xuất PDF:', error);
+      alert(`Không thể xuất PDF: ${error.message || 'Vui lòng thử lại!'}`);
+    }
+  };
+
+  // Render các hình dạng chi tiết
+  const renderShapeSVG = (box, index, color) => {
+    const x = Number(box.X ?? box.x ?? 0);
+    const y = Number(box.Y ?? box.y ?? 0);
+    const w = Number(box.Width ?? box.width ?? 0);
+    const h = Number(box.Height ?? box.height ?? 0);
+    const part = box.cuttingPart || box.CuttingPart || {};
+
+    const rawShape = part.shape ?? part.Shape ?? part.$type ?? '';
+    const shapeStr = String(rawShape).toLowerCase();
+
+    const commonProps = {
+      fill: color,
+      fillOpacity: '0.85',
+      stroke: '#0f172a',
+      strokeOpacity: '0.95',
+      strokeWidth: '2.5'
+    };
+
+    // 1. LỤC GIÁC ĐỀU
+    const isHexagon = 
+      part.sideLength !== undefined || 
+      part.SideLength !== undefined || 
+      shapeStr.includes('hexagon') || 
+      rawShape === 3 || 
+      rawShape === 5;
+
+    if (isHexagon) {
+      const cx = x + w / 2;
+      const cy = y + h / 2;
+      const isRotated = Boolean(box.isRotated ?? box.IsRotated ?? false);
+
+      const rx = isRotated ? w / Math.sqrt(3) : w / 2;
+      const ry = isRotated ? h / 2 : h / Math.sqrt(3);
+      const angleOffset = isRotated ? Math.PI / 2 : 0;
+
+      const points = [];
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI / 3) * i + angleOffset;
+        const px = cx + rx * Math.cos(angle);
+        const py = cy + ry * Math.sin(angle);
+        points.push(`${px.toFixed(2)},${py.toFixed(2)}`);
+      }
+      return <polygon key={index} points={points.join(' ')} {...commonProps} />;
+    }
+
+    // 2. ELLIPSE
+    const isEllipse = 
+      part.radiusX !== undefined || 
+      part.RadiusX !== undefined || 
+      part.majorAxis !== undefined || 
+      part.MajorAxis !== undefined || 
+      shapeStr.includes('ellipse') || 
+      rawShape === 4 || 
+      rawShape === 6;
+
+    if (isEllipse) {
+      const cx = x + w / 2;
+      const cy = y + h / 2;
+      const rx = w / 2;
+      const ry = h / 2;
+      return <ellipse key={index} cx={cx} cy={cy} rx={rx} ry={ry} {...commonProps} />;
+    }
+
+    // 3. HÌNH TRÒN
+    const isCircle = 
+      ((part.radius !== undefined || part.Radius !== undefined) && part.radiusX === undefined && part.RadiusX === undefined) ||
+      shapeStr.includes('circle') || 
+      rawShape === 2;
+
+    if (isCircle) {
+      const cx = x + w / 2;
+      const cy = y + h / 2;
+      const r = Math.min(w, h) / 2;
+      return <circle key={index} cx={cx} cy={cy} r={r} {...commonProps} />;
+    }
+
+    // 4. MẶC ĐỊNH: Hình chữ nhật
+    return (
+      <rect
+        key={index}
+        x={x}
+        y={y}
+        width={w}
+        height={h}
+        rx="3"
+        ry="3"
+        {...commonProps}
+      />
+    );
+  };
+
+  return (
+    <div className="right-column">
+      <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        <h2 className="preview-title">
+          Kết Quả Tối Ưu {loading && <span style={{ color: '#3b82f6', fontSize: '1rem' }}>(Đang tính toán...)</span>}
+        </h2>
+
+        <div id="previewContainer" className="preview-box">
+          <div 
+            ref={exportRef} 
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              backgroundColor: '#ffffff', 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center' 
+            }}
+          >
+            <svg
+              id="canvasSheet"
+              width="100%"
+              height="100%"
+              viewBox={`0 0 ${sheetW} ${sheetH}`}
+              style={{
+                width: '100%',
+                height: '100%',
+                flexGrow: 1,
+                backgroundColor: '#ffffff',
+                border: 'none',
+                borderRadius: '0px',
+                boxShadow: 'none'
+              }}
+            >
+              <defs>
+                <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+                  <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#cbd5e1" strokeWidth="2" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+
+              <rect
+                x="0"
+                y="0"
+                width={sheetW}
+                height={sheetH}
+                fill="none"
+                stroke="#0f172a"
+                strokeWidth="4"
+              />
+
+              {currentSheetBoxes.length > 0 ? (
+                currentSheetBoxes.map((box, index) => {
+                  const w = Number(box.Width ?? box.width ?? 0);
+                  const h = Number(box.Height ?? box.height ?? 0);
+                  if (w === 0 || h === 0) return null;
+
+                  const sizeKey = `${Math.min(w, h)}x${Math.max(w, h)}`;
+                  const color = sizeColorMap.get(sizeKey) || AUTO_COLORS[0];
+
+                  return renderShapeSVG(box, index, color);
+                })
+              ) : (
+                <text x={sheetW / 2} y={sheetH / 2} textAnchor="middle" fill="#94a3b8" fontSize="22" fontWeight="600">
+                  {loading 
+                    ? "Đang xử lý thuật toán..." 
+                    : hasResults 
+                      ? "Tấm phôi này chưa được sử dụng (Trống)" 
+                      : "Nhấn \"BẮT ĐẦU TỐI ƯU\" để hiển thị sơ đồ cắt"}
+                </text>
+              )}
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {/* STATS FOOTER */}
+      <div className="stats-footer" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+        <div className="stats-group">
+          <label className="stats-label">Hiển thị tấm kết quả:</label>
+          <div className="stats-select-wrapper">
+            <i className="fa-solid fa-layer-group stats-select-icon"></i>
+            <select 
+              className="stats-select" 
+              value={selectedSheetIndex} 
+              onChange={(e) => setSelectedSheetIndex(Number(e.target.value))}
+            >
+              {(hasResults ? containers : []).map((c, idx) => (
+                <option key={c.id || idx} value={idx}>
+                  {c.name || `Tấm ${idx + 1}`} ({c.width}x{c.height})
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="stats-group">
+          <label className="stats-label">Chi tiết trên tấm này:</label>
+          <button className="stats-unpacked-btn" onClick={() => setShowUnpackedDropdown(!showUnpackedDropdown)}>
+            <span className="unpacked-text">
+              <i className="fa-solid fa-circle-check" style={{ color: '#10b981' }}></i>
+              <span>{currentSheetBoxes.length} chi tiết đã xếp</span>
+            </span>
+            <i className="fa-solid fa-chevron-down" style={{ fontSize: '12px', color: '#94a3b8' }}></i>
+          </button>
+        </div>
+
+        <div className="stats-group">
+          <label className="stats-label">Diện tích sử dụng:</label>
+          <div style={{ display: 'flex', alignItems: 'baseline' }}>
+            <span className="area-value">{usedArea.toLocaleString()} mm²</span>
+            <span className="area-efficiency">({efficiency}%)</span>
+          </div>
+        </div>
+
+        {/* Nút Xuất PDF */}
+        <div className="stats-group" style={{ justifyContent: 'flex-end' }}>
+          <label className="stats-label" style={{ opacity: 0 }}>Xuất File</label>
+          <button
+            onClick={handleExportPDF}
+            disabled={!hasResults}
+            style={{
+              width: '100%',
+              padding: '0.5rem 0.75rem',
+              backgroundColor: hasResults ? '#0284c7' : '#cbd5e1',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '0.5rem',
+              fontWeight: 700,
+              fontSize: '0.875rem',
+              cursor: hasResults ? 'pointer' : 'not-allowed',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <i className="fa-solid fa-file-pdf"></i> Xuất PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
 <file path="src/App.jsx">
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
@@ -4248,24 +4671,25 @@ import Footer from './Components/Footer';
 import Login from './Components/Login';
 import Register from './Components/Register';
 import Contact from './Components/Contact'; 
+import History from './Components/History';
 import { calculateLayoutApi, saveHistoryApi } from './services/apiService';
 
-function HomePage({ userSession, showToast }) {
-  const [items, setItems] = useState([
-    { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
-    { id: 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 125, h: 125 }, quantity: 10 },
-    { id: 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 150 }, quantity: 5 },
-  ]);
-
-  const [containers, setContainers] = useState([
-    { id: 1, name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
-  ]);
-
-  const [activeContainers, setActiveContainers] = useState([]);
-  const [strategy, setStrategy] = useState('REMAINDER_OPTIMAL');
-  const [placedBoxes, setPlacedBoxes] = useState([]);
-  const [loading, setLoading] = useState(false);
-
+function HomePage({ 
+  userSession, 
+  showToast,
+  items,
+  setItems,
+  containers,
+  setContainers,
+  activeContainers,
+  setActiveContainers,
+  strategy,
+  setStrategy,
+  placedBoxes,
+  setPlacedBoxes,
+  loading,
+  setLoading
+}) {
   const handleReset = () => {
     setItems([
       { id: Date.now() + 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
@@ -4294,14 +4718,27 @@ function HomePage({ userSession, showToast }) {
   };
 
   const handleSaveHistory = async () => {
-    if (!userSession?.userId) return;
+    if (!userSession?.userId) {
+      showToast('Bạn cần đăng nhập để lưu kết quả!', 'warning');
+      return;
+    }
+    
     try {
-      const inputData = { items, containers, strategy };
-      const resultData = placedBoxes;
-      const title = `Sơ đồ cắt phôi ngày ${new Date().toLocaleDateString('vi-VN')}`;
+      const inputData = { 
+        items, 
+        containers, 
+        strategy 
+      };
+      
+      const resultData = {
+        placedBoxes,
+        containers: activeContainers
+      };
+      
+      const title = `Sơ đồ cắt phôi ngày ${new Date().toLocaleDateString('vi-VN')} ${new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
 
       await saveHistoryApi(userSession.userId, title, inputData, resultData);
-      showToast('Đã lưu kết quả thành công!', 'success');
+      showToast('Đã lưu lịch sử cắt thành công!', 'success');
     } catch (err) {
       showToast(`Không thể lưu kết quả: ${err.message}`, 'error');
     }
@@ -4346,8 +4783,36 @@ function HomePage({ userSession, showToast }) {
 }
 
 export default function App() {
-  const [userSession, setUserSession] = useState(null);
+  // ⚡ Khởi tạo trực tiếp từ localStorage để tránh bị reset về null khi reload trang
+  const [userSession, setUserSession] = useState(() => {
+    const savedSession = localStorage.getItem('userSession');
+    if (savedSession) {
+      try {
+        return JSON.parse(savedSession);
+      } catch (e) {
+        localStorage.removeItem('userSession');
+      }
+    }
+    return null;
+  });
+
   const [toast, setToast] = useState(null);
+
+  // ⚡ Nâng State lên App để duy trì và khôi phục từ Lịch sử
+  const [items, setItems] = useState([
+    { id: 1, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 240, h: 170 }, quantity: 15 },
+    { id: 2, shape: SHAPE_TYPES.RECTANGLE.id, dimensions: { w: 125, h: 125 }, quantity: 10 },
+    { id: 3, shape: SHAPE_TYPES.CIRCLE.id, dimensions: { d: 150 }, quantity: 5 },
+  ]);
+
+  const [containers, setContainers] = useState([
+    { id: 1, name: 'Tấm A', width: 1200, height: 800, quantity: 1 }
+  ]);
+
+  const [activeContainers, setActiveContainers] = useState([]);
+  const [strategy, setStrategy] = useState('REMAINDER_OPTIMAL');
+  const [placedBoxes, setPlacedBoxes] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -4356,16 +4821,18 @@ export default function App() {
     }, 3000);
   };
 
-  useEffect(() => {
-    const savedSession = localStorage.getItem('userSession');
-    if (savedSession) {
-      try {
-        setUserSession(JSON.parse(savedSession));
-      } catch (e) {
-        localStorage.removeItem('userSession');
-      }
-    }
-  }, []);
+  // ⚡ Hàm khôi phục dữ liệu từ Lịch sử
+  const handleLoadHistory = (inputData, resultData) => {
+    if (inputData?.items) setItems(inputData.items);
+    if (inputData?.containers) setContainers(inputData.containers);
+    if (inputData?.strategy) setStrategy(inputData.strategy);
+
+    const boxes = resultData?.placedBoxes || (Array.isArray(resultData) ? resultData : []);
+    const activeConts = resultData?.containers || inputData?.containers || [];
+
+    setPlacedBoxes(boxes);
+    setActiveContainers(activeConts);
+  };
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -4379,13 +4846,43 @@ export default function App() {
       <Navbar userSession={userSession} onLogout={() => setUserSession(null)} />
 
       <Routes>
-        <Route path="/" element={<HomePage userSession={userSession} showToast={showToast} />} />
+        <Route 
+          path="/" 
+          element={
+            <HomePage 
+              userSession={userSession} 
+              showToast={showToast} 
+              items={items}
+              setItems={setItems}
+              containers={containers}
+              setContainers={setContainers}
+              activeContainers={activeContainers}
+              setActiveContainers={setActiveContainers}
+              strategy={strategy}
+              setStrategy={setStrategy}
+              placedBoxes={placedBoxes}
+              setPlacedBoxes={setPlacedBoxes}
+              loading={loading}
+              setLoading={setLoading}
+            />
+          } 
+        />
         <Route path="/contact" element={<Contact />} />
         <Route 
           path="/login" 
           element={<Login onLoginSuccess={(user) => setUserSession(user)} />} 
         />
         <Route path="/register" element={<Register />} />
+        <Route 
+          path="/history" 
+          element={
+            <History 
+              userSession={userSession} 
+              onLoadHistory={handleLoadHistory} 
+              showToast={showToast} 
+            />
+          } 
+        />
       </Routes>
 
       <Footer />

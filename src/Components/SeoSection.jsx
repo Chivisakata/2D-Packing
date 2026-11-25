@@ -1,3 +1,4 @@
+// src/Components/SeoSection.jsx
 import React from 'react';
 import './SeoSection.css';
 
@@ -10,7 +11,7 @@ export default function SeoSection() {
 
       <div className="seo-content">
         <p>
-          Công cụ <strong>2D-Packing.net</strong> giúp bạn nhanh chóng hình dung cách sắp xếp các chi tiết (nhãn dán, tem nhãn, tấm gia công) lên khung vật liệu gốc. Chỉ cần nhập kích thước và số lượng, hệ thống sẽ lập tức tính toán bố trí tối ưu kèm thống kê diện tích sử dụng chi tiết.
+          Công cụ <strong>2D-Packing.net</strong> giúp bạn nhanh chóng hình dung cách sắp xếp các chi tiết (nhãn dán, tem nhãn, tấm gia công) lên khung vật liệu gốc. Chỉ cần nhập kích thước (cm) và số lượng, hệ thống sẽ lập tức tính toán bố trí tối ưu kèm thống kê diện tích sử dụng chi tiết.
         </p>
 
         <p>
