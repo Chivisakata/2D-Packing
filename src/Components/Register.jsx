@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { registerApi } from '../services/apiService';
-import './Register.css';
+import './Auth.css';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -36,39 +36,43 @@ export default function Register() {
   };
 
   return (
-    <div className="register-wrapper">
-      <div className="register-card">
-        <h1 className="register-title">Đăng ký tài khoản</h1>
+    <div className="auth-wrapper">
+      <div className="auth-card auth-card--wide">
+        <h1 className="auth-title">Đăng ký tài khoản</h1>
 
-        {errorMessage && <div style={{ color: '#ef4444', backgroundColor: '#fef2f2', padding: '10px', borderRadius: '8px', fontSize: '0.85rem', marginBottom: '1rem', textAlign: 'center' }}>{errorMessage}</div>}
-        {successMessage && <div style={{ color: '#10b981', backgroundColor: '#ecfdf5', padding: '10px', borderRadius: '8px', fontSize: '0.85rem', marginBottom: '1rem', textAlign: 'center' }}>{successMessage}</div>}
+        {errorMessage && (
+          <div className="auth-alert auth-alert--error">{errorMessage}</div>
+        )}
+        {successMessage && (
+          <div className="auth-alert auth-alert--success">{successMessage}</div>
+        )}
 
-        <form onSubmit={handleSubmit} className="register-form">
-          <div className="input-group">
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="auth-input-group">
             <input
               type="email"
               id="email"
-              className="register-input"
+              className="auth-input"
               placeholder=" "
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <label htmlFor="email" className="register-label">Email</label>
+            <label htmlFor="email" className="auth-label">Email</label>
           </div>
 
-          <div className="input-group">
+          <div className="auth-input-group">
             <input
               type="password"
               id="password"
-              className="register-input"
+              className="auth-input"
               placeholder=" "
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               minLength={6}
               required
             />
-            <label htmlFor="password" className="register-label">Mật khẩu (tối thiểu 6 ký tự)</label>
+            <label htmlFor="password" className="auth-label">Mật khẩu (tối thiểu 6 ký tự)</label>
           </div>
 
           <div className="terms-group">
@@ -84,12 +88,12 @@ export default function Register() {
             </label>
           </div>
 
-          <button type="submit" className="btn-register-submit" disabled={loading}>
+          <button type="submit" className="btn-auth-submit" disabled={loading}>
             {loading ? 'Đang đăng ký...' : 'Đăng ký'}
           </button>
         </form>
 
-        <div className="register-links">
+        <div className="auth-links">
           <Link to="/login" className="link-item">
             Bạn đã có tài khoản? Đăng nhập!
           </Link>

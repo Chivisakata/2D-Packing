@@ -1,0 +1,204 @@
+/* ==========================================
+   GIAO DIỆN LỊCH SỬ CẮT PHÔI (HISTORY PAGE)
+   ========================================== */
+.history-loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #475569;
+}
+
+.history-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  width: 100%;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.history-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.history-empty {
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+}
+
+.history-table-card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table thead tr {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  font-size: 0.85rem;
+  color: #475569;
+  text-transform: uppercase;
+}
+
+.history-table th {
+  padding: 12px 16px;
+}
+
+.history-table td {
+  padding: 14px 16px;
+}
+
+.history-col-center {
+  text-align: center;
+}
+
+.history-col-stt {
+  width: 60px;
+  text-align: center;
+}
+
+.history-col-sheets {
+  width: 130px;
+  text-align: center;
+}
+
+.history-col-types {
+  width: 140px;
+  text-align: center;
+}
+
+.history-col-placed {
+  width: 130px;
+  text-align: center;
+}
+
+.history-col-action {
+  width: 160px;
+  text-align: center;
+}
+
+.history-row {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.15s ease;
+}
+
+.history-row:hover {
+  background-color: #f8fafc;
+}
+
+.history-stt {
+  text-align: center;
+  font-weight: 700;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.history-row-title {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+
+.history-row-date {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.history-row-count {
+  text-align: center;
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.history-row-placed {
+  text-align: center;
+  font-weight: 800;
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.btn-restore {
+  padding: 6px 14px;
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-restore:hover {
+  background-color: #2563eb;
+}
+
+.history-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.25rem;
+}
+
+.history-pagination-info {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.history-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-page {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-page:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+.btn-page:disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.history-page-indicator {
+  padding: 0 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+}

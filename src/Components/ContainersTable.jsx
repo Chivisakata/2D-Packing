@@ -1,43 +1,43 @@
 import React from 'react';
+import { usePacking } from '../context/PackingContext';
 import './PackingTables.css';
 
-export default function ContainersTable({ containers, setContainers }) {
+export default function ContainersTable() {
+  const { containers, setContainers } = usePacking();
 
- const handleAddContainer = () => {
-    const newContainer = {
-      id: Date.now(),
-      name: `Tấm Vật Liệu ${containers.length + 1}`,
-      width: 800,
-      height: 800,
-      quantity: 1
-    };
-    setContainers([...containers, newContainer]);
+  const handleAddContainer = () => {
+    setContainers([
+      ...containers,
+      {
+        id: Date.now(),
+        name: `Tấm Vật Liệu ${containers.length + 1}`,
+        width: 800,
+        height: 800,
+        quantity: 1
+      }
+    ]);
   };
 
   const handleDeleteContainer = (id) => {
-    setContainers(containers.filter(c => c.id !== id));
+    setContainers(containers.filter((c) => c.id !== id));
   };
 
-  // ⚡ Tự động nắn kích thước & số lượng tấm phôi < 1 về 1
   const handleUpdateContainer = (id, field, value) => {
-    setContainers(containers.map(c => {
-      if (c.id !== id) return c;
-      if (field === 'name') return { ...c, name: value };
-      if (value === '') return { ...c, [field]: '' };
-      
-      const val = Number(value);
-      return { 
-        ...c, 
-        [field]: val < 1 ? 1 : val 
-      };
-    }));
+    setContainers(
+      containers.map((c) => {
+        if (c.id !== id) return c;
+        if (field === 'name') return { ...c, name: value };
+        if (value === '') return { ...c, [field]: '' };
+        return { ...c, [field]: Math.max(1, Number(value)) };
+      })
+    );
   };
 
   return (
     <div className="packing-card containers-card">
       <div>
         <h2 className="card-title" style={{ fontSize: '1.125rem' }}>Tấm vật liệu</h2>
-        
+
         <div className="table-wrapper">
           <table className="custom-table">
             <thead>
@@ -53,43 +53,46 @@ export default function ContainersTable({ containers, setContainers }) {
               {containers.map((container) => (
                 <tr key={container.id}>
                   <td style={{ textAlign: 'left' }}>
-                    <input 
-                      type="text" 
-                      value={container.name} 
+                    <input
+                      type="text"
+                      value={container.name}
                       onChange={(e) => handleUpdateContainer(container.id, 'name', e.target.value)}
                       onFocus={(e) => e.target.select()}
-                      maxLength={50} 
+                      maxLength={50}
                       className="input-name"
                     />
                   </td>
                   <td>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       min="1"
-                      value={container.width ?? ''} 
+                      value={container.width ?? ''}
                       onChange={(e) => handleUpdateContainer(container.id, 'width', e.target.value)}
                       onFocus={(e) => e.target.select()}
-                      className="input-style" style={{ width: '64px' }}
+                      className="input-style"
+                      style={{ width: '64px' }}
                     />
                   </td>
                   <td>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       min="1"
-                      value={container.height ?? ''} 
+                      value={container.height ?? ''}
                       onChange={(e) => handleUpdateContainer(container.id, 'height', e.target.value)}
                       onFocus={(e) => e.target.select()}
-                      className="input-style" style={{ width: '64px' }}
+                      className="input-style"
+                      style={{ width: '64px' }}
                     />
                   </td>
                   <td>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       min="1"
-                      value={container.quantity ?? ''} 
+                      value={container.quantity ?? ''}
                       onChange={(e) => handleUpdateContainer(container.id, 'quantity', e.target.value)}
                       onFocus={(e) => e.target.select()}
-                      className="input-style" style={{ width: '48px' }}
+                      className="input-style"
+                      style={{ width: '48px' }}
                     />
                   </td>
                   <td>

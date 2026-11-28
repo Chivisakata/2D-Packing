@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { usePacking } from '../context/PackingContext';
 import './Navbar.css';
 
-export default function Navbar({ userSession, onLogout }) {
+export default function Navbar() {
+  const { userSession, logout } = usePacking();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Đóng menu khi bấm ra ngoài
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -18,12 +19,10 @@ export default function Navbar({ userSession, onLogout }) {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('userSession');
-    if (onLogout) onLogout();
+    logout();
     setShowDropdown(false);
   };
 
-  // Cắt lấy chuỗi trước dấu '@'
   const username = userSession?.email ? userSession.email.split('@')[0] : '';
 
   return (
@@ -40,9 +39,9 @@ export default function Navbar({ userSession, onLogout }) {
 
         {userSession ? (
           <li className="user-menu" ref={dropdownRef}>
-            <button 
-              type="button" 
-              className="user-btn" 
+            <button
+              type="button"
+              className="user-btn"
               onClick={() => setShowDropdown(!showDropdown)}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

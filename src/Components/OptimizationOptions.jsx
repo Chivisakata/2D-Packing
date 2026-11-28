@@ -1,37 +1,38 @@
 import React from 'react';
+import { usePacking } from '../context/PackingContext';
 import './PackingTables.css';
 
-export default function OptimizationOptions({ 
-  strategy, 
-  setStrategy, 
-  onReset, 
-  onOptimize,
-  hasResults,
-  userSession,
-  onSaveHistory,
-  onShowToast
-}) {
-  const options = [
-    {
-      id: 'REMAINDER_OPTIMAL',
-      title: 'Tối ưu diện tích phần dư',
-      desc: 'Gom cụm phần dư gọn gàng để có thể tái sử dụng cho lần sau.'
-    },
-    {
-      id: 'BALANCED_DISTRIBUTION',
-      title: 'Phân bố đều các chi tiết',
-      desc: 'Phân bố khoảng cách đều đặn giữa các chi tiết trên tấm.'
-    }
-  ];
+const STRATEGIES = [
+  {
+    id: 'REMAINDER_OPTIMAL',
+    title: 'Tối ưu diện tích phần dư',
+    desc: 'Gom cụm phần dư gọn gàng để có thể tái sử dụng cho lần sau.'
+  },
+  {
+    id: 'BALANCED_DISTRIBUTION',
+    title: 'Phân bố đều các chi tiết',
+    desc: 'Phân bố khoảng cách đều đặn giữa các chi tiết trên tấm.'
+  }
+];
+
+export default function OptimizationOptions() {
+  const {
+    strategy,
+    setStrategy,
+    handleReset,
+    handleOptimize,
+    hasResults,
+    userSession,
+    handleSaveHistory,
+    showToast
+  } = usePacking();
 
   const handleSaveClick = () => {
     if (!userSession) {
-      onShowToast('Bạn cần phải đăng nhập để lưu kết quả!', 'warning');
+      showToast('Bạn cần phải đăng nhập để lưu kết quả!', 'warning');
       return;
     }
-    if (onSaveHistory) {
-      onSaveHistory();
-    }
+    handleSaveHistory();
   };
 
   return (
@@ -42,16 +43,13 @@ export default function OptimizationOptions({
         </h2>
 
         <div className="options-list">
-          {options.map((opt) => {
+          {STRATEGIES.map((opt) => {
             const isSelected = strategy === opt.id;
             return (
-              <label 
-                key={opt.id} 
-                className={`option-item ${isSelected ? 'active' : ''}`}
-              >
-                <input 
-                  type="radio" 
-                  name="optStrategy" 
+              <label key={opt.id} className={`option-item ${isSelected ? 'active' : ''}`}>
+                <input
+                  type="radio"
+                  name="optStrategy"
                   value={opt.id}
                   checked={isSelected}
                   onChange={(e) => setStrategy(e.target.value)}
@@ -67,10 +65,10 @@ export default function OptimizationOptions({
       </div>
 
       <div className="action-buttons-group">
-        <button className="btn-action-reset" onClick={onReset}>
+        <button className="btn-action-reset" onClick={handleReset}>
           Đặt lại cài đặt
         </button>
-        <button className="btn-action-optimize" onClick={onOptimize}>
+        <button className="btn-action-optimize" onClick={handleOptimize}>
           BẮT ĐẦU TỐI ƯU
         </button>
 

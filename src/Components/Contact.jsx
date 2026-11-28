@@ -5,8 +5,6 @@ export default function Contact() {
   return (
     <div className="contact-wrapper">
       <div className="contact-container">
-
-        {/* Tiêu đề chính & Phụ đề */}
         <div className="contact-header">
           <h1 className="contact-title">Liên Hệ</h1>
           <p className="contact-subtitle">
@@ -15,12 +13,11 @@ export default function Contact() {
           </p>
         </div>
 
-        {/* Thẻ Email Support chính */}
         <div className="contact-card">
           <h2 className="card-heading">Email Hỗ Trợ</h2>
           <p className="card-subtext">Gửi email trực tiếp đến:</p>
 
-          <a href="mailto:info@filesplice.com" className="email-link">
+          <a href="mailto:2Dpacking@gmail.com" className="email-link">
             2Dpacking@gmail.com
           </a>
 
@@ -28,7 +25,6 @@ export default function Contact() {
             Chúng tôi thường phản hồi trong vòng vài giờ trong thời gian hoạt động bình thường.
           </p>
         </div>
-
       </div>
     </div>
   );
