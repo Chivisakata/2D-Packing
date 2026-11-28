@@ -87,24 +87,25 @@ export function detectShapeId(cuttingPart = {}) {
 }
 
 // Mô tả ngắn gọn hiển thị trong danh sách chi tiết trên tấm
+const fmt = (n) => Number((Number(n) || 0).toFixed(2));
+
 export function getBoxDescription(box) {
   const { width: w, height: h, cuttingPart = {} } = box;
   const shapeId = detectShapeId(cuttingPart);
 
   switch (shapeId) {
     case 'HEXAGON': {
-      const side = cuttingPart.sideLength ?? (Math.min(w, h) / 2).toFixed(1);
-      return `Lục giác đều (cạnh ${side} cm)`;
+      const side = cuttingPart.sideLength ?? Math.min(w, h) / 2;
+      return `Lục giác đều (cạnh ${fmt(side)} cm)`;
     }
     case 'ELLIPSE':
-      return `Ellipse (${w}×${h} cm)`;
+      return `Ellipse (${fmt(w)}×${fmt(h)} cm)`;
     case 'CIRCLE':
-      return `Hình tròn (Ø ${Math.min(w, h)} cm)`;
+      return `Hình tròn (Ø ${fmt(Math.min(w, h))} cm)`;
     default:
-      return `Hình chữ nhật (${Math.min(w, h)}×${Math.max(w, h)} cm)`;
+      return `Hình chữ nhật (${fmt(Math.min(w, h))}×${fmt(Math.max(w, h))} cm)`;
   }
 }
-
 // Vẽ SVG tương ứng cho từng hình
 export function renderShapeSvg(box, index, color) {
   const { x, y, width: w, height: h, isRotated, cuttingPart = {} } = box;

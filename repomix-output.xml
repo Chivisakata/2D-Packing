@@ -515,112 +515,6 @@ This section contains the contents of the repository's files.
 }
 </file>
 
-<file path="src/Components/PreviewPanel.css">
-/* ==========================================
-   KHUNG HIỂN THỊ SƠ ĐỒ CẮT (PREVIEW PANEL)
-   ========================================== */
-.preview-body {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.preview-loading-tag {
-  color: #3b82f6;
-  font-size: 1rem;
-  font-weight: 700;
-  text-transform: none;
-  letter-spacing: normal;
-}
-
-.preview-export-stage {
-  width: 100%;
-  height: 100%;
-  background-color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px;
-}
-
-#canvasSheet.preview-canvas {
-  width: 100%;
-  height: 100%;
-  flex-grow: 1;
-  background-color: #ffffff;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  overflow: visible;
-}
-
-.packed-icon {
-  color: #10b981;
-}
-
-.chevron-icon {
-  font-size: 12px;
-  color: #94a3b8;
-}
-
-.packed-item {
-  background-color: #ecfdf5;
-  border-color: #a7f3d0;
-  color: #065f46;
-}
-
-.packed-item-count {
-  font-weight: 700;
-}
-
-.packed-empty {
-  text-align: center;
-  font-size: 0.75rem;
-  color: #64748b;
-  padding: 0.25rem 0;
-}
-
-.area-row {
-  display: flex;
-  align-items: baseline;
-}
-
-.stats-group--end {
-  justify-content: flex-end;
-}
-
-.stats-label--hidden {
-  opacity: 0;
-  user-select: none;
-}
-
-.btn-export-pdf {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  background-color: #0284c7;
-  color: #ffffff;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 700;
-  font-size: 0.875rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: background-color 0.15s ease;
-}
-
-.btn-export-pdf:hover:not(:disabled) {
-  background-color: #0369a1;
-}
-
-.btn-export-pdf:disabled {
-  background-color: #cbd5e1;
-  cursor: not-allowed;
-}
-</file>
-
 <file path="src/constants/shapes.jsx">
 import React from 'react';
 
@@ -711,24 +605,25 @@ export function detectShapeId(cuttingPart = {}) {
 }
 
 // Mô tả ngắn gọn hiển thị trong danh sách chi tiết trên tấm
+const fmt = (n) => Number((Number(n) || 0).toFixed(2));
+
 export function getBoxDescription(box) {
   const { width: w, height: h, cuttingPart = {} } = box;
   const shapeId = detectShapeId(cuttingPart);
 
   switch (shapeId) {
     case 'HEXAGON': {
-      const side = cuttingPart.sideLength ?? (Math.min(w, h) / 2).toFixed(1);
-      return `Lục giác đều (cạnh ${side} cm)`;
+      const side = cuttingPart.sideLength ?? Math.min(w, h) / 2;
+      return `Lục giác đều (cạnh ${fmt(side)} cm)`;
     }
     case 'ELLIPSE':
-      return `Ellipse (${w}×${h} cm)`;
+      return `Ellipse (${fmt(w)}×${fmt(h)} cm)`;
     case 'CIRCLE':
-      return `Hình tròn (Ø ${Math.min(w, h)} cm)`;
+      return `Hình tròn (Ø ${fmt(Math.min(w, h))} cm)`;
     default:
-      return `Hình chữ nhật (${Math.min(w, h)}×${Math.max(w, h)} cm)`;
+      return `Hình chữ nhật (${fmt(Math.min(w, h))}×${fmt(Math.max(w, h))} cm)`;
   }
 }
-
 // Vẽ SVG tương ứng cho từng hình
 export function renderShapeSvg(box, index, color) {
   const { x, y, width: w, height: h, isRotated, cuttingPart = {} } = box;
@@ -956,78 +851,6 @@ export function usePacking() {
 }
 </file>
 
-<file path="src/utils/pdfExport.js">
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-
-const removeAccents = (str = '') =>
-  String(str)
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/đ/g, 'd')
-    .replace(/Đ/g, 'D');
-
-export async function exportLayoutToPdf({ element, sheetW, sheetH, sheetName }) {
-  if (!element) return;
-
-  const canvas = await html2canvas(element, {
-    scale: 1.5,
-    useCORS: true,
-    backgroundColor: '#ffffff',
-    logging: false,
-    onclone: (clonedDoc) => {
-      const svg = clonedDoc.querySelector('#canvasSheet');
-      if (!svg) return;
-
-      svg.style.backgroundColor = '#ffffff';
-      const gridPath = svg.querySelector('pattern#grid path');
-      if (gridPath) gridPath.setAttribute('stroke', 'none');
-
-      svg.querySelectorAll('polygon, ellipse, circle, rect').forEach((shape) => {
-        shape.setAttribute('fill', '#ffffff');
-        shape.setAttribute('fill-opacity', '1');
-        shape.setAttribute('stroke', '#000000');
-        shape.setAttribute('stroke-width', '1.5');
-        shape.setAttribute('vector-effect', 'non-scaling-stroke');
-      });
-    }
-  });
-
-  const imgData = canvas.toDataURL('image/jpeg', 0.7);
-  const pdf = new jsPDF({
-    orientation: sheetW >= sheetH ? 'landscape' : 'portrait',
-    unit: 'mm',
-    format: 'a4',
-    compress: true
-  });
-
-  const pdfWidth = pdf.internal.pageSize.getWidth();
-  const pdfHeight = pdf.internal.pageSize.getHeight();
-  const ratio = Math.min((pdfWidth - 30) / canvas.width, (pdfHeight - 40) / canvas.height);
-
-  const finalWidth = canvas.width * ratio;
-  const finalHeight = canvas.height * ratio;
-  const xOffset = (pdfWidth - finalWidth) / 2;
-  const safeSheetName = removeAccents(sheetName).toUpperCase();
-
-  pdf.setFont('helvetica', 'bold');
-  pdf.setFontSize(15);
-  pdf.text(`SO DO CAT PHOI 2D: ${safeSheetName}`, pdfWidth / 2, 12, { align: 'center' });
-
-  pdf.setFontSize(10);
-  pdf.setFont('helvetica', 'normal');
-  pdf.text(
-    `Kich thuoc phoi: Ngang ${sheetW.toLocaleString('vi-VN')} cm  x  Cao ${sheetH.toLocaleString('vi-VN')} cm`,
-    pdfWidth / 2,
-    18,
-    { align: 'center' }
-  );
-
-  pdf.addImage(imgData, 'JPEG', xOffset, 25, finalWidth, finalHeight);
-  pdf.save(`So_Do_Cat_${safeSheetName.replace(/\s+/g, '_')}.pdf`);
-}
-</file>
-
 <file path=".gitignore">
 # Logs
 logs
@@ -1236,145 +1059,6 @@ export default function Contact() {
 }
 </file>
 
-<file path="src/Components/Footer.css">
-/* ==========================================
-   CHÂN TRANG (FOOTER)
-   ========================================== */
-.site-footer {
-  background-color: #ffffff;
-  border-top: 1px solid #e2e8f0;
-  color: #475569;
-  font-family: 'Roboto', 'Inter', sans-serif;
-  padding: 3.5rem 2rem;
-  margin-top: auto;
-}
-
-.footer-container {
-  max-width: 1600px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3.5rem;
-}
-
-.footer-col {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.footer-col h3 {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 0.5rem;
-}
-
-.footer-col ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.footer-col a {
-  color: #475569;
-  text-decoration: none;
-  font-size: 0.975rem;
-  font-weight: 500;
-  transition: color 0.15s ease;
-}
-
-.footer-col a:hover {
-  color: #3b82f6;
-}
-
-.footer-desc {
-  color: #64748b;
-  font-size: 0.925rem;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.footer-copyright {
-  color: #94a3b8;
-  font-size: 0.875rem;
-  font-weight: 500;
-  padding-top: 0.5rem;
-  margin: 0;
-}
-
-@media (max-width: 1024px) {
-  .footer-container {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2.5rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .footer-container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-}
-</file>
-
-<file path="src/Components/Footer.jsx">
-import React from 'react';
-import './Footer.css';
-
-export default function Footer() {
-  return (
-    <footer className="site-footer">
-      <div className="footer-container">
-        
-        {/* Cột 1: Support / Hỗ Trợ */}
-        <div className="footer-col">
-          <h3>Support</h3>
-          <ul>
-            <li><a href="#faqs">Instructions/FAQs</a></li>
-            <li><a href="#merge-instructions">Merge (Imposition) Instructions</a></li>
-            <li><a href="#mail-merge">Mail Merge Instructions</a></li>
-            <li><a href="#contact">Contact Us</a></li>
-            <li><a href="#videos">Instructional Videos</a></li>
-            <li><a href="#blog">Blog</a></li>
-          </ul>
-        </div>
-
-        {/* Cột 2: Quick Links / Liên Kết Nhanh */}
-        <div className="footer-col">
-          <h3>Quick Links</h3>
-          <ul>
-            <li><a href="#pricing">Pricing</a></li>
-            <li><a href="#calculators">Free Calculators & Tools</a></li>
-            <li><a href="#demo">Demo Pages</a></li>
-            <li><a href="#templates">System Templates</a></li>
-            <li><a href="#security">Security & Privacy</a></li>
-          </ul>
-        </div>
-
-        {/* Cột 3: Thương hiệu 2D-Packing.net */}
-        <div className="footer-col brand-col">
-          <h3>
-            <span style={{ color: '#0f172a' }}>2D-Packing</span>
-            <span style={{ color: '#3b82f6' }}>.net</span>
-          </h3>
-          <p className="footer-desc">
-            Phần mềm trực tuyến tối ưu bố trí cắt 2D, xếp hình tự động, giảm hao hụt vật liệu và ước tính chi phí gia công nhanh chóng trên mọi thiết bị.
-          </p>
-          <p className="footer-copyright">
-            © 2026 2D-Packing.net. All rights reserved.
-          </p>
-        </div>
-
-      </div>
-    </footer>
-  );
-}
-</file>
-
 <file path="src/Components/Navbar.css">
 /* 📌 ĐIỂM MẤU CHỐT Ở ĐÂY */
 .navbar {
@@ -1484,6 +1168,142 @@ export default function Footer() {
 }
 </file>
 
+<file path="src/Components/PreviewPanel.css">
+/* ==========================================
+   KHUNG HIỂN THỊ SƠ ĐỒ CẮT (PREVIEW PANEL)
+   ========================================== */
+.preview-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.preview-header-row .preview-title {
+  margin-bottom: 0;
+}
+
+.grid-scale-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  background-color: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+}
+
+.preview-loading-tag {
+  color: #3b82f6;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Khóa khung preview đúng bằng kích thước & tỉ lệ 1:1 ban đầu */
+#previewContainer.preview-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+/* Tách stage khỏi luồng co giãn để SVG không bao giờ đẩy giãn khung cha */
+.preview-export-stage {
+  position: absolute;
+  inset: 1.5rem;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  overflow: hidden;
+}
+
+#canvasSheet.preview-canvas {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.packed-icon {
+  color: #10b981;
+}
+
+.chevron-icon {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.packed-item {
+  background-color: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #065f46;
+}
+
+.packed-item-count {
+  font-weight: 700;
+}
+
+.packed-empty {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #64748b;
+  padding: 0.25rem 0;
+}
+
+.area-row {
+  display: flex;
+  align-items: baseline;
+}
+
+.stats-group--end {
+  justify-content: flex-end;
+}
+
+.stats-label--hidden {
+  opacity: 0;
+  user-select: none;
+}
+
+.btn-export-pdf {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background-color: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.btn-export-pdf:hover:not(:disabled) {
+  background-color: #0369a1;
+}
+
+.btn-export-pdf:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+</file>
+
 <file path="src/Components/SeoSection.css">
 /* ==========================================
    BÀI VIẾT SEO TỐI GIẢN (SEO SECTION)
@@ -1523,6 +1343,93 @@ export default function Footer() {
 }
 </file>
 
+<file path="src/utils/pdfExport.js">
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+
+const removeAccents = (str = '') =>
+  String(str)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D');
+
+export async function exportLayoutToPdf({ element, sheetW, sheetH, sheetName, gridStep }) {
+  if (!element) return;
+
+  const canvas = await html2canvas(element, {
+    scale: 1.5,
+    useCORS: true,
+    backgroundColor: '#ffffff',
+    logging: false,
+    onclone: (clonedDoc) => {
+      const svg = clonedDoc.querySelector('#canvasSheet');
+      if (!svg) return;
+
+      svg.style.backgroundColor = '#ffffff';
+
+      const gridPath = svg.querySelector('pattern#grid path');
+      if (gridPath) gridPath.setAttribute('stroke', '#cbd5e1');
+
+      svg.querySelectorAll('polygon, ellipse, circle, rect').forEach((shape) => {
+        const currentFill = shape.getAttribute('fill');
+        if (currentFill === 'url(#grid)') return;
+
+        if (currentFill !== 'none') {
+          shape.setAttribute('fill', '#ffffff');
+          shape.setAttribute('fill-opacity', '1');
+        }
+        shape.setAttribute('stroke', '#000000');
+        shape.setAttribute('stroke-width', '1.5');
+        shape.setAttribute('vector-effect', 'non-scaling-stroke');
+      });
+    }
+  });
+
+  const imgData = canvas.toDataURL('image/jpeg', 0.7);
+  const pdf = new jsPDF({
+    orientation: sheetW >= sheetH ? 'landscape' : 'portrait',
+    unit: 'mm',
+    format: 'a4',
+    compress: true
+  });
+
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = pdf.internal.pageSize.getHeight();
+  const ratio = Math.min((pdfWidth - 30) / canvas.width, (pdfHeight - 44) / canvas.height);
+
+  const finalWidth = canvas.width * ratio;
+  const finalHeight = canvas.height * ratio;
+  const xOffset = (pdfWidth - finalWidth) / 2;
+  const safeSheetName = removeAccents(sheetName).toUpperCase();
+
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(15);
+  pdf.text(`SO DO CAT PHOI 2D: ${safeSheetName}`, pdfWidth / 2, 12, { align: 'center' });
+
+  pdf.setFontSize(10);
+  pdf.setFont('helvetica', 'normal');
+  pdf.text(
+    `Kich thuoc phoi: Ngang ${sheetW.toLocaleString('vi-VN')} cm  x  Cao ${sheetH.toLocaleString('vi-VN')} cm`,
+    pdfWidth / 2,
+    18,
+    { align: 'center' }
+  );
+
+  if (gridStep) {
+    pdf.text(
+      `Ty le luoi: 1 o = ${Number(gridStep).toLocaleString('vi-VN')} cm`,
+      pdfWidth / 2,
+      23,
+      { align: 'center' }
+    );
+  }
+
+  pdf.addImage(imgData, 'JPEG', xOffset, 28, finalWidth, finalHeight);
+  pdf.save(`So_Do_Cat_${safeSheetName.replace(/\s+/g, '_')}.pdf`);
+}
+</file>
+
 <file path="src/App.css">
 
 </file>
@@ -1541,6 +1448,149 @@ createRoot(document.getElementById('root')).render(
     </BrowserRouter>
   </StrictMode>,
 )
+</file>
+
+<file path="src/Components/Footer.css">
+/* ==========================================
+   CHÂN TRANG (FOOTER)
+   ========================================== */
+.site-footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  color: #475569;
+  font-family: 'Roboto', 'Inter', sans-serif;
+  padding: 3rem 2rem;
+  margin-top: auto;
+}
+
+.footer-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.3fr 0.8fr 1fr;
+  gap: 3rem;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.footer-col h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.footer-col li {
+  font-size: 0.925rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.footer-col a {
+  color: #475569;
+  text-decoration: none;
+  font-size: 0.925rem;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.footer-col a:hover {
+  color: #3b82f6;
+}
+
+.footer-desc {
+  color: #64748b;
+  font-size: 0.925rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.footer-copyright {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding-top: 0.25rem;
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .footer-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+</file>
+
+<file path="src/Components/Footer.jsx">
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './Footer.css';
+
+export default function Footer() {
+  return (
+    <footer className="site-footer">
+      <div className="footer-container">
+        {/* Cột 1: Điều hướng các trang chức năng có thật */}
+        <div className="footer-col">
+          <h3>Điều Hướng</h3>
+          <ul>
+            <li><Link to="/">Công cụ tối ưu cắt 2D</Link></li>
+            <li><Link to="/history">Lịch sử sơ đồ cắt</Link></li>
+            <li><Link to="/contact">Liên hệ & Góp ý</Link></li>
+            <li><Link to="/login">Đăng nhập / Đăng ký</Link></li>
+          </ul>
+        </div>
+
+        {/* Cột 2: Thông tin kỹ thuật đồ án */}
+        <div className="footer-col">
+          <h3>Thông Tin Đồ Án</h3>
+          <ul>
+            <li>Đề tài: Tối ưu bố trí cắt phôi 2D</li>
+            <li>Công nghệ: ReactJS & ASP.NET Core API</li>
+            <li>Tính năng: Xếp hình tự động & Xuất PDF</li>
+            <li>
+              Liên hệ: <a href="mailto:2Dpacking@gmail.com">2Dpacking@gmail.com</a>
+            </li>
+          </ul>
+        </div>
+
+        {/* Cột 3: Thương hiệu 2D-Packing.net */}
+        <div className="footer-col brand-col">
+          <h3>
+            <span style={{ color: '#0f172a' }}>2D-Packing</span>
+            <span style={{ color: '#3b82f6' }}>.net</span>
+          </h3>
+          <p className="footer-desc">
+            Ứng dụng hỗ trợ tính toán, trực quan hóa sơ đồ cắt vật liệu 2D, giảm thiểu phần dư và xuất bản vẽ kỹ thuật nhanh chóng.
+          </p>
+          <p className="footer-copyright">
+            © 2026 2D-Packing.net — Đồ án Sinh viên.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
 </file>
 
 <file path="src/Components/History.jsx">
@@ -1775,9 +1825,23 @@ export default function ContainersTable() {
       containers.map((c) => {
         if (c.id !== id) return c;
         if (field === 'name') return { ...c, name: value };
-        if (value === '') return { ...c, [field]: '' };
-        return { ...c, [field]: Math.max(1, Number(value)) };
+        if (field === 'quantity') {
+          return { ...c, quantity: value === '' ? '' : Math.max(1, Math.floor(Number(value))) };
+        }
+        if (value !== '' && !/^\d*\.?\d{0,2}$/.test(value)) return c;
+        return { ...c, [field]: value };
       })
+    );
+  };
+
+  const handleContainerBlur = (id, field, value) => {
+    const parsed = parseFloat(value);
+    const validValue = !isNaN(parsed) && parsed > 0
+      ? Math.round(parsed * 100) / 100
+      : 1;
+
+    setContainers(
+      containers.map((c) => (c.id === id ? { ...c, [field]: validValue } : c))
     );
   };
 
@@ -1810,28 +1874,30 @@ export default function ContainersTable() {
                       className="input-name"
                     />
                   </td>
-                  <td>
-                    <input
-                      type="number"
-                      min="1"
-                      value={container.width ?? ''}
-                      onChange={(e) => handleUpdateContainer(container.id, 'width', e.target.value)}
-                      onFocus={(e) => e.target.select()}
-                      className="input-style"
-                      style={{ width: '64px' }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      min="1"
-                      value={container.height ?? ''}
-                      onChange={(e) => handleUpdateContainer(container.id, 'height', e.target.value)}
-                      onFocus={(e) => e.target.select()}
-                      className="input-style"
-                      style={{ width: '64px' }}
-                    />
-                  </td>
+                 <td>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    value={container.width ?? ''}
+                    onChange={(e) => handleUpdateContainer(container.id, 'width', e.target.value)}
+                    onBlur={(e) => handleContainerBlur(container.id, 'width', e.target.value)}
+                    onFocus={(e) => e.target.select()}
+                    className="input-style"
+                    style={{ width: '64px' }}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    value={container.height ?? ''}
+                    onChange={(e) => handleUpdateContainer(container.id, 'height', e.target.value)}
+                    onBlur={(e) => handleContainerBlur(container.id, 'height', e.target.value)}
+                    onFocus={(e) => e.target.select()}
+                    className="input-style"
+                    style={{ width: '64px' }}
+                  />
+                </td>
                   <td>
                     <input
                       type="number"
@@ -2805,15 +2871,30 @@ export default function ItemsTable() {
   };
 
   const handleDimensionChange = (id, key, value) => {
+    // Chỉ cho phép số và tối đa 2 chữ số sau dấu chấm
+    if (value !== '' && !/^\d*\.?\d{0,2}$/.test(value)) return;
+
     setItems(
-      items.map((item) => {
-        if (item.id !== id) return item;
-        const parsed = value === '' ? '' : Math.max(1, Number(value));
-        return {
-          ...item,
-          dimensions: { ...item.dimensions, [key]: parsed }
-        };
-      })
+      items.map((item) =>
+        item.id === id
+          ? { ...item, dimensions: { ...item.dimensions, [key]: value } }
+          : item
+      )
+    );
+  };
+
+  const handleDimensionBlur = (id, key, value) => {
+    const parsed = parseFloat(value);
+    const validValue = !isNaN(parsed) && parsed > 0
+      ? Math.round(parsed * 100) / 100
+      : 1;
+
+    setItems(
+      items.map((item) =>
+        item.id === id
+          ? { ...item, dimensions: { ...item.dimensions, [key]: validValue } }
+          : item
+      )
     );
   };
 
@@ -2840,11 +2921,12 @@ export default function ItemsTable() {
             {field.separator && (
               <span style={{ color: '#94a3b8' }}>{field.separator}</span>
             )}
-            <input
-              type="number"
-              min="1"
+           <input
+              type="text"
+              inputMode="decimal"
               value={item.dimensions[field.key] ?? ''}
               onChange={(e) => handleDimensionChange(item.id, field.key, e.target.value)}
+              onBlur={(e) => handleDimensionBlur(item.id, field.key, e.target.value)}
               onFocus={(e) => e.target.select()}
               className="input-style"
               style={{ width: `${field.width}px` }}
@@ -3004,15 +3086,18 @@ const STRATEGY_TO_TYPE = {
 };
 
 // Chuẩn hóa 1 box từ BE (PascalCase hoặc camelCase) về 1 chuẩn camelCase duy nhất
+const round2 = (num) => Math.round((Number(num) || 0) * 100) / 100;
+const round4 = (num) => Math.round((Number(num) || 0) * 10000) / 10000;
+
 function normalizeBox(box = {}) {
   const isRotated = Boolean(box.IsRotated ?? box.isRotated ?? false);
-  const rawW = Number(box.Width ?? box.width ?? 0);
-  const rawH = Number(box.Height ?? box.height ?? 0);
+  const rawW = round2(box.Width ?? box.width ?? 0);
+  const rawH = round2(box.Height ?? box.height ?? 0);
   const part = box.CuttingPart ?? box.cuttingPart ?? {};
 
   return {
-    x: Number(box.X ?? box.x ?? 0),
-    y: Number(box.Y ?? box.y ?? 0),
+    x: round4(box.X ?? box.x ?? 0),
+    y: round4(box.Y ?? box.y ?? 0),
     width: isRotated ? rawH : rawW,
     height: isRotated ? rawW : rawH,
     stockSheetId: Number(box.sTockSheetID ?? box.STockSheetID ?? box.stockSheetId ?? 1),
@@ -3020,14 +3105,14 @@ function normalizeBox(box = {}) {
     cuttingPart: {
       id: part.ID ?? part.id,
       shape: part.Shape ?? part.shape ?? part.$type,
-      sideLength: part.SideLength ?? part.sideLength,
-      radius: part.Radius ?? part.radius,
-      radiusX: part.RadiusX ?? part.radiusX,
-      radiusY: part.RadiusY ?? part.radiusY,
-      majorAxis: part.MajorAxis ?? part.majorAxis,
-      minorAxis: part.MinorAxis ?? part.minorAxis,
-      width: part.Width ?? part.width,
-      height: part.Height ?? part.height
+      sideLength: part.SideLength !== undefined ? round2(part.SideLength) : part.sideLength !== undefined ? round2(part.sideLength) : undefined,
+      radius: part.Radius !== undefined ? round2(part.Radius) : part.radius !== undefined ? round2(part.radius) : undefined,
+      radiusX: part.RadiusX !== undefined ? round2(part.RadiusX) : part.radiusX !== undefined ? round2(part.radiusX) : undefined,
+      radiusY: part.RadiusY !== undefined ? round2(part.RadiusY) : part.radiusY !== undefined ? round2(part.radiusY) : undefined,
+      majorAxis: part.MajorAxis !== undefined ? round2(part.MajorAxis) : part.majorAxis !== undefined ? round2(part.majorAxis) : undefined,
+      minorAxis: part.MinorAxis !== undefined ? round2(part.MinorAxis) : part.minorAxis !== undefined ? round2(part.minorAxis) : undefined,
+      width: part.Width !== undefined ? round2(part.Width) : part.width !== undefined ? round2(part.width) : undefined,
+      height: part.Height !== undefined ? round2(part.Height) : part.height !== undefined ? round2(part.height) : undefined
     }
   };
 }
@@ -3179,6 +3264,23 @@ const AUTO_COLORS = [
   '#f97316', '#14b8a6', '#6366f1', '#a855f7'
 ];
 
+// Không gian tọa độ chuẩn của SVG để tránh giới hạn float/CTM của trình duyệt
+const SVG_RENDER_BASE = 1000;
+
+function getAdaptiveGridStep(maxDimension, targetCells = 25) {
+  if (!maxDimension || maxDimension <= 0) return 10;
+  const rawStep = maxDimension / targetCells;
+  const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep) + 1e-9));
+  const normalized = rawStep / magnitude;
+
+  let niceFactor = 10;
+  if (normalized <= 1.5) niceFactor = 1;
+  else if (normalized <= 3.5) niceFactor = 2;
+  else if (normalized <= 7.5) niceFactor = 5;
+
+  return Math.max(1, niceFactor * magnitude);
+}
+
 export default function PreviewPanel() {
   const { activeContainers: containers, placedBoxes, loading, userSession, showToast } = usePacking();
 
@@ -3233,12 +3335,13 @@ export default function PreviewPanel() {
   }, [placedBoxes]);
 
   const usedArea = currentSheetBoxes.reduce((sum, box) => sum + box.width * box.height, 0);
+  const roundedUsedArea = Math.round(usedArea * 100) / 100;
   const totalSheetArea = sheetW * sheetH;
   const efficiency = hasResults && totalSheetArea > 0
     ? ((usedArea / totalSheetArea) * 100).toFixed(2)
     : '0.00';
 
-  const handleExportPDF = async () => {
+ const handleExportPDF = async () => {
     if (!userSession) {
       showToast('Bạn cần phải đăng nhập để xuất file PDF!', 'warning');
       return;
@@ -3248,6 +3351,7 @@ export default function PreviewPanel() {
         element: exportRef.current,
         sheetW,
         sheetH,
+        gridStep: gridStepCm,
         sheetName: currentSheet?.name || `Tam ${safeSheetIndex + 1}`
       });
     } catch (error) {
@@ -3256,15 +3360,29 @@ export default function PreviewPanel() {
     }
   };
 
-  const pad = 6;
+  // Quy đổi toàn bộ kích thước thực (cm) sang không gian vẽ chuẩn 0..1000
+  const maxDim = Math.max(sheetW, sheetH);
+  const renderScale = SVG_RENDER_BASE / maxDim;
+  const renderW = sheetW * renderScale;
+  const renderH = sheetH * renderScale;
+  const pad = SVG_RENDER_BASE * 0.01;
+
+  const gridStepCm = getAdaptiveGridStep(maxDim);
+  const renderGridStep = gridStepCm * renderScale;
+
 
   return (
     <div className="right-column">
       <div className="preview-body">
-        <h2 className="preview-title">
-          Kết Quả Tối Ưu{' '}
-          {loading && <span className="preview-loading-tag">(Đang tính toán...)</span>}
-        </h2>
+        <div className="preview-header-row">
+          <h2 className="preview-title">
+            Kết Quả Tối Ưu{' '}
+            {loading && <span className="preview-loading-tag">(Đang tính toán...)</span>}
+          </h2>
+          <span className="grid-scale-badge">
+            1 ô lưới = {gridStepCm.toLocaleString('vi-VN')} cm
+          </span>
+        </div>
 
         <div id="previewContainer" className="preview-box">
           <div ref={exportRef} className="preview-export-stage">
@@ -3273,12 +3391,18 @@ export default function PreviewPanel() {
               className="preview-canvas"
               width="100%"
               height="100%"
-              viewBox={`${-pad} ${-pad} ${sheetW + pad * 2} ${sheetH + pad * 2}`}
+              preserveAspectRatio="xMidYMid meet"
+              viewBox={`${-pad} ${-pad} ${renderW + pad * 2} ${renderH + pad * 2}`}
             >
               <defs>
-                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                <pattern
+                  id="grid"
+                  width={renderGridStep}
+                  height={renderGridStep}
+                  patternUnits="userSpaceOnUse"
+                >
                   <path
-                    d="M 10 0 L 0 0 0 10"
+                    d={`M ${renderGridStep} 0 L 0 0 0 ${renderGridStep}`}
                     fill="none"
                     stroke="#cbd5e1"
                     strokeWidth="1"
@@ -3286,13 +3410,13 @@ export default function PreviewPanel() {
                   />
                 </pattern>
               </defs>
-              <rect width={sheetW} height={sheetH} fill="url(#grid)" />
+              <rect width={renderW} height={renderH} fill="url(#grid)" />
 
               <rect
                 x="0"
                 y="0"
-                width={sheetW}
-                height={sheetH}
+                width={renderW}
+                height={renderH}
                 fill="none"
                 stroke="#0f172a"
                 strokeWidth="2"
@@ -3304,16 +3428,23 @@ export default function PreviewPanel() {
                   if (!box.width || !box.height) return null;
                   const sizeKey = `${Math.min(box.width, box.height)}x${Math.max(box.width, box.height)}`;
                   const color = sizeColorMap.get(sizeKey) || AUTO_COLORS[0];
-                  return renderShapeSvg(box, index, color);
+                  const scaledBox = {
+                    ...box,
+                    x: box.x * renderScale,
+                    y: box.y * renderScale,
+                    width: box.width * renderScale,
+                    height: box.height * renderScale
+                  };
+                  return renderShapeSvg(scaledBox, index, color);
                 })
               ) : (
                 <text
-                  x={sheetW / 2}
-                  y={sheetH / 2}
+                  x={renderW / 2}
+                  y={renderH / 2}
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill="#94a3b8"
-                  fontSize={Math.max(sheetH * 0.04, 3)}
+                  fontSize={Math.max(renderH * 0.032, 14)}
                   fontWeight="600"
                 >
                   {loading
@@ -3380,8 +3511,8 @@ export default function PreviewPanel() {
 
         <div className="stats-group">
           <label className="stats-label">Diện tích sử dụng:</label>
-          <div className="area-row">
-            <span className="area-value">{usedArea.toLocaleString()} cm²</span>
+         <div className="area-row">
+            <span className="area-value">{roundedUsedArea.toLocaleString()} cm²</span>
             <span className="area-efficiency">({efficiency}%)</span>
           </div>
         </div>
@@ -3456,14 +3587,11 @@ function AppShell() {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
+       <Route path="/" element={<HomePage />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/history" element={<History />} />
-        <Route path="/faqs" element={<div className="main-container"><h1>Hướng dẫn & Câu hỏi thường gặp</h1><p>Nội dung đang được cập nhật.</p></div>} />
-        <Route path="/pricing" element={<div className="main-container"><h1>Bảng Giá Dịch Vụ</h1><p>Hiện tại công cụ đang miễn phí sử dụng.</p></div>} />
-        <Route path="/security" element={<div className="main-container"><h1>Bảo Mật & Quyền Riêng Tư</h1><p>Dữ liệu sơ đồ cắt của bạn được bảo mật an toàn.</p></div>} />
         <Route path="*" element={<div className="main-container"><h1>404 - Không tìm thấy trang</h1></div>} />
       </Routes>
 

@@ -8,15 +8,18 @@ const STRATEGY_TO_TYPE = {
 };
 
 // Chuẩn hóa 1 box từ BE (PascalCase hoặc camelCase) về 1 chuẩn camelCase duy nhất
+const round2 = (num) => Math.round((Number(num) || 0) * 100) / 100;
+const round4 = (num) => Math.round((Number(num) || 0) * 10000) / 10000;
+
 function normalizeBox(box = {}) {
   const isRotated = Boolean(box.IsRotated ?? box.isRotated ?? false);
-  const rawW = Number(box.Width ?? box.width ?? 0);
-  const rawH = Number(box.Height ?? box.height ?? 0);
+  const rawW = round2(box.Width ?? box.width ?? 0);
+  const rawH = round2(box.Height ?? box.height ?? 0);
   const part = box.CuttingPart ?? box.cuttingPart ?? {};
 
   return {
-    x: Number(box.X ?? box.x ?? 0),
-    y: Number(box.Y ?? box.y ?? 0),
+    x: round4(box.X ?? box.x ?? 0),
+    y: round4(box.Y ?? box.y ?? 0),
     width: isRotated ? rawH : rawW,
     height: isRotated ? rawW : rawH,
     stockSheetId: Number(box.sTockSheetID ?? box.STockSheetID ?? box.stockSheetId ?? 1),
@@ -24,14 +27,14 @@ function normalizeBox(box = {}) {
     cuttingPart: {
       id: part.ID ?? part.id,
       shape: part.Shape ?? part.shape ?? part.$type,
-      sideLength: part.SideLength ?? part.sideLength,
-      radius: part.Radius ?? part.radius,
-      radiusX: part.RadiusX ?? part.radiusX,
-      radiusY: part.RadiusY ?? part.radiusY,
-      majorAxis: part.MajorAxis ?? part.majorAxis,
-      minorAxis: part.MinorAxis ?? part.minorAxis,
-      width: part.Width ?? part.width,
-      height: part.Height ?? part.height
+      sideLength: part.SideLength !== undefined ? round2(part.SideLength) : part.sideLength !== undefined ? round2(part.sideLength) : undefined,
+      radius: part.Radius !== undefined ? round2(part.Radius) : part.radius !== undefined ? round2(part.radius) : undefined,
+      radiusX: part.RadiusX !== undefined ? round2(part.RadiusX) : part.radiusX !== undefined ? round2(part.radiusX) : undefined,
+      radiusY: part.RadiusY !== undefined ? round2(part.RadiusY) : part.radiusY !== undefined ? round2(part.radiusY) : undefined,
+      majorAxis: part.MajorAxis !== undefined ? round2(part.MajorAxis) : part.majorAxis !== undefined ? round2(part.majorAxis) : undefined,
+      minorAxis: part.MinorAxis !== undefined ? round2(part.MinorAxis) : part.minorAxis !== undefined ? round2(part.minorAxis) : undefined,
+      width: part.Width !== undefined ? round2(part.Width) : part.width !== undefined ? round2(part.width) : undefined,
+      height: part.Height !== undefined ? round2(part.Height) : part.height !== undefined ? round2(part.height) : undefined
     }
   };
 }

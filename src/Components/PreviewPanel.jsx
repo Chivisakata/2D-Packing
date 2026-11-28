@@ -81,6 +81,7 @@ export default function PreviewPanel() {
   }, [placedBoxes]);
 
   const usedArea = currentSheetBoxes.reduce((sum, box) => sum + box.width * box.height, 0);
+  const roundedUsedArea = Math.round(usedArea * 100) / 100;
   const totalSheetArea = sheetW * sheetH;
   const efficiency = hasResults && totalSheetArea > 0
     ? ((usedArea / totalSheetArea) * 100).toFixed(2)
@@ -106,14 +107,15 @@ export default function PreviewPanel() {
   };
 
   // Quy đổi toàn bộ kích thước thực (cm) sang không gian vẽ chuẩn 0..1000
-  const maxDim = Math.max(sheetW, sheetH, 1);
+  const maxDim = Math.max(sheetW, sheetH);
   const renderScale = SVG_RENDER_BASE / maxDim;
   const renderW = sheetW * renderScale;
   const renderH = sheetH * renderScale;
-  const pad = SVG_RENDER_BASE * 0.015;
+  const pad = SVG_RENDER_BASE * 0.01;
 
-  const gridStepCm = useMemo(() => getAdaptiveGridStep(maxDim, 25), [maxDim]);
+  const gridStepCm = getAdaptiveGridStep(maxDim);
   const renderGridStep = gridStepCm * renderScale;
+
 
   return (
     <div className="right-column">
@@ -255,8 +257,8 @@ export default function PreviewPanel() {
 
         <div className="stats-group">
           <label className="stats-label">Diện tích sử dụng:</label>
-          <div className="area-row">
-            <span className="area-value">{usedArea.toLocaleString()} cm²</span>
+         <div className="area-row">
+            <span className="area-value">{roundedUsedArea.toLocaleString()} cm²</span>
             <span className="area-efficiency">({efficiency}%)</span>
           </div>
         </div>

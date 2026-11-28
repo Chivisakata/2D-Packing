@@ -27,9 +27,23 @@ export default function ContainersTable() {
       containers.map((c) => {
         if (c.id !== id) return c;
         if (field === 'name') return { ...c, name: value };
-        if (value === '') return { ...c, [field]: '' };
-        return { ...c, [field]: Math.max(1, Number(value)) };
+        if (field === 'quantity') {
+          return { ...c, quantity: value === '' ? '' : Math.max(1, Math.floor(Number(value))) };
+        }
+        if (value !== '' && !/^\d*\.?\d{0,2}$/.test(value)) return c;
+        return { ...c, [field]: value };
       })
+    );
+  };
+
+  const handleContainerBlur = (id, field, value) => {
+    const parsed = parseFloat(value);
+    const validValue = !isNaN(parsed) && parsed > 0
+      ? Math.round(parsed * 100) / 100
+      : 1;
+
+    setContainers(
+      containers.map((c) => (c.id === id ? { ...c, [field]: validValue } : c))
     );
   };
 
@@ -62,28 +76,30 @@ export default function ContainersTable() {
                       className="input-name"
                     />
                   </td>
-                  <td>
-                    <input
-                      type="number"
-                      min="1"
-                      value={container.width ?? ''}
-                      onChange={(e) => handleUpdateContainer(container.id, 'width', e.target.value)}
-                      onFocus={(e) => e.target.select()}
-                      className="input-style"
-                      style={{ width: '64px' }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      min="1"
-                      value={container.height ?? ''}
-                      onChange={(e) => handleUpdateContainer(container.id, 'height', e.target.value)}
-                      onFocus={(e) => e.target.select()}
-                      className="input-style"
-                      style={{ width: '64px' }}
-                    />
-                  </td>
+                 <td>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    value={container.width ?? ''}
+                    onChange={(e) => handleUpdateContainer(container.id, 'width', e.target.value)}
+                    onBlur={(e) => handleContainerBlur(container.id, 'width', e.target.value)}
+                    onFocus={(e) => e.target.select()}
+                    className="input-style"
+                    style={{ width: '64px' }}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    value={container.height ?? ''}
+                    onChange={(e) => handleUpdateContainer(container.id, 'height', e.target.value)}
+                    onBlur={(e) => handleContainerBlur(container.id, 'height', e.target.value)}
+                    onFocus={(e) => e.target.select()}
+                    className="input-style"
+                    style={{ width: '64px' }}
+                  />
+                </td>
                   <td>
                     <input
                       type="number"

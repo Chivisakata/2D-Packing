@@ -34,15 +34,30 @@ export default function ItemsTable() {
   };
 
   const handleDimensionChange = (id, key, value) => {
+    // Chỉ cho phép số và tối đa 2 chữ số sau dấu chấm
+    if (value !== '' && !/^\d*\.?\d{0,2}$/.test(value)) return;
+
     setItems(
-      items.map((item) => {
-        if (item.id !== id) return item;
-        const parsed = value === '' ? '' : Math.max(1, Number(value));
-        return {
-          ...item,
-          dimensions: { ...item.dimensions, [key]: parsed }
-        };
-      })
+      items.map((item) =>
+        item.id === id
+          ? { ...item, dimensions: { ...item.dimensions, [key]: value } }
+          : item
+      )
+    );
+  };
+
+  const handleDimensionBlur = (id, key, value) => {
+    const parsed = parseFloat(value);
+    const validValue = !isNaN(parsed) && parsed > 0
+      ? Math.round(parsed * 100) / 100
+      : 1;
+
+    setItems(
+      items.map((item) =>
+        item.id === id
+          ? { ...item, dimensions: { ...item.dimensions, [key]: validValue } }
+          : item
+      )
     );
   };
 
@@ -69,11 +84,12 @@ export default function ItemsTable() {
             {field.separator && (
               <span style={{ color: '#94a3b8' }}>{field.separator}</span>
             )}
-            <input
-              type="number"
-              min="1"
+           <input
+              type="text"
+              inputMode="decimal"
               value={item.dimensions[field.key] ?? ''}
               onChange={(e) => handleDimensionChange(item.id, field.key, e.target.value)}
+              onBlur={(e) => handleDimensionBlur(item.id, field.key, e.target.value)}
               onFocus={(e) => e.target.select()}
               className="input-style"
               style={{ width: `${field.width}px` }}
