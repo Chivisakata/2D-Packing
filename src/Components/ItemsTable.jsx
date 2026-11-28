@@ -34,7 +34,6 @@ export default function ItemsTable() {
   };
 
   const handleDimensionChange = (id, key, value) => {
-    // Chỉ cho phép số và tối đa 2 chữ số sau dấu chấm
     if (value !== '' && !/^\d*\.?\d{0,2}$/.test(value)) return;
 
     setItems(

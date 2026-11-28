@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="site-footer">
       <div className="footer-container">
-        {/* Cột 1: Điều hướng các trang chức năng có thật */}
+        {/* Cột 1: Điều hướng các trang chức năng */}
         <div className="footer-col">
           <h3>Điều Hướng</h3>
           <ul>
