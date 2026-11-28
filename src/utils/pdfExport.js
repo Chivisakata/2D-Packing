@@ -8,7 +8,7 @@ const removeAccents = (str = '') =>
     .replace(/đ/g, 'd')
     .replace(/Đ/g, 'D');
 
-export async function exportLayoutToPdf({ element, sheetW, sheetH, sheetName }) {
+export async function exportLayoutToPdf({ element, sheetW, sheetH, sheetName, gridStep }) {
   if (!element) return;
 
   const canvas = await html2canvas(element, {
@@ -21,12 +21,18 @@ export async function exportLayoutToPdf({ element, sheetW, sheetH, sheetName }) 
       if (!svg) return;
 
       svg.style.backgroundColor = '#ffffff';
+
       const gridPath = svg.querySelector('pattern#grid path');
-      if (gridPath) gridPath.setAttribute('stroke', 'none');
+      if (gridPath) gridPath.setAttribute('stroke', '#cbd5e1');
 
       svg.querySelectorAll('polygon, ellipse, circle, rect').forEach((shape) => {
-        shape.setAttribute('fill', '#ffffff');
-        shape.setAttribute('fill-opacity', '1');
+        const currentFill = shape.getAttribute('fill');
+        if (currentFill === 'url(#grid)') return;
+
+        if (currentFill !== 'none') {
+          shape.setAttribute('fill', '#ffffff');
+          shape.setAttribute('fill-opacity', '1');
+        }
         shape.setAttribute('stroke', '#000000');
         shape.setAttribute('stroke-width', '1.5');
         shape.setAttribute('vector-effect', 'non-scaling-stroke');
@@ -44,7 +50,7 @@ export async function exportLayoutToPdf({ element, sheetW, sheetH, sheetName }) 
 
   const pdfWidth = pdf.internal.pageSize.getWidth();
   const pdfHeight = pdf.internal.pageSize.getHeight();
-  const ratio = Math.min((pdfWidth - 30) / canvas.width, (pdfHeight - 40) / canvas.height);
+  const ratio = Math.min((pdfWidth - 30) / canvas.width, (pdfHeight - 44) / canvas.height);
 
   const finalWidth = canvas.width * ratio;
   const finalHeight = canvas.height * ratio;
@@ -64,6 +70,15 @@ export async function exportLayoutToPdf({ element, sheetW, sheetH, sheetName }) 
     { align: 'center' }
   );
 
-  pdf.addImage(imgData, 'JPEG', xOffset, 25, finalWidth, finalHeight);
+  if (gridStep) {
+    pdf.text(
+      `Ty le luoi: 1 o = ${Number(gridStep).toLocaleString('vi-VN')} cm`,
+      pdfWidth / 2,
+      23,
+      { align: 'center' }
+    );
+  }
+
+  pdf.addImage(imgData, 'JPEG', xOffset, 28, finalWidth, finalHeight);
   pdf.save(`So_Do_Cat_${safeSheetName.replace(/\s+/g, '_')}.pdf`);
 }

@@ -50,14 +50,11 @@ function AppShell() {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
+       <Route path="/" element={<HomePage />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/history" element={<History />} />
-        <Route path="/faqs" element={<div className="main-container"><h1>Hướng dẫn & Câu hỏi thường gặp</h1><p>Nội dung đang được cập nhật.</p></div>} />
-        <Route path="/pricing" element={<div className="main-container"><h1>Bảng Giá Dịch Vụ</h1><p>Hiện tại công cụ đang miễn phí sử dụng.</p></div>} />
-        <Route path="/security" element={<div className="main-container"><h1>Bảo Mật & Quyền Riêng Tư</h1><p>Dữ liệu sơ đồ cắt của bạn được bảo mật an toàn.</p></div>} />
         <Route path="*" element={<div className="main-container"><h1>404 - Không tìm thấy trang</h1></div>} />
       </Routes>
 

@@ -1,33 +1,32 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 
 export default function Footer() {
   return (
     <footer className="site-footer">
       <div className="footer-container">
-        
-        {/* Cột 1: Support / Hỗ Trợ */}
+        {/* Cột 1: Điều hướng các trang chức năng có thật */}
         <div className="footer-col">
-          <h3>Support</h3>
+          <h3>Điều Hướng</h3>
           <ul>
-            <li><a href="#faqs">Instructions/FAQs</a></li>
-            <li><a href="#merge-instructions">Merge (Imposition) Instructions</a></li>
-            <li><a href="#mail-merge">Mail Merge Instructions</a></li>
-            <li><a href="#contact">Contact Us</a></li>
-            <li><a href="#videos">Instructional Videos</a></li>
-            <li><a href="#blog">Blog</a></li>
+            <li><Link to="/">Công cụ tối ưu cắt 2D</Link></li>
+            <li><Link to="/history">Lịch sử sơ đồ cắt</Link></li>
+            <li><Link to="/contact">Liên hệ & Góp ý</Link></li>
+            <li><Link to="/login">Đăng nhập / Đăng ký</Link></li>
           </ul>
         </div>
 
-        {/* Cột 2: Quick Links / Liên Kết Nhanh */}
+        {/* Cột 2: Thông tin kỹ thuật đồ án */}
         <div className="footer-col">
-          <h3>Quick Links</h3>
+          <h3>Thông Tin Đồ Án</h3>
           <ul>
-            <li><a href="#pricing">Pricing</a></li>
-            <li><a href="#calculators">Free Calculators & Tools</a></li>
-            <li><a href="#demo">Demo Pages</a></li>
-            <li><a href="#templates">System Templates</a></li>
-            <li><a href="#security">Security & Privacy</a></li>
+            <li>Đề tài: Tối ưu bố trí cắt phôi 2D</li>
+            <li>Công nghệ: ReactJS & ASP.NET Core API</li>
+            <li>Tính năng: Xếp hình tự động & Xuất PDF</li>
+            <li>
+              Liên hệ: <a href="mailto:2Dpacking@gmail.com">2Dpacking@gmail.com</a>
+            </li>
           </ul>
         </div>
 
@@ -38,13 +37,12 @@ export default function Footer() {
             <span style={{ color: '#3b82f6' }}>.net</span>
           </h3>
           <p className="footer-desc">
-            Phần mềm trực tuyến tối ưu bố trí cắt 2D, xếp hình tự động, giảm hao hụt vật liệu và ước tính chi phí gia công nhanh chóng trên mọi thiết bị.
+            Ứng dụng hỗ trợ tính toán, trực quan hóa sơ đồ cắt vật liệu 2D, giảm thiểu phần dư và xuất bản vẽ kỹ thuật nhanh chóng.
           </p>
           <p className="footer-copyright">
-            © 2026 2D-Packing.net. All rights reserved.
+            © 2026 2D-Packing.net — Đồ án Sinh viên.
           </p>
         </div>
-
       </div>
     </footer>
   );

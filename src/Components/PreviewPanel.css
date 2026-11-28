@@ -7,6 +7,27 @@
   flex-direction: column;
 }
 
+.preview-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.preview-header-row .preview-title {
+  margin-bottom: 0;
+}
+
+.grid-scale-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  background-color: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+}
+
 .preview-loading-tag {
   color: #3b82f6;
   font-size: 1rem;
@@ -15,25 +36,34 @@
   letter-spacing: normal;
 }
 
-.preview-export-stage {
+/* Khóa khung preview đúng bằng kích thước & tỉ lệ 1:1 ban đầu */
+#previewContainer.preview-box {
+  position: relative;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+/* Tách stage khỏi luồng co giãn để SVG không bao giờ đẩy giãn khung cha */
+.preview-export-stage {
+  position: absolute;
+  inset: 1.5rem;
   background-color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 8px;
+  overflow: hidden;
 }
 
 #canvasSheet.preview-canvas {
   width: 100%;
   height: 100%;
-  flex-grow: 1;
   background-color: #ffffff;
   border: none;
   border-radius: 0;
   box-shadow: none;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .packed-icon {

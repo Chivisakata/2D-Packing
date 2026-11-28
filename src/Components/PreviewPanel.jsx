@@ -10,6 +10,23 @@ const AUTO_COLORS = [
   '#f97316', '#14b8a6', '#6366f1', '#a855f7'
 ];
 
+// Không gian tọa độ chuẩn của SVG để tránh giới hạn float/CTM của trình duyệt
+const SVG_RENDER_BASE = 1000;
+
+function getAdaptiveGridStep(maxDimension, targetCells = 25) {
+  if (!maxDimension || maxDimension <= 0) return 10;
+  const rawStep = maxDimension / targetCells;
+  const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep) + 1e-9));
+  const normalized = rawStep / magnitude;
+
+  let niceFactor = 10;
+  if (normalized <= 1.5) niceFactor = 1;
+  else if (normalized <= 3.5) niceFactor = 2;
+  else if (normalized <= 7.5) niceFactor = 5;
+
+  return Math.max(1, niceFactor * magnitude);
+}
+
 export default function PreviewPanel() {
   const { activeContainers: containers, placedBoxes, loading, userSession, showToast } = usePacking();
 
@@ -69,7 +86,7 @@ export default function PreviewPanel() {
     ? ((usedArea / totalSheetArea) * 100).toFixed(2)
     : '0.00';
 
-  const handleExportPDF = async () => {
+ const handleExportPDF = async () => {
     if (!userSession) {
       showToast('Bạn cần phải đăng nhập để xuất file PDF!', 'warning');
       return;
@@ -79,6 +96,7 @@ export default function PreviewPanel() {
         element: exportRef.current,
         sheetW,
         sheetH,
+        gridStep: gridStepCm,
         sheetName: currentSheet?.name || `Tam ${safeSheetIndex + 1}`
       });
     } catch (error) {
@@ -87,15 +105,28 @@ export default function PreviewPanel() {
     }
   };
 
-  const pad = 6;
+  // Quy đổi toàn bộ kích thước thực (cm) sang không gian vẽ chuẩn 0..1000
+  const maxDim = Math.max(sheetW, sheetH, 1);
+  const renderScale = SVG_RENDER_BASE / maxDim;
+  const renderW = sheetW * renderScale;
+  const renderH = sheetH * renderScale;
+  const pad = SVG_RENDER_BASE * 0.015;
+
+  const gridStepCm = useMemo(() => getAdaptiveGridStep(maxDim, 25), [maxDim]);
+  const renderGridStep = gridStepCm * renderScale;
 
   return (
     <div className="right-column">
       <div className="preview-body">
-        <h2 className="preview-title">
-          Kết Quả Tối Ưu{' '}
-          {loading && <span className="preview-loading-tag">(Đang tính toán...)</span>}
-        </h2>
+        <div className="preview-header-row">
+          <h2 className="preview-title">
+            Kết Quả Tối Ưu{' '}
+            {loading && <span className="preview-loading-tag">(Đang tính toán...)</span>}
+          </h2>
+          <span className="grid-scale-badge">
+            1 ô lưới = {gridStepCm.toLocaleString('vi-VN')} cm
+          </span>
+        </div>
 
         <div id="previewContainer" className="preview-box">
           <div ref={exportRef} className="preview-export-stage">
@@ -104,12 +135,18 @@ export default function PreviewPanel() {
               className="preview-canvas"
               width="100%"
               height="100%"
-              viewBox={`${-pad} ${-pad} ${sheetW + pad * 2} ${sheetH + pad * 2}`}
+              preserveAspectRatio="xMidYMid meet"
+              viewBox={`${-pad} ${-pad} ${renderW + pad * 2} ${renderH + pad * 2}`}
             >
               <defs>
-                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                <pattern
+                  id="grid"
+                  width={renderGridStep}
+                  height={renderGridStep}
+                  patternUnits="userSpaceOnUse"
+                >
                   <path
-                    d="M 10 0 L 0 0 0 10"
+                    d={`M ${renderGridStep} 0 L 0 0 0 ${renderGridStep}`}
                     fill="none"
                     stroke="#cbd5e1"
                     strokeWidth="1"
@@ -117,13 +154,13 @@ export default function PreviewPanel() {
                   />
                 </pattern>
               </defs>
-              <rect width={sheetW} height={sheetH} fill="url(#grid)" />
+              <rect width={renderW} height={renderH} fill="url(#grid)" />
 
               <rect
                 x="0"
                 y="0"
-                width={sheetW}
-                height={sheetH}
+                width={renderW}
+                height={renderH}
                 fill="none"
                 stroke="#0f172a"
                 strokeWidth="2"
@@ -135,16 +172,23 @@ export default function PreviewPanel() {
                   if (!box.width || !box.height) return null;
                   const sizeKey = `${Math.min(box.width, box.height)}x${Math.max(box.width, box.height)}`;
                   const color = sizeColorMap.get(sizeKey) || AUTO_COLORS[0];
-                  return renderShapeSvg(box, index, color);
+                  const scaledBox = {
+                    ...box,
+                    x: box.x * renderScale,
+                    y: box.y * renderScale,
+                    width: box.width * renderScale,
+                    height: box.height * renderScale
+                  };
+                  return renderShapeSvg(scaledBox, index, color);
                 })
               ) : (
                 <text
-                  x={sheetW / 2}
-                  y={sheetH / 2}
+                  x={renderW / 2}
+                  y={renderH / 2}
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill="#94a3b8"
-                  fontSize={Math.max(sheetH * 0.04, 3)}
+                  fontSize={Math.max(renderH * 0.032, 14)}
                   fontWeight="600"
                 >
                   {loading
