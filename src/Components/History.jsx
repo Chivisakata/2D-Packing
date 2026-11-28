@@ -68,38 +68,26 @@ export default function History() {
                 </tr>
               </thead>
               <tbody>
-                {currentHistories.map((h, index) => {
-                  const parsedDate =
-                    h.createdAt && h.createdAt !== '0001-01-01T00:00:00Z'
-                      ? new Date(h.createdAt)
-                      : null;
-                  const formattedDate =
-                    parsedDate && !isNaN(parsedDate.getTime())
-                      ? parsedDate.toLocaleString('vi-VN')
-                      : 'Không rõ thời gian';
-
-                  return (
-                    <tr key={h.historyId || index} className="history-row">
-                      <td className="history-stt">{startIndex + index + 1}</td>
-                      <td>
-                        <div className="history-row-title">{h.title}</div>
-                        <div className="history-row-date">{formattedDate}</div>
-                      </td>
-                      <td className="history-row-count">{h.containers.length} tấm</td>
-                      <td className="history-row-count">{h.items.length} loại</td>
-                      <td className="history-row-placed">{h.placedBoxes.length} hình</td>
-                      <td className="history-col-center">
-                        <button
-                          type="button"
-                          className="btn-restore"
-                          onClick={() => handleRestore(h)}
-                        >
-                          Tải lại sơ đồ
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {currentHistories.map((h, index) => (
+                  <tr key={h.historyId || index} className="history-row">
+                    <td className="history-stt">{startIndex + index + 1}</td>
+                    <td>
+                      <div className="history-row-title">{h.title}</div>
+                    </td>
+                    <td className="history-row-count">{h.containers.length} tấm</td>
+                    <td className="history-row-count">{h.items.length} loại</td>
+                    <td className="history-row-placed">{h.placedBoxes.length} hình</td>
+                    <td className="history-col-center">
+                      <button
+                        type="button"
+                        className="btn-restore"
+                        onClick={() => handleRestore(h)}
+                      >
+                        Tải lại sơ đồ
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
