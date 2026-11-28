@@ -58,6 +58,7 @@ export function PackingProvider({ children }) {
   const [containers, setContainers] = useState(createDefaultContainers);
   const [activeContainers, setActiveContainers] = useState([]);
   const [strategy, setStrategy] = useState('REMAINDER_OPTIMAL');
+  const [sawKerf, setSawKerf] = useState(0);
   const [placedBoxes, setPlacedBoxes] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -81,13 +82,19 @@ export function PackingProvider({ children }) {
     setContainers(createDefaultContainers());
     setActiveContainers([]);
     setStrategy('REMAINDER_OPTIMAL');
+    setSawKerf(0);
     setPlacedBoxes([]);
   }, []);
 
   const handleOptimize = useCallback(async () => {
     setLoading(true);
     try {
-      const { boxes, sheets } = await calculateLayoutApi(items, containers, strategy);
+      const { boxes, sheets } = await calculateLayoutApi(
+        items,
+        containers,
+        strategy,
+        Number(sawKerf) || 0
+      );
       setActiveContainers(sheets);
       setPlacedBoxes(boxes);
     } catch (err) {
@@ -95,7 +102,7 @@ export function PackingProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  }, [items, containers, strategy, showToast]);
+  }, [items, containers, strategy, sawKerf, showToast]);
 
   const handleSaveHistory = useCallback(async () => {
     if (!userSession?.userId) {
@@ -109,19 +116,20 @@ export function PackingProvider({ children }) {
       await saveHistoryApi(
         userSession.userId,
         title,
-        { items, containers, strategy },
+        { items, containers, strategy, sawKerf: Number(sawKerf) || 0 },
         { placedBoxes, containers: activeContainers }
       );
       showToast('Đã lưu lịch sử cắt thành công!', 'success');
     } catch (err) {
       showToast(`Không thể lưu kết quả: ${err.message}`, 'error');
     }
-  }, [userSession, items, containers, strategy, placedBoxes, activeContainers, showToast]);
+  }, [userSession, items, containers, strategy, sawKerf, placedBoxes, activeContainers, showToast]);
 
   const handleLoadHistory = useCallback((history) => {
     setItems(history.items);
     setContainers(history.containers);
     setStrategy(history.strategy);
+    setSawKerf(history.sawKerf ?? 0);
     setPlacedBoxes(history.placedBoxes);
 
     const activeConts = history.activeContainers.some((c) => Number(c.quantity) > 1)
@@ -145,6 +153,8 @@ export function PackingProvider({ children }) {
         activeContainers,
         strategy,
         setStrategy,
+        sawKerf,
+        setSawKerf,
         placedBoxes,
         loading,
         hasResults: placedBoxes.length > 0,

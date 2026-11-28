@@ -515,173 +515,6 @@ This section contains the contents of the repository's files.
 }
 </file>
 
-<file path="src/constants/shapes.jsx">
-import React from 'react';
-
-export const DEFAULT_SHAPE = 'RECTANGLE';
-
-export const SHAPE_CONFIG = {
-  RECTANGLE: {
-    id: 'RECTANGLE',
-    name: 'Hình chữ nhật',
-    defaultDimensions: { w: 100, h: 100 },
-    fields: [
-      { key: 'w', width: 48 },
-      { key: 'h', width: 48, separator: 'x' }
-    ],
-    toApiPayload: (dims) => ({
-      ShapeName: 'Rectangle',
-      Width: Number(dims?.w || 100),
-      Height: Number(dims?.h || 100)
-    })
-  },
-  CIRCLE: {
-    id: 'CIRCLE',
-    name: 'Hình tròn',
-    defaultDimensions: { d: 100 },
-    fields: [
-      { key: 'd', prefix: 'Ø:', width: 64 }
-    ],
-    toApiPayload: (dims) => ({
-      ShapeName: 'Circle',
-      Radius: Number(dims?.d || 100) / 2
-    })
-  },
-  HEXAGON: {
-    id: 'HEXAGON',
-    name: 'Lục giác đều',
-    defaultDimensions: { a: 100 },
-    fields: [
-      { key: 'a', prefix: 'Cạnh:', width: 64 }
-    ],
-    toApiPayload: (dims) => ({
-      ShapeName: 'RegularHexagon',
-      SideLength: Number(dims?.a || 100)
-    })
-  },
-  ELLIPSE: {
-    id: 'ELLIPSE',
-    name: 'Ellipse',
-    defaultDimensions: { rx: 100, ry: 150 },
-    fields: [
-      { key: 'rx', width: 48 },
-      { key: 'ry', width: 48, separator: 'x' }
-    ],
-    toApiPayload: (dims) => ({
-      ShapeName: 'Ellipse',
-      MajorAxis: Number(dims?.rx || 100),
-      MinorAxis: Number(dims?.ry || 100)
-    })
-  }
-};
-
-export const SHAPE_LIST = Object.values(SHAPE_CONFIG);
-
-// Nhận diện loại hình chuẩn từ dữ liệu đã chuẩn hóa của apiService
-export function detectShapeId(cuttingPart = {}) {
-  const rawShape = cuttingPart.shape ?? '';
-  const shapeStr = String(rawShape).toLowerCase();
-
-  if (cuttingPart.sideLength !== undefined || shapeStr.includes('hexagon') || rawShape === 3 || rawShape === 5) {
-    return 'HEXAGON';
-  }
-  if (
-    cuttingPart.radiusX !== undefined ||
-    cuttingPart.majorAxis !== undefined ||
-    shapeStr.includes('ellipse') ||
-    rawShape === 4 ||
-    rawShape === 6
-  ) {
-    return 'ELLIPSE';
-  }
-  if (
-    (cuttingPart.radius !== undefined && cuttingPart.radiusX === undefined) ||
-    shapeStr.includes('circle') ||
-    rawShape === 2
-  ) {
-    return 'CIRCLE';
-  }
-  return 'RECTANGLE';
-}
-
-// Mô tả ngắn gọn hiển thị trong danh sách chi tiết trên tấm
-const fmt = (n) => Number((Number(n) || 0).toFixed(2));
-
-export function getBoxDescription(box) {
-  const { width: w, height: h, cuttingPart = {} } = box;
-  const shapeId = detectShapeId(cuttingPart);
-
-  switch (shapeId) {
-    case 'HEXAGON': {
-      const side = cuttingPart.sideLength ?? Math.min(w, h) / 2;
-      return `Lục giác đều (cạnh ${fmt(side)} cm)`;
-    }
-    case 'ELLIPSE':
-      return `Ellipse (${fmt(w)}×${fmt(h)} cm)`;
-    case 'CIRCLE':
-      return `Hình tròn (Ø ${fmt(Math.min(w, h))} cm)`;
-    default:
-      return `Hình chữ nhật (${fmt(Math.min(w, h))}×${fmt(Math.max(w, h))} cm)`;
-  }
-}
-// Vẽ SVG tương ứng cho từng hình
-export function renderShapeSvg(box, index, color) {
-  const { x, y, width: w, height: h, isRotated, cuttingPart = {} } = box;
-  const shapeId = detectShapeId(cuttingPart);
-
-  const commonProps = {
-    fill: color,
-    fillOpacity: '0.85',
-    stroke: '#0f172a',
-    strokeOpacity: '0.95',
-    strokeWidth: '1.5',
-    vectorEffect: 'non-scaling-stroke'
-  };
-
-  if (shapeId === 'HEXAGON') {
-    const cx = x + w / 2;
-    const cy = y + h / 2;
-    const rx = isRotated ? w / Math.sqrt(3) : w / 2;
-    const ry = isRotated ? h / 2 : h / Math.sqrt(3);
-    const angleOffset = isRotated ? Math.PI / 2 : 0;
-
-    const points = Array.from({ length: 6 }, (_, i) => {
-      const angle = (Math.PI / 3) * i + angleOffset;
-      return `${(cx + rx * Math.cos(angle)).toFixed(2)},${(cy + ry * Math.sin(angle)).toFixed(2)}`;
-    }).join(' ');
-
-    return <polygon key={index} points={points} {...commonProps} />;
-  }
-
-  if (shapeId === 'ELLIPSE') {
-    return (
-      <ellipse
-        key={index}
-        cx={x + w / 2}
-        cy={y + h / 2}
-        rx={w / 2}
-        ry={h / 2}
-        {...commonProps}
-      />
-    );
-  }
-
-  if (shapeId === 'CIRCLE') {
-    return (
-      <circle
-        key={index}
-        cx={x + w / 2}
-        cy={y + h / 2}
-        r={Math.min(w, h) / 2}
-        {...commonProps}
-      />
-    );
-  }
-
-  return <rect key={index} x={x} y={y} width={w} height={h} {...commonProps} />;
-}
-</file>
-
 <file path="src/context/PackingContext.jsx">
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { DEFAULT_SHAPE, SHAPE_CONFIG } from '../constants/shapes';
@@ -745,6 +578,7 @@ export function PackingProvider({ children }) {
   const [strategy, setStrategy] = useState('REMAINDER_OPTIMAL');
   const [placedBoxes, setPlacedBoxes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [sawKerf, setSawKerf] = useState(0);
 
   const showToast = useCallback((message, type = 'success') => {
     setToast({ message, type });
@@ -766,13 +600,14 @@ export function PackingProvider({ children }) {
     setContainers(createDefaultContainers());
     setActiveContainers([]);
     setStrategy('REMAINDER_OPTIMAL');
+    setSawKerf(0);
     setPlacedBoxes([]);
   }, []);
 
   const handleOptimize = useCallback(async () => {
     setLoading(true);
     try {
-      const { boxes, sheets } = await calculateLayoutApi(items, containers, strategy);
+      const { boxes, sheets } = await calculateLayoutApi(items, containers, strategy, Number(sawKerf) || 0);
       setActiveContainers(sheets);
       setPlacedBoxes(boxes);
     } catch (err) {
@@ -780,7 +615,7 @@ export function PackingProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  }, [items, containers, strategy, showToast]);
+  }, [items, containers, strategy, sawKerf, showToast]);
 
   const handleSaveHistory = useCallback(async () => {
     if (!userSession?.userId) {
@@ -794,7 +629,7 @@ export function PackingProvider({ children }) {
       await saveHistoryApi(
         userSession.userId,
         title,
-        { items, containers, strategy },
+        { items, containers, strategy, sawKerf: Number(sawKerf) || 0 },
         { placedBoxes, containers: activeContainers }
       );
       showToast('Đã lưu lịch sử cắt thành công!', 'success');
@@ -808,6 +643,7 @@ export function PackingProvider({ children }) {
     setContainers(history.containers);
     setStrategy(history.strategy);
     setPlacedBoxes(history.placedBoxes);
+    setSawKerf(history.sawKerf ?? 0);
 
     const activeConts = history.activeContainers.some((c) => Number(c.quantity) > 1)
       ? expandContainers(history.activeContainers)
@@ -1059,115 +895,6 @@ export default function Contact() {
 }
 </file>
 
-<file path="src/Components/Navbar.css">
-/* 📌 ĐIỂM MẤU CHỐT Ở ĐÂY */
-.navbar {
-  position: sticky;     /* Dính lại khi cuộn màn hình */
-  top: 0;               /* Dính sát mép trên cùng */
-  left: 0;
-  width: 100%;
-  z-index: 1000;        /* Đảm bảo Navbar luôn đè lên các nội dung khác */
-
-  /* Trang trí giao diện */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: rgba(255, 255, 255, 1); /* Màu tối + hơi trong suốt */
-  backdrop-filter: blur(8px);                 /* Hiệu ứng kính mờ (Glassmorphism) */
-  box-sizing: border-box;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Đường viền dưới mờ */
-}
-
-/* Style cho Logo */
-.navbar-logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #005eff; /* Màu xanh React */
-}
-
-/* Style cho Menu Links */
-.navbar-links {
-  display: flex;
-  list-style: none;
-  gap: 2rem;
-  margin: 0;
-  padding: 0;
-}
-
-.navbar-links a {
-  color: #454242;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 1.1rem;
-  transition: color 0.3s ease;
-}
-
-.navbar-links a:hover {
-  color: #63bdea;
-}
-
-/* User Menu & Dropdown đơn giản */
-.user-menu {
-  position: relative;
-}
-
-.user-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: none;
-  border: none;
-  color: #454242;
-  font-family: inherit;
-  font-size: 1.1rem;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 0;
-}
-
-.user-btn:hover {
-  color: #3b82f6;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 6px 0;
-  min-width: 130px;
-  display: flex;
-  flex-direction: column;
-  z-index: 1000;
-}
-
-.dropdown-menu a,
-.dropdown-menu button {
-  padding: 8px 16px;
-  font-size: 0.95rem;
-  font-family: inherit;
-  font-weight: 500;
-  color: #334155;
-  text-decoration: none;
-  background: none;
-  border: none;
-  text-align: left;
-  cursor: pointer;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.dropdown-menu a:hover,
-.dropdown-menu button:hover {
-  background-color: #f1f5f9;
-  color: #3b82f6;
-}
-</file>
-
 <file path="src/Components/PreviewPanel.css">
 /* ==========================================
    KHUNG HIỂN THỊ SƠ ĐỒ CẮT (PREVIEW PANEL)
@@ -1304,42 +1031,170 @@ export default function Contact() {
 }
 </file>
 
-<file path="src/Components/SeoSection.css">
-/* ==========================================
-   BÀI VIẾT SEO TỐI GIẢN (SEO SECTION)
-   ========================================== */
-.seo-section {
-  width: 100%;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 1rem;
-  padding: 2rem 2.5rem;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+<file path="src/constants/shapes.jsx">
+import React from 'react';
+
+export const DEFAULT_SHAPE = 'RECTANGLE';
+
+export const SHAPE_CONFIG = {
+  RECTANGLE: {
+    id: 'RECTANGLE',
+    name: 'Hình chữ nhật',
+    defaultDimensions: { w: 100, h: 100 },
+    fields: [
+      { key: 'w', width: 48 },
+      { key: 'h', width: 48, separator: 'x' }
+    ],
+    toApiPayload: (dims) => ({
+      ShapeName: 'Rectangle',
+      Width: Number(dims?.w || 100),
+      Height: Number(dims?.h || 100)
+    })
+  },
+  CIRCLE: {
+    id: 'CIRCLE',
+    name: 'Hình tròn',
+    defaultDimensions: { d: 100 },
+    fields: [
+      { key: 'd', prefix: 'Ø:', width: 64 }
+    ],
+    toApiPayload: (dims) => ({
+      ShapeName: 'Circle',
+      Radius: Number(dims?.d || 100) / 2
+    })
+  },
+  HEXAGON: {
+    id: 'HEXAGON',
+    name: 'Lục giác đều',
+    defaultDimensions: { a: 100 },
+    fields: [
+      { key: 'a', prefix: 'Cạnh:', width: 64 }
+    ],
+    toApiPayload: (dims) => ({
+      ShapeName: 'RegularHexagon',
+      SideLength: Number(dims?.a || 100)
+    })
+  },
+  ELLIPSE: {
+    id: 'ELLIPSE',
+    name: 'Ellipse',
+    defaultDimensions: { rx: 100, ry: 150 },
+    fields: [
+      { key: 'rx', width: 48 },
+      { key: 'ry', width: 48, separator: 'x' }
+    ],
+    toApiPayload: (dims) => ({
+      ShapeName: 'Ellipse',
+      MajorAxis: Number(dims?.rx || 100),
+      MinorAxis: Number(dims?.ry || 100)
+    })
+  }
+};
+
+export const SHAPE_LIST = Object.values(SHAPE_CONFIG);
+
+// Nhận diện loại hình chuẩn từ dữ liệu đã chuẩn hóa của apiService
+export function detectShapeId(cuttingPart = {}) {
+  const rawShape = cuttingPart.shape ?? '';
+  const shapeStr = String(rawShape).toLowerCase();
+
+  if (cuttingPart.sideLength !== undefined || shapeStr.includes('hexagon') || rawShape === 3 || rawShape === 5) {
+    return 'HEXAGON';
+  }
+  if (
+    cuttingPart.radiusX !== undefined ||
+    cuttingPart.majorAxis !== undefined ||
+    shapeStr.includes('ellipse') ||
+    rawShape === 4 ||
+    rawShape === 6
+  ) {
+    return 'ELLIPSE';
+  }
+  if (
+    (cuttingPart.radius !== undefined && cuttingPart.radiusX === undefined) ||
+    shapeStr.includes('circle') ||
+    rawShape === 2
+  ) {
+    return 'CIRCLE';
+  }
+  return 'RECTANGLE';
 }
 
-.seo-title {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #0f172a;
-  letter-spacing: -0.02em;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 0.75rem;
-  margin-bottom: 1.25rem;
-}
+// Mô tả ngắn gọn hiển thị trong danh sách chi tiết trên tấm
+const fmt = (n) => Number((Number(n) || 0).toFixed(2));
 
-.seo-content {
-  font-size: 0.975rem;
-  line-height: 1.7;
-  color: #334155;
-  display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
-}
+export function getBoxDescription(box) {
+  const { width: w, height: h, cuttingPart = {} } = box;
+  const shapeId = detectShapeId(cuttingPart);
 
-.seo-content p {
-  margin: 0;
+  switch (shapeId) {
+    case 'HEXAGON': {
+      const side = cuttingPart.sideLength ?? Math.min(w, h) / 2;
+      return `Lục giác đều (cạnh ${fmt(side)} cm)`;
+    }
+    case 'ELLIPSE':
+      return `Ellipse (${fmt(w)}×${fmt(h)} cm)`;
+    case 'CIRCLE':
+      return `Hình tròn (Ø ${fmt(Math.min(w, h))} cm)`;
+    default:
+      return `Hình chữ nhật (${fmt(Math.min(w, h))}×${fmt(Math.max(w, h))} cm)`;
+  }
+}
+// Vẽ SVG tương ứng cho từng hình
+export function renderShapeSvg(box, index, color) {
+  const { x, y, width: w, height: h, isRotated, cuttingPart = {} } = box;
+  const shapeId = detectShapeId(cuttingPart);
+
+  const commonProps = {
+    fill: color,
+    fillOpacity: '0.85',
+    stroke: '#0f172a',
+    strokeOpacity: '0.95',
+    strokeWidth: '1.5',
+    vectorEffect: 'non-scaling-stroke'
+  };
+
+  if (shapeId === 'HEXAGON') {
+    const cx = x + w / 2;
+    const cy = y + h / 2;
+    const rx = isRotated ? w / Math.sqrt(3) : w / 2;
+    const ry = isRotated ? h / 2 : h / Math.sqrt(3);
+    const angleOffset = isRotated ? Math.PI / 2 : 0;
+
+    const points = Array.from({ length: 6 }, (_, i) => {
+      const angle = (Math.PI / 3) * i + angleOffset;
+      return `${(cx + rx * Math.cos(angle)).toFixed(2)},${(cy + ry * Math.sin(angle)).toFixed(2)}`;
+    }).join(' ');
+
+    return <polygon key={index} points={points} {...commonProps} />;
+  }
+
+  if (shapeId === 'ELLIPSE') {
+    return (
+      <ellipse
+        key={index}
+        cx={x + w / 2}
+        cy={y + h / 2}
+        rx={w / 2}
+        ry={h / 2}
+        {...commonProps}
+      />
+    );
+  }
+
+  if (shapeId === 'CIRCLE') {
+    return (
+      <circle
+        key={index}
+        cx={x + w / 2}
+        cy={y + h / 2}
+        r={Math.min(w, h) / 2}
+        {...commonProps}
+      />
+    );
+  }
+
+  return <rect key={index} x={x} y={y} width={w} height={h} {...commonProps} />;
 }
 </file>
 
@@ -1541,58 +1396,6 @@ createRoot(document.getElementById('root')).render(
 }
 </file>
 
-<file path="src/Components/Footer.jsx">
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './Footer.css';
-
-export default function Footer() {
-  return (
-    <footer className="site-footer">
-      <div className="footer-container">
-        {/* Cột 1: Điều hướng các trang chức năng có thật */}
-        <div className="footer-col">
-          <h3>Điều Hướng</h3>
-          <ul>
-            <li><Link to="/">Công cụ tối ưu cắt 2D</Link></li>
-            <li><Link to="/history">Lịch sử sơ đồ cắt</Link></li>
-            <li><Link to="/contact">Liên hệ & Góp ý</Link></li>
-            <li><Link to="/login">Đăng nhập / Đăng ký</Link></li>
-          </ul>
-        </div>
-
-        {/* Cột 2: Thông tin kỹ thuật đồ án */}
-        <div className="footer-col">
-          <h3>Thông Tin Đồ Án</h3>
-          <ul>
-            <li>Đề tài: Tối ưu bố trí cắt phôi 2D</li>
-            <li>Công nghệ: ReactJS & ASP.NET Core API</li>
-            <li>Tính năng: Xếp hình tự động & Xuất PDF</li>
-            <li>
-              Liên hệ: <a href="mailto:2Dpacking@gmail.com">2Dpacking@gmail.com</a>
-            </li>
-          </ul>
-        </div>
-
-        {/* Cột 3: Thương hiệu 2D-Packing.net */}
-        <div className="footer-col brand-col">
-          <h3>
-            <span style={{ color: '#0f172a' }}>2D-Packing</span>
-            <span style={{ color: '#3b82f6' }}>.net</span>
-          </h3>
-          <p className="footer-desc">
-            Ứng dụng hỗ trợ tính toán, trực quan hóa sơ đồ cắt vật liệu 2D, giảm thiểu phần dư và xuất bản vẽ kỹ thuật nhanh chóng.
-          </p>
-          <p className="footer-copyright">
-            © 2026 2D-Packing.net — Đồ án Sinh viên.
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-</file>
-
 <file path="src/Components/History.jsx">
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -1736,6 +1539,152 @@ export default function History() {
 }
 </file>
 
+<file path="src/Components/Navbar.css">
+.navbar {
+  position: sticky;    
+  top: 0;              
+  left: 0;
+  width: 100%;
+  z-index: 1000;       
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: rgba(255, 255, 255, 1); 
+  backdrop-filter: blur(8px);                
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1); 
+}
+
+/* Style cho Logo */
+.navbar-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #005eff;
+}
+
+/* Style cho Menu Links */
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links a {
+  color: #454242;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+  color: #63bdea;
+}
+
+/* User Menu & Dropdown*/
+.user-menu {
+  position: relative;
+}
+
+.user-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #454242;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+}
+
+.user-btn:hover {
+  color: #3b82f6;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 6px 0;
+  min-width: 130px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.dropdown-menu a,
+.dropdown-menu button {
+  padding: 8px 16px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  font-weight: 500;
+  color: #334155;
+  text-decoration: none;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+  background-color: #f1f5f9;
+  color: #3b82f6;
+}
+</file>
+
+<file path="src/Components/SeoSection.css">
+/* ==========================================
+   BÀI VIẾT 
+   ========================================== */
+.seo-section {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 2rem 2.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.seo-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.seo-content {
+  font-size: 0.975rem;
+  line-height: 1.7;
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.seo-content p {
+  margin: 0;
+}
+</file>
+
 <file path="src/Components/SeoSection.jsx">
 // src/Components/SeoSection.jsx
 import React from 'react';
@@ -1795,138 +1744,54 @@ export default function SeoSection() {
 }
 </file>
 
-<file path="src/Components/ContainersTable.jsx">
+<file path="src/Components/Footer.jsx">
 import React from 'react';
-import { usePacking } from '../context/PackingContext';
-import './PackingTables.css';
+import { Link } from 'react-router-dom';
+import './Footer.css';
 
-export default function ContainersTable() {
-  const { containers, setContainers } = usePacking();
-
-  const handleAddContainer = () => {
-    setContainers([
-      ...containers,
-      {
-        id: Date.now(),
-        name: `Tấm Vật Liệu ${containers.length + 1}`,
-        width: 800,
-        height: 800,
-        quantity: 1
-      }
-    ]);
-  };
-
-  const handleDeleteContainer = (id) => {
-    setContainers(containers.filter((c) => c.id !== id));
-  };
-
-  const handleUpdateContainer = (id, field, value) => {
-    setContainers(
-      containers.map((c) => {
-        if (c.id !== id) return c;
-        if (field === 'name') return { ...c, name: value };
-        if (field === 'quantity') {
-          return { ...c, quantity: value === '' ? '' : Math.max(1, Math.floor(Number(value))) };
-        }
-        if (value !== '' && !/^\d*\.?\d{0,2}$/.test(value)) return c;
-        return { ...c, [field]: value };
-      })
-    );
-  };
-
-  const handleContainerBlur = (id, field, value) => {
-    const parsed = parseFloat(value);
-    const validValue = !isNaN(parsed) && parsed > 0
-      ? Math.round(parsed * 100) / 100
-      : 1;
-
-    setContainers(
-      containers.map((c) => (c.id === id ? { ...c, [field]: validValue } : c))
-    );
-  };
-
+export default function Footer() {
   return (
-    <div className="packing-card containers-card">
-      <div>
-        <h2 className="card-title" style={{ fontSize: '1.125rem' }}>Tấm vật liệu</h2>
+    <footer className="site-footer">
+      <div className="footer-container">
+        {/* Cột 1: Điều hướng các trang chức năng */}
+        <div className="footer-col">
+          <h3>Điều Hướng</h3>
+          <ul>
+            <li><Link to="/">Công cụ tối ưu cắt 2D</Link></li>
+            <li><Link to="/history">Lịch sử sơ đồ cắt</Link></li>
+            <li><Link to="/contact">Liên hệ & Góp ý</Link></li>
+            <li><Link to="/login">Đăng nhập / Đăng ký</Link></li>
+          </ul>
+        </div>
 
-        <div className="table-wrapper">
-          <table className="custom-table">
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'left', width: '112px' }}>Tên tấm</th>
-                <th>Dài</th>
-                <th>Rộng</th>
-                <th>Số lượng</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {containers.map((container) => (
-                <tr key={container.id}>
-                  <td style={{ textAlign: 'left' }}>
-                    <input
-                      type="text"
-                      value={container.name}
-                      onChange={(e) => handleUpdateContainer(container.id, 'name', e.target.value)}
-                      onFocus={(e) => e.target.select()}
-                      maxLength={50}
-                      className="input-name"
-                    />
-                  </td>
-                 <td>
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    value={container.width ?? ''}
-                    onChange={(e) => handleUpdateContainer(container.id, 'width', e.target.value)}
-                    onBlur={(e) => handleContainerBlur(container.id, 'width', e.target.value)}
-                    onFocus={(e) => e.target.select()}
-                    className="input-style"
-                    style={{ width: '64px' }}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    value={container.height ?? ''}
-                    onChange={(e) => handleUpdateContainer(container.id, 'height', e.target.value)}
-                    onBlur={(e) => handleContainerBlur(container.id, 'height', e.target.value)}
-                    onFocus={(e) => e.target.select()}
-                    className="input-style"
-                    style={{ width: '64px' }}
-                  />
-                </td>
-                  <td>
-                    <input
-                      type="number"
-                      min="1"
-                      value={container.quantity ?? ''}
-                      onChange={(e) => handleUpdateContainer(container.id, 'quantity', e.target.value)}
-                      onFocus={(e) => e.target.select()}
-                      className="input-style"
-                      style={{ width: '48px' }}
-                    />
-                  </td>
-                  <td>
-                    <button className="btn-delete" onClick={() => handleDeleteContainer(container.id)}>
-                      <span style={{ fontStyle: 'normal' }}>✕</span>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {/* Cột 2: Thông tin kỹ thuật đồ án */}
+        <div className="footer-col">
+          <h3>Thông Tin Đồ Án</h3>
+          <ul>
+            <li>Đề tài: Tối ưu bố trí cắt phôi 2D</li>
+            <li>Công nghệ: ReactJS & ASP.NET Core API</li>
+            <li>Tính năng: Xếp hình tự động & Xuất PDF</li>
+            <li>
+              Liên hệ: <a href="mailto:2Dpacking@gmail.com">2Dpacking@gmail.com</a>
+            </li>
+          </ul>
+        </div>
+
+        {/* Cột 3: Thương hiệu 2D-Packing.net */}
+        <div className="footer-col brand-col">
+          <h3>
+            <span style={{ color: '#0f172a' }}>2D-Packing</span>
+            <span style={{ color: '#3b82f6' }}>.net</span>
+          </h3>
+          <p className="footer-desc">
+            Ứng dụng hỗ trợ tính toán, trực quan hóa sơ đồ cắt vật liệu 2D, giảm thiểu phần dư và xuất bản vẽ kỹ thuật nhanh chóng.
+          </p>
+          <p className="footer-copyright">
+            © 2026 2D-Packing.net — Đồ án Sinh viên.
+          </p>
         </div>
       </div>
-
-      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '4px' }}>
-        <button className="btn-add" onClick={handleAddContainer} style={{ padding: '6px 24px' }}>
-          <span style={{ fontStyle: 'normal' }}>Thêm</span>
-        </button>
-      </div>
-    </div>
+    </footer>
   );
 }
 </file>
@@ -2141,6 +2006,142 @@ export default function Register() {
 </html>
 </file>
 
+<file path="src/Components/ContainersTable.jsx">
+import React from 'react';
+import { usePacking } from '../context/PackingContext';
+import './PackingTables.css';
+
+export default function ContainersTable() {
+  const { containers, setContainers } = usePacking();
+
+  const handleAddContainer = () => {
+    setContainers([
+      ...containers,
+      {
+        id: Date.now(),
+        name: `Tấm Vật Liệu ${containers.length + 1}`,
+        width: 800,
+        height: 800,
+        quantity: 1
+      }
+    ]);
+  };
+
+  const handleDeleteContainer = (id) => {
+    setContainers(containers.filter((c) => c.id !== id));
+  };
+
+  const handleUpdateContainer = (id, field, value) => {
+    setContainers(
+      containers.map((c) => {
+        if (c.id !== id) return c;
+        if (field === 'name') return { ...c, name: value };
+        if (field === 'quantity') {
+          return { ...c, quantity: value === '' ? '' : Math.max(1, Math.floor(Number(value))) };
+        }
+        if (value !== '' && !/^\d*\.?\d{0,2}$/.test(value)) return c;
+        return { ...c, [field]: value };
+      })
+    );
+  };
+
+  const handleContainerBlur = (id, field, value) => {
+    const parsed = parseFloat(value);
+    const validValue = !isNaN(parsed) && parsed > 0
+      ? Math.round(parsed * 100) / 100
+      : 1;
+
+    setContainers(
+      containers.map((c) => (c.id === id ? { ...c, [field]: validValue } : c))
+    );
+  };
+
+  return (
+    <div className="packing-card containers-card">
+      <div>
+        <h2 className="card-title" style={{ fontSize: '1.125rem' }}>Tấm vật liệu</h2>
+
+        <div className="table-wrapper">
+          <table className="custom-table">
+            <thead>
+              <tr>
+                <th style={{ textAlign: 'left', width: '112px' }}>Tên tấm</th>
+                <th>Dài</th>
+                <th>Rộng</th>
+                <th>Số lượng</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {containers.map((container) => (
+                <tr key={container.id}>
+                  <td style={{ textAlign: 'left' }}>
+                    <input
+                      type="text"
+                      value={container.name}
+                      onChange={(e) => handleUpdateContainer(container.id, 'name', e.target.value)}
+                      onFocus={(e) => e.target.select()}
+                      maxLength={50}
+                      className="input-name"
+                    />
+                  </td>
+                 <td>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    value={container.width ?? ''}
+                    onChange={(e) => handleUpdateContainer(container.id, 'width', e.target.value)}
+                    onBlur={(e) => handleContainerBlur(container.id, 'width', e.target.value)}
+                    onFocus={(e) => e.target.select()}
+                    className="input-style"
+                    style={{ width: '64px' }}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    value={container.height ?? ''}
+                    onChange={(e) => handleUpdateContainer(container.id, 'height', e.target.value)}
+                    onBlur={(e) => handleContainerBlur(container.id, 'height', e.target.value)}
+                    onFocus={(e) => e.target.select()}
+                    className="input-style"
+                    style={{ width: '64px' }}
+                  />
+                </td>
+                  <td>
+                    <input
+                      type="number"
+                      min="1"
+                      value={container.quantity ?? ''}
+                      onChange={(e) => handleUpdateContainer(container.id, 'quantity', e.target.value)}
+                      onFocus={(e) => e.target.select()}
+                      className="input-style"
+                      style={{ width: '48px' }}
+                    />
+                  </td>
+                  <td>
+                    <button className="btn-delete" onClick={() => handleDeleteContainer(container.id)}>
+                      <span style={{ fontStyle: 'normal' }}>✕</span>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '4px' }}>
+        <button className="btn-add" onClick={handleAddContainer} style={{ padding: '6px 24px' }}>
+          <span style={{ fontStyle: 'normal' }}>Thêm</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+</file>
+
 <file path="src/Components/OptimizationOptions.jsx">
 import React from 'react';
 import { usePacking } from '../context/PackingContext';
@@ -2163,6 +2164,8 @@ export default function OptimizationOptions() {
   const {
     strategy,
     setStrategy,
+    sawKerf,
+    setSawKerf,
     handleReset,
     handleOptimize,
     hasResults,
@@ -2170,6 +2173,16 @@ export default function OptimizationOptions() {
     handleSaveHistory,
     showToast
   } = usePacking();
+
+  const handleKerfChange = (value) => {
+    if (value !== '' && !/^\d*\.?\d{0,2}$/.test(value)) return;
+    setSawKerf(value);
+  };
+
+  const handleKerfBlur = (value) => {
+    const parsed = parseFloat(value);
+    setSawKerf(!isNaN(parsed) && parsed >= 0 ? Math.round(parsed * 100) / 100 : 0);
+  };
 
   const handleSaveClick = () => {
     if (!userSession) {
@@ -2205,6 +2218,22 @@ export default function OptimizationOptions() {
               </label>
             );
           })}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #e2e8f0' }}>
+          <label htmlFor="sawKerfInput" style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a' }}>
+            Độ dày lưỡi cắt (cm):
+          </label>
+          <input
+            id="sawKerfInput"
+            type="text"
+            inputMode="decimal"
+            value={sawKerf ?? ''}
+            onChange={(e) => handleKerfChange(e.target.value)}
+            onBlur={(e) => handleKerfBlur(e.target.value)}
+            onFocus={(e) => e.target.select()}
+            className="input-style"
+            style={{ width: '72px' }}
+          />
         </div>
       </div>
 
@@ -2834,6 +2863,255 @@ input, select, button, textarea {
 }
 </file>
 
+<file path="src/Components/Navbar.jsx">
+import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { usePacking } from '../context/PackingContext';
+import './Navbar.css';
+
+export default function Navbar() {
+  const { userSession, logout } = usePacking();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setShowDropdown(false);
+  };
+
+  const username = userSession?.email ? userSession.email.split('@')[0] : '';
+
+  return (
+    <nav className="navbar">
+      <div className="navbar-logo">
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <span style={{ color: '#000000', fontSize: '30px', fontWeight: 600 }}>2D-Packing</span>
+          <span style={{ fontSize: '20px', fontWeight: 600, color: '#3b82f6' }}>.net</span>
+        </Link>
+      </div>
+      <ul className="navbar-links">
+        <li><Link to="/">Trang Chủ</Link></li>
+        <li><Link to="/contact">Liên Hệ</Link></li>
+
+        {userSession ? (
+          <li className="user-menu" ref={dropdownRef}>
+            <button
+              type="button"
+              className="user-btn"
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span>{username}</span>
+            </button>
+
+            {showDropdown && (
+              <div className="dropdown-menu">
+                <Link to="/history" onClick={() => setShowDropdown(false)}>Xem lịch sử</Link>
+                <button type="button" onClick={handleLogout}>Đăng xuất</button>
+              </div>
+            )}
+          </li>
+        ) : (
+          <li>
+            <Link to="/login">Đăng Nhập</Link>
+          </li>
+        )}
+      </ul>
+    </nav>
+  );
+}
+</file>
+
+<file path="src/services/apiService.js">
+import { SHAPE_CONFIG, DEFAULT_SHAPE } from '../constants/shapes';
+
+const API_BASE_URL = 'https://localhost:7187/api';
+
+const STRATEGY_TO_TYPE = {
+  REMAINDER_OPTIMAL: 1,
+  BALANCED_DISTRIBUTION: 2
+};
+
+// Chuẩn hóa 1 box từ BE (PascalCase hoặc camelCase) về 1 chuẩn camelCase duy nhất
+const round2 = (num) => Math.round((Number(num) || 0) * 100) / 100;
+const round4 = (num) => Math.round((Number(num) || 0) * 10000) / 10000;
+
+function normalizeBox(box = {}) {
+  const isRotated = Boolean(box.IsRotated ?? box.isRotated ?? false);
+  const sawKerf = Number(inputData.sawKerf ?? inputData.SawKerf ?? 0);
+  const rawW = round2(box.Width ?? box.width ?? 0);
+  const rawH = round2(box.Height ?? box.height ?? 0);
+  const part = box.CuttingPart ?? box.cuttingPart ?? {};
+
+  return {
+    x: round4(box.X ?? box.x ?? 0),
+    y: round4(box.Y ?? box.y ?? 0),
+    width: isRotated ? rawH : rawW,
+    height: isRotated ? rawW : rawH,
+    stockSheetId: Number(box.sTockSheetID ?? box.STockSheetID ?? box.stockSheetId ?? 1),
+    isRotated,
+    cuttingPart: {
+      id: part.ID ?? part.id,
+      shape: part.Shape ?? part.shape ?? part.$type,
+      sideLength: part.SideLength !== undefined ? round2(part.SideLength) : part.sideLength !== undefined ? round2(part.sideLength) : undefined,
+      radius: part.Radius !== undefined ? round2(part.Radius) : part.radius !== undefined ? round2(part.radius) : undefined,
+      radiusX: part.RadiusX !== undefined ? round2(part.RadiusX) : part.radiusX !== undefined ? round2(part.radiusX) : undefined,
+      radiusY: part.RadiusY !== undefined ? round2(part.RadiusY) : part.radiusY !== undefined ? round2(part.radiusY) : undefined,
+      majorAxis: part.MajorAxis !== undefined ? round2(part.MajorAxis) : part.majorAxis !== undefined ? round2(part.majorAxis) : undefined,
+      minorAxis: part.MinorAxis !== undefined ? round2(part.MinorAxis) : part.minorAxis !== undefined ? round2(part.minorAxis) : undefined,
+      width: part.Width !== undefined ? round2(part.Width) : part.width !== undefined ? round2(part.width) : undefined,
+      height: part.Height !== undefined ? round2(part.Height) : part.height !== undefined ? round2(part.height) : undefined
+    }
+  };
+}
+
+// Chuẩn hóa bản ghi lịch sử từ BE về camelCase
+function normalizeHistory(h = {}) {
+  const inputData = h.inputData ?? h.InputData ?? {};
+  const resultData = h.resultData ?? h.ResultData ?? {};
+
+  const items = inputData.items ?? inputData.Items ?? [];
+  const containers = inputData.containers ?? inputData.Containers ?? [];
+  const strategy = inputData.strategy ?? inputData.Strategy ?? 'REMAINDER_OPTIMAL';
+
+  const rawBoxes = resultData.placedBoxes ?? resultData.PlacedBoxes ?? (Array.isArray(resultData) ? resultData : []);
+  const activeContainers = resultData.containers ?? resultData.Containers ?? containers;
+
+  return {
+    historyId: h.historyId ?? h.HistoryId,
+    title: h.title ?? h.Title ?? 'Sơ đồ cắt phôi',
+    createdAt: h.createdAt ?? h.CreatedAt,
+    items,
+    containers,
+    strategy,
+    placedBoxes: Array.isArray(rawBoxes) ? rawBoxes.map(normalizeBox) : [],
+    activeContainers
+  };
+}
+
+export async function calculateLayoutApi(items, containers, strategy, sawKerf = 0) {
+  const stockSheets = [];
+  let sheetIdCounter = 1;
+
+  containers.forEach((c) => {
+    const qty = Number(c.quantity) || 1;
+    const width = Number(c.width);
+    const height = Number(c.height);
+    const name = c.name || 'Tấm phôi';
+
+    for (let i = 0; i < qty; i++) {
+      stockSheets.push({
+        ID: sheetIdCounter++,
+        Width: width,
+        Height: height,
+        Quantity: 1,
+        Name: qty > 1 ? `${name} (#${i + 1})` : name
+      });
+    }
+  });
+
+  if (stockSheets.length === 0) {
+    stockSheets.push({ ID: 1, Width: 800, Height: 800, Quantity: 1, Name: 'Tấm A' });
+  }
+
+  const cuttingPack = [];
+  items.forEach((item) => {
+    const qty = Number(item.quantity) || 1;
+    const shapeConfig = SHAPE_CONFIG[item.shape] || SHAPE_CONFIG[DEFAULT_SHAPE];
+    const serialized = JSON.stringify(shapeConfig.toApiPayload(item.dimensions));
+
+    for (let i = 0; i < qty; i++) {
+      cuttingPack.push(serialized);
+    }
+  });
+
+  const payload = {
+    Type: STRATEGY_TO_TYPE[strategy] ?? 1,
+    SawKerf: Number(sawKerf) || 0,
+    StockSheets: stockSheets,
+    CuttingPack: cuttingPack
+  };
+
+  const response = await fetch(`${API_BASE_URL}/CalculateLayout`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || 'Lỗi từ Server');
+  }
+
+  const result = await response.json();
+  const rawBoxes = result?.data || result || [];
+
+  return {
+    boxes: Array.isArray(rawBoxes) ? rawBoxes.map(normalizeBox) : [],
+    sheets: stockSheets.map((s) => ({
+      id: s.ID,
+      name: s.Name,
+      width: s.Width,
+      height: s.Height,
+      quantity: 1
+    }))
+  };
+}
+
+export async function registerApi(email, password) {
+  const response = await fetch(`${API_BASE_URL}/Auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Đăng ký thất bại!');
+  return data;
+}
+
+export async function loginApi(email, password) {
+  const response = await fetch(`${API_BASE_URL}/Auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Đăng nhập thất bại!');
+  return data;
+}
+
+export async function saveHistoryApi(userId, title, inputData, resultData) {
+  const response = await fetch(`${API_BASE_URL}/History/save`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, title, inputData, resultData })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Lưu lịch sử thất bại!');
+  return data;
+}
+
+export async function getUserHistoriesApi(userId) {
+  const response = await fetch(`${API_BASE_URL}/History/user/${userId}`);
+  const data = await response.json();
+  if (!response.ok) throw new Error('Không thể tải lịch sử!');
+  return Array.isArray(data) ? data.map(normalizeHistory) : [];
+}
+</file>
+
 <file path="src/Components/ItemsTable.jsx">
 import React from 'react';
 import { SHAPE_CONFIG, SHAPE_LIST, DEFAULT_SHAPE } from '../constants/shapes';
@@ -2871,7 +3149,6 @@ export default function ItemsTable() {
   };
 
   const handleDimensionChange = (id, key, value) => {
-    // Chỉ cho phép số và tối đa 2 chữ số sau dấu chấm
     if (value !== '' && !/^\d*\.?\d{0,2}$/.test(value)) return;
 
     setItems(
@@ -3000,254 +3277,6 @@ export default function ItemsTable() {
       </div>
     </div>
   );
-}
-</file>
-
-<file path="src/Components/Navbar.jsx">
-import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { usePacking } from '../context/PackingContext';
-import './Navbar.css';
-
-export default function Navbar() {
-  const { userSession, logout } = usePacking();
-  const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setShowDropdown(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleLogout = () => {
-    logout();
-    setShowDropdown(false);
-  };
-
-  const username = userSession?.email ? userSession.email.split('@')[0] : '';
-
-  return (
-    <nav className="navbar">
-      <div className="navbar-logo">
-        <Link to="/" style={{ textDecoration: 'none' }}>
-          <span style={{ color: '#000000', fontSize: '30px', fontWeight: 600 }}>2D-Packing</span>
-          <span style={{ fontSize: '20px', fontWeight: 600, color: '#3b82f6' }}>.net</span>
-        </Link>
-      </div>
-      <ul className="navbar-links">
-        <li><Link to="/">Trang Chủ</Link></li>
-        <li><Link to="/contact">Liên Hệ</Link></li>
-
-        {userSession ? (
-          <li className="user-menu" ref={dropdownRef}>
-            <button
-              type="button"
-              className="user-btn"
-              onClick={() => setShowDropdown(!showDropdown)}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-              <span>{username}</span>
-            </button>
-
-            {showDropdown && (
-              <div className="dropdown-menu">
-                <Link to="/history" onClick={() => setShowDropdown(false)}>Xem lịch sử</Link>
-                <button type="button" onClick={handleLogout}>Đăng xuất</button>
-              </div>
-            )}
-          </li>
-        ) : (
-          <li>
-            <Link to="/login">Đăng Nhập</Link>
-          </li>
-        )}
-      </ul>
-    </nav>
-  );
-}
-</file>
-
-<file path="src/services/apiService.js">
-import { SHAPE_CONFIG, DEFAULT_SHAPE } from '../constants/shapes';
-
-const API_BASE_URL = 'https://localhost:7187/api';
-
-const STRATEGY_TO_TYPE = {
-  REMAINDER_OPTIMAL: 1,
-  BALANCED_DISTRIBUTION: 2
-};
-
-// Chuẩn hóa 1 box từ BE (PascalCase hoặc camelCase) về 1 chuẩn camelCase duy nhất
-const round2 = (num) => Math.round((Number(num) || 0) * 100) / 100;
-const round4 = (num) => Math.round((Number(num) || 0) * 10000) / 10000;
-
-function normalizeBox(box = {}) {
-  const isRotated = Boolean(box.IsRotated ?? box.isRotated ?? false);
-  const rawW = round2(box.Width ?? box.width ?? 0);
-  const rawH = round2(box.Height ?? box.height ?? 0);
-  const part = box.CuttingPart ?? box.cuttingPart ?? {};
-
-  return {
-    x: round4(box.X ?? box.x ?? 0),
-    y: round4(box.Y ?? box.y ?? 0),
-    width: isRotated ? rawH : rawW,
-    height: isRotated ? rawW : rawH,
-    stockSheetId: Number(box.sTockSheetID ?? box.STockSheetID ?? box.stockSheetId ?? 1),
-    isRotated,
-    cuttingPart: {
-      id: part.ID ?? part.id,
-      shape: part.Shape ?? part.shape ?? part.$type,
-      sideLength: part.SideLength !== undefined ? round2(part.SideLength) : part.sideLength !== undefined ? round2(part.sideLength) : undefined,
-      radius: part.Radius !== undefined ? round2(part.Radius) : part.radius !== undefined ? round2(part.radius) : undefined,
-      radiusX: part.RadiusX !== undefined ? round2(part.RadiusX) : part.radiusX !== undefined ? round2(part.radiusX) : undefined,
-      radiusY: part.RadiusY !== undefined ? round2(part.RadiusY) : part.radiusY !== undefined ? round2(part.radiusY) : undefined,
-      majorAxis: part.MajorAxis !== undefined ? round2(part.MajorAxis) : part.majorAxis !== undefined ? round2(part.majorAxis) : undefined,
-      minorAxis: part.MinorAxis !== undefined ? round2(part.MinorAxis) : part.minorAxis !== undefined ? round2(part.minorAxis) : undefined,
-      width: part.Width !== undefined ? round2(part.Width) : part.width !== undefined ? round2(part.width) : undefined,
-      height: part.Height !== undefined ? round2(part.Height) : part.height !== undefined ? round2(part.height) : undefined
-    }
-  };
-}
-
-// Chuẩn hóa bản ghi lịch sử từ BE về camelCase
-function normalizeHistory(h = {}) {
-  const inputData = h.inputData ?? h.InputData ?? {};
-  const resultData = h.resultData ?? h.ResultData ?? {};
-
-  const items = inputData.items ?? inputData.Items ?? [];
-  const containers = inputData.containers ?? inputData.Containers ?? [];
-  const strategy = inputData.strategy ?? inputData.Strategy ?? 'REMAINDER_OPTIMAL';
-
-  const rawBoxes = resultData.placedBoxes ?? resultData.PlacedBoxes ?? (Array.isArray(resultData) ? resultData : []);
-  const activeContainers = resultData.containers ?? resultData.Containers ?? containers;
-
-  return {
-    historyId: h.historyId ?? h.HistoryId,
-    title: h.title ?? h.Title ?? 'Sơ đồ cắt phôi',
-    createdAt: h.createdAt ?? h.CreatedAt,
-    items,
-    containers,
-    strategy,
-    placedBoxes: Array.isArray(rawBoxes) ? rawBoxes.map(normalizeBox) : [],
-    activeContainers
-  };
-}
-
-export async function calculateLayoutApi(items, containers, strategy) {
-  const stockSheets = [];
-  let sheetIdCounter = 1;
-
-  containers.forEach((c) => {
-    const qty = Number(c.quantity) || 1;
-    const width = Number(c.width);
-    const height = Number(c.height);
-    const name = c.name || 'Tấm phôi';
-
-    for (let i = 0; i < qty; i++) {
-      stockSheets.push({
-        ID: sheetIdCounter++,
-        Width: width,
-        Height: height,
-        Quantity: 1,
-        Name: qty > 1 ? `${name} (#${i + 1})` : name
-      });
-    }
-  });
-
-  if (stockSheets.length === 0) {
-    stockSheets.push({ ID: 1, Width: 800, Height: 800, Quantity: 1, Name: 'Tấm A' });
-  }
-
-  const cuttingPack = [];
-  items.forEach((item) => {
-    const qty = Number(item.quantity) || 1;
-    const shapeConfig = SHAPE_CONFIG[item.shape] || SHAPE_CONFIG[DEFAULT_SHAPE];
-    const serialized = JSON.stringify(shapeConfig.toApiPayload(item.dimensions));
-
-    for (let i = 0; i < qty; i++) {
-      cuttingPack.push(serialized);
-    }
-  });
-
-  const payload = {
-    Type: STRATEGY_TO_TYPE[strategy] ?? 1,
-    SawKerf: 0,
-    StockSheets: stockSheets,
-    CuttingPack: cuttingPack
-  };
-
-  const response = await fetch(`${API_BASE_URL}/CalculateLayout`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || 'Lỗi từ Server');
-  }
-
-  const result = await response.json();
-  const rawBoxes = result?.data || result || [];
-
-  return {
-    boxes: Array.isArray(rawBoxes) ? rawBoxes.map(normalizeBox) : [],
-    sheets: stockSheets.map((s) => ({
-      id: s.ID,
-      name: s.Name,
-      width: s.Width,
-      height: s.Height,
-      quantity: 1
-    }))
-  };
-}
-
-export async function registerApi(email, password) {
-  const response = await fetch(`${API_BASE_URL}/Auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.message || 'Đăng ký thất bại!');
-  return data;
-}
-
-export async function loginApi(email, password) {
-  const response = await fetch(`${API_BASE_URL}/Auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.message || 'Đăng nhập thất bại!');
-  return data;
-}
-
-export async function saveHistoryApi(userId, title, inputData, resultData) {
-  const response = await fetch(`${API_BASE_URL}/History/save`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, title, inputData, resultData })
-  });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.message || 'Lưu lịch sử thất bại!');
-  return data;
-}
-
-export async function getUserHistoriesApi(userId) {
-  const response = await fetch(`${API_BASE_URL}/History/user/${userId}`);
-  const data = await response.json();
-  if (!response.ok) throw new Error('Không thể tải lịch sử!');
-  return Array.isArray(data) ? data.map(normalizeHistory) : [];
 }
 </file>
 

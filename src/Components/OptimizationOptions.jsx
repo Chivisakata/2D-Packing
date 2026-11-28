@@ -19,6 +19,8 @@ export default function OptimizationOptions() {
   const {
     strategy,
     setStrategy,
+    sawKerf,
+    setSawKerf,
     handleReset,
     handleOptimize,
     hasResults,
@@ -26,6 +28,16 @@ export default function OptimizationOptions() {
     handleSaveHistory,
     showToast
   } = usePacking();
+
+  const handleKerfChange = (value) => {
+    if (value !== '' && !/^\d*\.?\d{0,2}$/.test(value)) return;
+    setSawKerf(value);
+  };
+
+  const handleKerfBlur = (value) => {
+    const parsed = parseFloat(value);
+    setSawKerf(!isNaN(parsed) && parsed >= 0 ? Math.round(parsed * 100) / 100 : 0);
+  };
 
   const handleSaveClick = () => {
     if (!userSession) {
@@ -61,6 +73,22 @@ export default function OptimizationOptions() {
               </label>
             );
           })}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #e2e8f0' }}>
+          <label htmlFor="sawKerfInput" style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a' }}>
+            Độ dày lưỡi cắt (cm):
+          </label>
+          <input
+            id="sawKerfInput"
+            type="text"
+            inputMode="decimal"
+            value={sawKerf ?? ''}
+            onChange={(e) => handleKerfChange(e.target.value)}
+            onBlur={(e) => handleKerfBlur(e.target.value)}
+            onFocus={(e) => e.target.select()}
+            className="input-style"
+            style={{ width: '72px' }}
+          />
         </div>
       </div>
 

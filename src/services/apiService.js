@@ -47,6 +47,7 @@ function normalizeHistory(h = {}) {
   const items = inputData.items ?? inputData.Items ?? [];
   const containers = inputData.containers ?? inputData.Containers ?? [];
   const strategy = inputData.strategy ?? inputData.Strategy ?? 'REMAINDER_OPTIMAL';
+  const sawKerf = Number(inputData.sawKerf ?? inputData.SawKerf ?? 0);
 
   const rawBoxes = resultData.placedBoxes ?? resultData.PlacedBoxes ?? (Array.isArray(resultData) ? resultData : []);
   const activeContainers = resultData.containers ?? resultData.Containers ?? containers;
@@ -58,12 +59,12 @@ function normalizeHistory(h = {}) {
     items,
     containers,
     strategy,
+    sawKerf,
     placedBoxes: Array.isArray(rawBoxes) ? rawBoxes.map(normalizeBox) : [],
     activeContainers
   };
 }
-
-export async function calculateLayoutApi(items, containers, strategy) {
+export async function calculateLayoutApi(items, containers, strategy, sawKerf = 0) {
   const stockSheets = [];
   let sheetIdCounter = 1;
 
@@ -101,7 +102,7 @@ export async function calculateLayoutApi(items, containers, strategy) {
 
   const payload = {
     Type: STRATEGY_TO_TYPE[strategy] ?? 1,
-    SawKerf: 0,
+    SawKerf: Number(sawKerf) || 0,
     StockSheets: stockSheets,
     CuttingPack: cuttingPack
   };

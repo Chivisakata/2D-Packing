@@ -111,15 +111,15 @@ export function renderShapeSvg(box, index, color) {
   const { x, y, width: w, height: h, isRotated, cuttingPart = {} } = box;
   const shapeId = detectShapeId(cuttingPart);
 
-  const commonProps = {
+const commonProps = {
     fill: color,
-    fillOpacity: '0.85',
+    fillOpacity: '0.92',
     stroke: '#0f172a',
-    strokeOpacity: '0.95',
-    strokeWidth: '1.5',
+    strokeOpacity: '0.8',
+    strokeWidth: '0.5',
     vectorEffect: 'non-scaling-stroke'
   };
-
+  
   if (shapeId === 'HEXAGON') {
     const cx = x + w / 2;
     const cy = y + h / 2;
